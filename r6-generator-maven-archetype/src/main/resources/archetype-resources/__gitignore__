@@ -1,0 +1,68 @@
+# Default gitignore for r6-generator-maven-plugin projects 
+# the general setup is to build and include the binary fat JAR
+# during library development and deploy it from github
+# however this may fall foul of CRAN's size policies.
+# The alternative is to compile the source if needed during
+# the first use of the R package.
+# In this case we need to uncomment the following line to prevent
+# development JAR files from being deployed to github:
+
+# inst/java/*.jar  
+
+# The standard Java exclusions are in the src subdirectory's own .gitignore
+# the Java project is set up to be in subdirectory "src"
+# which is R-package src (not java libraries src)
+# meaning pom will be in src/pom.xml
+
+# The standard R exclusions: R / RStudio project files assuming R package is in root directory of repository
+# This is the default for the r6-generator-maven-plugin and makes most sense for packages deployed into a joint
+# repository for Java and R code onto github where the root of the maven project is /src/pom.xml, 
+# The R package is then tested with github workflows and installed into R with devtools from github.
+
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+.RDataTmp
+
+# User-specific files
+.Ruserdata
+
+# Example code in package build process
+*-Ex.R
+
+# Output files from R CMD build
+/*.tar.gz
+
+# Output files from R CMD check
+/*.Rcheck/
+
+# RStudio files
+.Rproj.user/
+
+# produced vignettes (N.B. this may not always be wanted) 
+vignettes/*.html
+vignettes/*.pdf
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+
+# knitr and R markdown default cache directories
+*_cache/
+/cache/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# R Environment Variables
+.Renviron
+
+# translation temp files
+po/*~
+
+# RStudio Connect folder
+rsconnect/
+
