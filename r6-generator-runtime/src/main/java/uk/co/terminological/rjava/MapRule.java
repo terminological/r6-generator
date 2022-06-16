@@ -45,6 +45,7 @@ public interface MapRule<Y> {
 	/**
 	 * generates a mapping using reflection from a method specification
 	 * @param method - the java method
+	 * @param <Z> the input type
 	 * @return - a mapping that associates the method name with the method. 
 	 */
 	static <Z> MapRule<Z> mapping(final Method method) {

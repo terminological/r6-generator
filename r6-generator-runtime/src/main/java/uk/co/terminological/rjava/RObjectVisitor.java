@@ -21,7 +21,7 @@ import uk.co.terminological.rjava.types.*;
  * 
  * @author terminological
  *
- * @param <X>
+ * @param <X> the output of the visitor
  */
 public interface RObjectVisitor<X> {
 
@@ -56,7 +56,7 @@ public interface RObjectVisitor<X> {
 	 * 
 	 * @author terminological
 	 *
-	 * @param <Y>
+	 * @param <Y> the output of the visitor
 	 */
 	public static class DefaultOptional<Y> implements RObjectVisitor<Optional<Y>> {
 		public Optional<Y> visit(RCharacter c) {return Optional.empty();}
@@ -116,7 +116,7 @@ public interface RObjectVisitor<X> {
 	 * 
 	 * @author terminological
 	 *
-	 * @param <Y>
+	 * @param <Y> the output of the visitor
 	 */
 	public static abstract class OnceOnly<Y> implements RObjectVisitor<Optional<Y>> {
 		

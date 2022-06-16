@@ -20,13 +20,13 @@ public @interface RClass {
 	
 	/**
 	 * A set of R library dependencies specified as the CRAN library name
-	 * @return
+	 * @return the imports fields
 	 */
 	String[] imports() default {};
 	
 	/**
 	 * A set of R library suggestions specified as the CRAN library name
-	 * @return
+	 * @return the suggests fields
 	 */
 	String[] suggests() default {};
 	

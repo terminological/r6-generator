@@ -323,7 +323,7 @@ public class RConverter {
 	
 	/**
 	 * A stream collector that applies mapping rules and coverts a stream of objects into a dataframe
-	 * @param rules - an array of mapping(X.class, "colname", x -> x.getValue()) entries that define
+	 * @param rules - an array of mapping(X.class, "colname", x -&gt; x.getValue()) entries that define
 	 * the data frame columns
 	 * @return A collector that works in a stream.collect(RConvert.toDataFrame(mapping1, mapping2, ...))
 	 */
@@ -386,8 +386,11 @@ public class RConverter {
 
 	/**
 	 * A stream collector that applies mapping rules and coverts a stream of objects into a dataframe
-	 * @param rules - an array of mapping(X.class, "colname", x -> x.getValue()) entries that define
+	 * @param streamRule -  a lambda mapping an instance of clazz to a stream of W objects 
+	 * @param rules - an array of mapping(X.class, "colname", x -&gt; x.getValue()) entries that define
 	 * the data frame columns
+	 * @param <X> - the type of the object before the mapping
+	 * @param <W> - the interim type of the stream after teh streamRule is applied 
 	 * @return A collector that works in a stream.collect(RConvert.toDataFrame(mapping1, mapping2, ...))
 	 */
 	@SafeVarargs
@@ -505,14 +508,15 @@ public class RConverter {
 	 * Create a mapping using a to allow us to extract data from an object of type defined by clazz and associate it
 	 * with a label. This can be used to create a custom data mapping. e.g.
 	 * 
-	 * mapping("absolutePath", f -> f.getAbsolutePath())
+	 * mapping("absolutePath", f -&gt; f.getAbsolutePath())
 	 * 
 	 * If the compiler cannot work out the type from the context it may be necessary to use the 3 parameter version 
 	 * of this method.
 	 * 
 	 * @param label - the target column label in the R dataframe
-	 * @param rule -  a lambda mapping an instance of clazz to the value of the column 
-	 * @return
+	 * @param rule -  a lambda mapping an instance of clazz to the value of the column
+	 * @param <Z> - the input type that is being mapped 
+	 * @return a mapping rule
 	 */
 	public static <Z> MapRule<Z> mapping(final String label, final Function<Z,Object> rule) {
 		return new MapRule<Z>() {
@@ -531,14 +535,16 @@ public class RConverter {
 	 * Create a mapping using a to allow us to extract data from an object of type defined by clazz and associate it
 	 * with a label. This can be used to create a custom data mapping. e.g.
 	 * 
-	 * mapping("absolutePath", f -> f.getAbsolutePath())
+	 * mapping("absolutePath", f -&gt; f.getAbsolutePath())
 	 * 
 	 * If the compiler cannot work out the type from the context it may be necessary to use the 3 parameter version 
 	 * of this method.
 	 * 
-	 * @param label - the target column label in the R dataframe
-	 * @param rule -  a lambda mapping an instance of clazz to the value of the column 
-	 * @return
+	 * @param streamRule -  a lambda mapping an instance of clazz to a stream of W objects
+	 * @param rule - the rules mapping W to final data frame outputs
+	 * @param <Z> - the input type
+	 * @param <W> - the nested type that will form the input for the nested rules 
+	 * @return a nested mapping rule
 	 */
 	@SafeVarargs
 	public static <Z,W> StreamRule<Z,W> flatMapping(final Function<Z,Stream<W>> streamRule, final MapRule<W>... rule) {
@@ -562,15 +568,13 @@ public class RConverter {
 	 * Create a mapping using a to allow us to extract data from an object of type defined by clazz and associate it
 	 * with a label. This can be used to create a custom data mapping. e.g.
 	 * 
-	 * mapping(File.class, "absolutePath", f -> f.getAbsolutePath())
+	 * mapping(File.class, "absolutePath", f -&gt; f.getAbsolutePath())
 	 * 
-	 * Typically this function will be imported statically:
-	 * 
-	 * import static uk.co.terminological.jsr223.RConvert.*; 
 	 * @param clazz - a class maybe required to guide the compiler to use the correct lambda function
 	 * @param label - the target column label in the R dataframe
 	 * @param rule -  a lambda mapping an instance of clazz to the value of the column 
-	 * @return a mapping rule
+	 * @param <Z> - the input type
+	 * @return a set of nested mapping rules
 	 */
 	public static <Z> MapRule<Z> mapping(final Class<Z> clazz, final String label, final Function<Z,Object> rule) {
 		return mapping(label,rule);

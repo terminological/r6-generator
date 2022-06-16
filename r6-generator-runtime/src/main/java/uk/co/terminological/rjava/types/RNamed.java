@@ -13,7 +13,7 @@ import uk.co.terminological.rjava.RObjectVisitor;
  * (java like). This is a work in progress.
  * @author terminological
  *
- * @param <X>
+ * @param <X> an RObject
  */
 public class RNamed<X extends RObject> implements RObject, Map.Entry<String,X> {
 

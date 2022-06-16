@@ -17,7 +17,7 @@ public interface RObject extends Serializable {
 	/** Derives the R code representation of this object. This is used for some objects
 	 * as a wire serialisation ({@link RList} and {@link RNamedList}) to copy them accross to R.
 	 * Other data types tend to use the raw primitives to copy.
-	 * @return
+	 * @return a string that can be parsed as R code.
 	 */
 	String rCode();
 		

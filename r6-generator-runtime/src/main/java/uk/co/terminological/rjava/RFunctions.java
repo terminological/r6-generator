@@ -37,6 +37,7 @@ public class RFunctions {
 	 * @param tester - a predicate of RPrimtive pairs
 	 * @param lhs - the lhs RVector
 	 * @param rhs - the rhs RVector
+	 * @param <X> - any R primitive type
 	 * @return true if both vectors are either empty or all value pairs return true. false if the vectors are not the same length or any are false;
 	 */
 	public static <X extends RPrimitive> boolean all(BiPredicate<X,X> tester, RVector<X> lhs, RVector<X> rhs) {
@@ -48,10 +49,10 @@ public class RFunctions {
 	}
 	
 	/**
-	 * @param tester - a predicate of RPrimtive pairs
+	 * @param tester - a predicate of RPrimtives
 	 * @param lhs - the lhs RVector
-	 * @param rhs - the rhs RVector
-	 * @return true if both vectors are either empty or all value pairs return true. false if the vectors are not the same length or any are false;
+	 * @param <X> - any R primitive type
+	 * @return true if all tests return true
 	 */
 	public static <X extends RPrimitive> boolean all(Predicate<X> tester, RVector<X> lhs) {
 		if (lhs.size() == 0) return true;
@@ -65,6 +66,7 @@ public class RFunctions {
 	 * @param tester - a predicate of RPrimtive pairs
 	 * @param lhs - the lhs RVector
 	 * @param rhs - the rhs RVector
+	 * @param <X> - any R primitive type
 	 * @return true if both vectors are either empty or all value pairs return true. false if the vectors are not the same length or any are false;
 	 */
 	public static <X extends RPrimitive> boolean any(BiPredicate<X,X> tester, RVector<X> lhs, RVector<X> rhs) {
@@ -78,8 +80,8 @@ public class RFunctions {
 	/**
 	 * @param tester - a predicate of RPrimtive pairs
 	 * @param lhs - the lhs RVector
-	 * @param rhs - the rhs RVector
-	 * @return true if both vectors are either empty or all value pairs return true. false if the vectors are not the same length or any are false;
+	 * @param <X> - any R primitive type
+	 * @return true if any tests return true
 	 */
 	public static <X extends RPrimitive> boolean any(Predicate<X> tester, RVector<X> lhs) {
 		if (lhs.size() == 0) return true;

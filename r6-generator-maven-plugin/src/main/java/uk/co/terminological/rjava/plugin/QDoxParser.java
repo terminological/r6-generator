@@ -33,7 +33,7 @@ import uk.co.terminological.rjava.types.RObject;
 
 
 /** The business end of the library.
- * This scans source code using QDox using the static {@link QDoxParser.scanModel} method
+ * This scans source code using QDox using the static scanModel method
  * which is called by the main maven plugin class
  * @author terminological
  *
@@ -125,12 +125,7 @@ public class QDoxParser {
 		return Optional.ofNullable(out);
 	}
 	
-	/** The biggest part of this is parsing the class files
-	 * @param clazz
-	 * @param model
-	 * @return
-	 * @throws MojoExecutionException
-	 */
+	// The biggest part of this is parsing the class files
 	public RClass createClass(JavaClass clazz, RModel model) throws MojoExecutionException {
 		try {
 			//Annotation parsing is painful with QDox but you can get all the taglets
@@ -214,15 +209,11 @@ public class QDoxParser {
 		}
 	}
 
-	/** Parse the method definition including parameter types and return types. 
+	/* Parse the method definition including parameter types and return types. 
 	 * In general this will try and create a type if it doesn;t exist. This no longer
 	 * supoprts collections and other complex types as these are constrained to be from the 
 	 * {@link RObject} hierarchy now. This is largely checked by the fact that when creating a type 
 	 * it has to have a @RClass or @RDatatype annotation. 
-	 * @param m
-	 * @param model
-	 * @return
-	 * @throws MojoExecutionException
 	 */
 	public RMethod createMethod(JavaMethod m, RModel model) throws MojoExecutionException {
 		try {

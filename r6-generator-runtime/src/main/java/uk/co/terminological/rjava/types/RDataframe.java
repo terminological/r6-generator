@@ -38,10 +38,6 @@ import uk.co.terminological.rjava.UnconvertableTypeException;
  * @author terminological
  *
  */
-/**
- * @author terminological
- *
- */
 @RDataType(
 		JavaToR = { 
 				"function(jObj) {",
@@ -314,8 +310,9 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	
 	/**
 	 * @param type an interface definition with getter methods that specify the correct RPrimitive datatype of the each named column.
-	 * @return a stream of the interface type
-	 * @throws UnconvertableTypeException 
+	 * @param <T> - any output type defined as a java interface
+	 * @return a stream of the interface type T
+	 * @throws UnconvertableTypeException if the dataframe row cannot be coerced to type T
 	 */
 	public <T> Stream<T> stream(Class<T> type) throws UnconvertableTypeException {
 		return attach(type).streamCoerce();
@@ -485,6 +482,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 *  Filter a dataframe and return a new dataframe containing entrie that pass predicate
 	 * @param name - the column to test
 	 * @param type - the type of the column (for type hinting)
+	 * @param <Y> - any R primitive type
 	 * @param predicate - a test of the individual contents of the column
 	 * @return A new dataframe
 	 */
@@ -493,9 +491,10 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	}
 	
 	/**
-	 *  Filter a dataframe and return a new dataframe containing entrie that pass predicate
+	 *  Filter a dataframe and return a new dataframe containing entries that pass predicate
 	 * @param name - the column to test
 	 * @param predicate - a test of the individual contents of the column
+	 * @param <Y> - any R primitive type
 	 * @return A new dataframe
 	 */
 	public <Y extends RPrimitive> RDataframe filter(String name, Predicate<Y> predicate) {
@@ -598,6 +597,8 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * Returns the same data frame with the column "columnName" 
 	 * @param columnName -  the name of the column to mutate
 	 * @param inputType - the type of the original column
+	 * @param <X> - the R primitive type of the column before the mapping
+	 * @param <Y> - any R primitive type of the column after the mapping 
 	 * @param mapping - the operation to apply to the column (must result in an RPrimitive of some type)
 	 * @return the same dataframe with a changed column
 	 */
@@ -610,6 +611,8 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * Returns the same data frame with the column "columnName" 
 	 * @param columnName -  the name of the column to mutate
 	 * @param mapping - the operation to apply to the column (must result in an RPrimitive of some type)
+	 * @param <X> - the R primitive type of the column before the mapping
+	 * @param <Y> - any R primitive type of the column after the mapping 
 	 * @return the same dataframe with a changed column
 	 */
 	@SuppressWarnings("unchecked")

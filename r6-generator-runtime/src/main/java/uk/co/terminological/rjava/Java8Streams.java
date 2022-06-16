@@ -16,6 +16,7 @@ public class Java8Streams {
 	/**
 	 * Create a stream from a potentially null singleton or array
 	 * @param t a set of values
+	 * @param <T> any type
 	 * @return a stream
 	 */
 	@SafeVarargs
@@ -25,7 +26,8 @@ public class Java8Streams {
 	
 	/**
 	 * Create a stream from a potentially null collection
-	 * @param t a collection of values
+	 * @param list a collection of values
+	 * @param <T> any type
 	 * @return a stream
 	 */
 	public static <T> Stream<T> maybe(Collection<T> list) {
@@ -34,7 +36,8 @@ public class Java8Streams {
 	
 	/**
 	 * Create a stream from a potentially null stream
-	 * @param t a stream
+	 * @param stream a stream
+	 * @param <T> any type
 	 * @return a stream
 	 */
 	public static <T> Stream<T> maybe(Stream<T> stream) {
@@ -44,6 +47,7 @@ public class Java8Streams {
 	/**
 	 * Create a stream from a potentially null optional
 	 * @param t an optional value
+	 * @param <T> any type
 	 * @return a stream
 	 */
 	public static <T> Stream<T> maybe(Optional<T> t) {
@@ -52,7 +56,8 @@ public class Java8Streams {
 	
 	/**
 	 * Create a stream from a potentially null iterable
-	 * @param t an iterable of values
+	 * @param iter an iterable of values
+	 * @param <T> any type
 	 * @return a stream
 	 */
 	public static <T> Stream<T> maybe(Iterable<T> iter) {
@@ -61,7 +66,8 @@ public class Java8Streams {
 	
 	/**
 	 * Create a stream from a potentially null iterator
-	 * @param t an iterator
+	 * @param iter an iterator
+	 * @param <T> any type
 	 * @return a stream
 	 */
 	public static <T> Stream<T> maybe(Iterator<T> iter) {
@@ -75,6 +81,7 @@ public class Java8Streams {
 	/**
 	 * Create a stream from a potentially null or NA valued RPrimitive
 	 * @param t an RPrimitive
+	 * @param <T> any type
 	 * @return a stream of the underlying java object omitting NA values
 	 */
 	public static <T> Stream<T> maybe(RPrimitive t) {
@@ -83,7 +90,9 @@ public class Java8Streams {
 	
 	/**
 	 * Create a stream from a potentially null or NA valued RVector
-	 * @param t an RVector
+	 * @param t an RVector of type U
+	 * @param <T> any type
+	 * @param <U> an RPrimitive
 	 * @return a stream of the underlying java object omitting NA values
 	 */
 	public static <U extends RPrimitive, T> Stream<T> maybe(RVector<U> t) {

@@ -98,14 +98,14 @@ public class PackageData {
 	}
 
 	/** {@code <debugMode>true</debugMode>}
-	 * @return
+	 * @return the debug mode
 	 */
 	public boolean getDebugMode() {
 		return debug != null && debug.booleanValue(); 
 	}
 	
 	/** {@code <defaultLogLevel>WARN</defaultLogLevel>}
-	 * @return
+	 * @return the default log level
 	 */
 	public String getDefaultLogLevel() {
 		return defaultLogLevel == null ? "INFO" : defaultLogLevel;
@@ -114,7 +114,7 @@ public class PackageData {
 	/** {@code <usePkgdown>true</usePkgdown>}
 	 * 
 	 * build machine must have R and pkgdown installed
-	 * @return
+	 * @return pkgDown flag
 	 */
 	public boolean usePkgdown() {
 		return usePkgdown != null && usePkgdown.booleanValue(); 
@@ -123,7 +123,7 @@ public class PackageData {
 	/** {@code <usePkgdown>true</usePkgdown>}
 	 * 
 	 * build machine must have R and devtools installed
-	 * @return
+	 * @return roxygen2 flag
 	 */
 	public boolean useRoxygen2() {
 		return useRoxygen2 != null && useRoxygen2.booleanValue(); 
@@ -133,7 +133,7 @@ public class PackageData {
 	/** {@code <useJavadoc>true</useJavadoc>}
 	 * 
 	 * build machine must have R and pkgdown installed
-	 * @return
+	 * @return javadoc flag
 	 */
 	public boolean useJavadoc() {
 		return useJavadoc != null && useJavadoc.booleanValue(); 
@@ -162,6 +162,7 @@ public class PackageData {
 	}
 	
 	/** For example {@code <rJavaOpts><rJavaOpt>-Xmx2048M</rJavaOpt></rJavaOpts>}
+	* @return list of java options
 	*/
 	public List<String> getRJavaOpts() {
 		if (this.rjavaOpts == null) return Collections.emptyList();

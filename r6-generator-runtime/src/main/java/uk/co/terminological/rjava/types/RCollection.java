@@ -11,7 +11,7 @@ import java.util.stream.StreamSupport;
  * 
  * @author terminological
  *
- * @param <X>
+ * @param <X> any RObject
  */
 public interface RCollection<X extends RObject> extends RObject,Iterable<X> {
 

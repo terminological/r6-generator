@@ -28,22 +28,27 @@ public class CollectingConverter<X,Y> {
 	
 	/**
 	 * Convert an instance of type X to Y
-	 * @param instance
-	 * @return
+	 * @param instance a singleton of type X
+	 * @return a list or array
 	 */
 	public Y convert(X instance) {
 		return convert(Stream.of(instance));
 	}
 	
 	/**
-	 * Convert a stream of 
-	 * @param stream
-	 * @return
+	 * Convert a stream of type X to Y
+	 * @param stream a stream of type X
+	 * @return a list or array
 	 */
 	public Y convert(Stream<X> stream) {
 		return stream.collect(collector);
 	}
 	
+	/**
+	 * Convert a collection of type X to Y
+	 * @param collection a collection of type X
+	 * @return a list or array
+	 */
 	public Y convert(Collection<X> collection) {
 		return convert(collection.stream());
 	}
