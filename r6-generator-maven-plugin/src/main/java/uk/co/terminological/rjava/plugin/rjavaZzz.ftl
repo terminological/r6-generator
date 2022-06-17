@@ -30,9 +30,8 @@
 			# This is achieved by using maven to compile and package the project.
 			# to ensure this is possible we use a maven wrapper script which is installed into the library.
 			
-			packageStartupMessage("The Java component of this library was not distributed with the package and must be compiled on first use. This may take some time and may require an internet connection.")
-			packageStartupMessage("To do this the current user must be able to write to: ",jarLoc)
-			# TODO: 
+			warning("The Java component of this library was not distributed with the package and must be compiled on first use. This may take some time and may require an internet connection.")
+			warning("To do this the current user must be able to write to: ",jarLoc)
 			
 			pomLoc = fs::path_norm(
 				fs::path_join(c(libpath,"${rToPomPath}"))

@@ -18,6 +18,7 @@
 
 	<#if model.getConfig().preCompileBinary()>
 # The following ignores can be used as we are deploying the fat jar to CRAN or github
+^src$
 ^pom.xml$
 ^.mvn$
 ^mvnw$
@@ -40,10 +41,12 @@
 
 	<#if model.getConfig().preCompileBinary()>
 # The following ignores can be used as we are deploying the fat jar to CRAN or github
-^${rToPomPath}/pom.xml
-^${rToPomPath}/.mvn$
-^${rToPomPath}/mvnw$
-^${rToPomPath}/mvnw.cmd$
+^${rToPomPath}$
+# ^${rToPomPath}/pom.xml
+# ^${rToPomPath}/.mvn$
+# ^${rToPomPath}/mvnw$
+# ^${rToPomPath}/mvnw.cmd$
+
 
 	<#else>
 # Support for compiling the binary at runtime is required. This means including pom.xml, mvnw, mvnw.cmd, and .mvn directories 
