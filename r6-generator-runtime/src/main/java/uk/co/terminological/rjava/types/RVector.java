@@ -76,7 +76,7 @@ public abstract class RVector<X extends RPrimitive> extends ArrayList<X> impleme
 		if (v instanceof RFactor) return (RVector<Y>) rep((RFactor) v, rows);
 		if (v instanceof RLogical) return (RVector<Y>) rep((RLogical) v, rows);
 		if (v instanceof RDate) return (RVector<Y>) rep((RDate) v, rows);
-		if (v instanceof RUntypedNa) return (RVector<Y>) rep((RDate) v, rows);
+		if (v instanceof RUntypedNa) return (RVector<Y>) rep((RUntypedNa) v, rows);
 		throw new IncompatibleTypeException("No vector defined for: "+v.getClass().getCanonicalName());
 	}
 	

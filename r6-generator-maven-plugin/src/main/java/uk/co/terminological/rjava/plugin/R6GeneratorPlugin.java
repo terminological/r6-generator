@@ -13,6 +13,8 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -63,14 +65,14 @@ public class R6GeneratorPlugin extends PluginBase {
 			// https://www.baeldung.com/spring-git-information
 			m.setPluginMetadata(pluginVersion);
 			m.setMavenMetadata(mavenProject);
-			m.setRelativePath(mavenProject,rootDir);
+			m.setRelativePath(mavenProject,rProjectDir);
 					
 			
 			//write the code to the desired location.
 			getLog().debug("Writing R6 library code.");
 			RModelWriter writer = new RModelWriter(
 					m.withAdditionalExports(additionalExports), 
-					outputDirectory,
+					rProjectDir.toFile(),
 					jarFile,
 					rToPomPath,
 					getLog()
@@ -82,7 +84,7 @@ public class R6GeneratorPlugin extends PluginBase {
 		if (packageData.useRoxygen2() && !packageData.getDebugMode()) {
 			
 			// must be an array to stop java tokenising it
-			String rCMD[] = {"R","-e","devtools::document(pkg = '"+outputDirectory+"')"};
+			String rCMD[] = {"R","-e","devtools::document(pkg = '"+rProjectDir+"')"};
 			getLog().info("Generating roxygen configuration.");
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();
@@ -111,7 +113,7 @@ public class R6GeneratorPlugin extends PluginBase {
 		if (packageData.usePkgdown() && !packageData.getDebugMode()) {
 			
 			// must be an array to stop java tokenising it
-			String rCMD[] = {"R","-e","pkgdown::build_site(pkg = '"+outputDirectory+"')"};
+			String rCMD[] = {"R","-e","pkgdown::build_site(pkg = '"+rProjectDir+"')"};
 			getLog().info("Generating pkgdown site - please be patient");
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();
@@ -139,21 +141,30 @@ public class R6GeneratorPlugin extends PluginBase {
     
 		// Set up maven wrapper
 		// Using a fixed version of maven
-		getLog().info("Setup maven wrapper scripts");
-		executeMojo(
-				plugin(
-					groupId("org.apache.maven.plugins"),
-					artifactId("maven-wrapper-plugin"),
-					version("3.1.1")),
-				goal("wrapper"),
-				configuration(
-						element(name("distributionType"),"script"),
-						element(name("mavenVersion"),"3.3.9")
-				),
-				executionEnvironment(
-						mavenProject,
-						mavenSession,
-						pluginManager));
+		if (!packageData.preCompileBinary()) {
+			
+			try {
+				Files.delete(jarLoc);
+			} catch (IOException e) {
+				getLog().warn("Couldn't delete the fat jar from: "+this.jarLoc);
+			}
+		
+			getLog().info("Setup maven wrapper scripts to allow compilation of java code.");
+			executeMojo(
+					plugin(
+						groupId("org.apache.maven.plugins"),
+						artifactId("maven-wrapper-plugin"),
+						version("3.1.1")),
+					goal("wrapper"),
+					configuration(
+							element(name("distributionType"),"script"),
+							element(name("mavenVersion"),"3.3.9")
+					),
+					executionEnvironment(
+							mavenProject,
+							mavenSession,
+							pluginManager));
+		}
 		
 		// Generate java docs (for pkgdown site / github pages)
 		if (packageData.useJavadoc() && !packageData.getDebugMode()) {

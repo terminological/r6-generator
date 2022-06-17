@@ -106,8 +106,9 @@ public class RModel {
 		relativePath = rootPath.relativize(rootDir);
 	}
 
+	//TODO: Fix this by getting all the file path as part of the RModel class.
 	public String getRelativePath() {
-		if (relativePath.toString().equals("")) return null;
+		if (relativePath.toString().equals("") || relativePath.toString().startsWith("..")) return null;
 		return relativePath.toString();
 	}
 

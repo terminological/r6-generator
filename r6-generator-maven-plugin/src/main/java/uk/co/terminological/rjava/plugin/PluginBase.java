@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -32,7 +33,7 @@ public abstract class PluginBase extends AbstractMojo {
 	protected PackageData packageData;
 	@Parameter(required = true)
 	protected File outputDirectory;
-	protected Path rootDir;
+	
 
 	private void delete(Path t) {
 		try {
@@ -43,16 +44,16 @@ public abstract class PluginBase extends AbstractMojo {
 	}
 
 	protected void rmContents(Path dir) throws MojoExecutionException {
-		try {
-			Files.walk(dir).sorted(Comparator.reverseOrder()).filter(f -> !f.equals(dir)).forEach(this::delete);
+		try (Stream<Path> paths = Files.walk(dir)) {
+			paths.sorted(Comparator.reverseOrder()).filter(f -> !f.equals(dir)).forEach(this::delete);
 		} catch (IOException e1) {
 			throw new MojoExecutionException("Cannot remove files in build directory: "+dir,e1);
 		}
 	}
 
 	protected void rmGenerated(Path dir) throws MojoExecutionException {
-		try {
-			Files.walk(dir)
+		try (Stream<Path> paths = Files.walk(dir)) {
+			paths
 				.sorted(Comparator.reverseOrder())
 				.filter(f -> !f.equals(dir))
 				.filter(f -> {
@@ -68,6 +69,7 @@ public abstract class PluginBase extends AbstractMojo {
 		}
 	}
 
+	protected Path rProjectDir;
 	protected Path jarDir;
 	protected Path rDir;
 	protected Path manDir;
@@ -84,21 +86,27 @@ public abstract class PluginBase extends AbstractMojo {
 	}
 
 	protected void setupPaths() throws MojoExecutionException {
-		rootDir = outputDirectory.toPath();
-		jarDir = rootDir.resolve("inst").resolve("java");
-		rDir = rootDir.resolve("R");
-		manDir = rootDir.resolve("man");
-		docs = rootDir.resolve("docs");
-		workflows = Paths.get(mavenProject.getBasedir().getPath()).resolve(".github/workflows");
+		rProjectDir = outputDirectory.toPath().normalize();
+		jarDir = rProjectDir.resolve("inst").resolve("java").normalize();
+		rDir = rProjectDir.resolve("R").normalize();
+		manDir = rProjectDir.resolve("man").normalize();
+		docs = rProjectDir.resolve("docs").normalize();
+		workflows = rProjectDir.resolve(".github/workflows").normalize();
 		jarFile = mavenProject.getModel().getBuild().getFinalName()+"-jar-with-dependencies.jar";
 		jarLoc = jarDir.resolve(jarFile);
-		pomDir = Paths.get(mavenProject.getBasedir().getPath());
-		rToPomPath = rootDir.relativize(pomDir).toString();
+		pomDir = Paths.get(mavenProject.getBasedir().getPath()).normalize();
+		rToPomPath = rProjectDir.relativize(pomDir).toString();
 		
-		if( rootDir.startsWith(pomDir) & !rootDir.equals(pomDir)) getLog().warn(
-				"The java sources are located outside of the R library. This may make it impossible to compile the sources,"
+		// if( rProjectDir.startsWith(pomDir) && !rProjectDir.equals(pomDir)) {
+		if (rToPomPath.startsWith("..")) {
+			getLog().warn(
+				"The java sources are located outside of the R package. This may make it impossible to compile the sources,"
 				+ " and mean the compiled jars must be distributed with the generated java library."
 				+ " This will often be too large for CRAN");
+			getLog().warn("rootDir: "+rProjectDir);
+			getLog().warn("pomDir: "+pomDir);
+			getLog().warn("rToPomPath: "+rToPomPath);
+		}
 		
 		
 		try {
@@ -115,9 +123,8 @@ public abstract class PluginBase extends AbstractMojo {
 
 	protected List<String> scanDirectoryForExports(Path rDir) throws MojoExecutionException {
 		List<String> additionalExports = new ArrayList<>();
-		try {
-			Files.walk(rDir)
-			.filter(f -> !Files.isDirectory(f))
+		try (Stream<Path> paths = Files.walk(rDir)) {
+			paths.filter(f -> !Files.isDirectory(f))
 			.forEach(f -> {
 				try {
 					String s = FileUtils.fileRead(f.toFile());

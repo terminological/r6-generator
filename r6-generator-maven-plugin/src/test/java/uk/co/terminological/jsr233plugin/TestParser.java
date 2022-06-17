@@ -3,12 +3,13 @@ package uk.co.terminological.jsr233plugin;
 import java.util.ArrayList;
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 
 public class TestParser {
 
-	@Before
+	@BeforeAll
 	public void setUp() throws Exception {
 		
 	}

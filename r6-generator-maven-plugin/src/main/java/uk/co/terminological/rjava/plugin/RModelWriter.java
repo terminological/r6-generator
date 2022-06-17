@@ -46,7 +46,8 @@ public class RModelWriter {
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
 		cfg.setClassForTemplateLoading(RModelWriter.class,"");
 
-		
+		// TODO:: these file locations are already defnied by the plugin and should be reused
+		// rather than recalculated. We woudl have to figure out how the plugin passes them though
 		File rDir = new File(target,"R");
 		rDir.mkdirs();
 		
@@ -56,8 +57,8 @@ public class RModelWriter {
 		File manDir = new File(target,"man");
 		manDir.mkdirs();
 		
-		File workflowDir = new File(model.getRootPath(),".github/workflows");
-		manDir.mkdirs();
+		File workflowDir = new File(target,".github/workflows");
+		workflowDir.mkdirs();
 		
 		Map<String,Object> typeRoot = new HashMap<>();
 		typeRoot.put("model", model);

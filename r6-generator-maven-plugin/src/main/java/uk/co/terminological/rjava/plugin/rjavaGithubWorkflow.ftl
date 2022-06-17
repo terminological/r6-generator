@@ -68,6 +68,10 @@ jobs:
           http-user-agent: ${r"${{ matrix.config.http-user-agent }}"}
           use-public-rspm: true
 
+      - name: Setup R Java support
+        if: runner.os != 'Windows'
+        run: "echo export PATH=$PATH > reconf.sh; echo export JAVA_HOME=$JAVA_HOME >> reconf.sh; echo R CMD javareconf >> reconf.sh; sudo bash reconf.sh"
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
@@ -76,9 +80,7 @@ jobs:
           working-directory: ${model.getRelativePath()}
 </#if>
       
-      - name: Setup R Java support
-        if: runner.os != 'Windows'
-        run: "echo export PATH=$PATH > reconf.sh; echo export JAVA_HOME=$JAVA_HOME >> reconf.sh; echo R CMD javareconf >> reconf.sh; sudo bash reconf.sh"
+      
 
       - uses: r-lib/actions/check-r-package@v2
         with:

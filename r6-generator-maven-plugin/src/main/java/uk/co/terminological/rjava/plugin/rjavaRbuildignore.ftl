@@ -4,19 +4,58 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^cran-comments.md$
+
 # java maven directory layouts
-
+<#if rToPomPath == "">
+# the java library is stting at the same level as the R package
+# a range of files may be created by the java IDE which need
+# to be ignored by R
 ^target$
+^.classpath$
+^.settings$
+^.project$
 
-# The following ignores can be used if we are deploying the fat jar to CRAN or github 
-# ^src$
-# pom.xml
-# mvnw
-# mvnw.cmd
+	<#if model.getConfig().preCompileBinary()>
+# The following ignores can be used as we are deploying the fat jar to CRAN or github
+^pom.xml$
+^.mvn$
+^mvnw$
+^mvnw.cmd$
 
-.classpath
+	<#else>
+# Support for compiling the binary at runtime is required. This means including pom.xml, mvnw, mvnw.cmd, and .mvn directories 
+# and the java source into the package which generates a R CMD check warning. On the plus side we don't need the now empty directory where the jar should have been.    
+^inst/java$
+
+	</#if>
+<#else>
+# the java library is stting at the ${rToPomPath} path from the R package
+# a range of files may be created by the java IDE which need
+# to be ignored by R
+^${rToPomPath}/target$
+^${rToPomPath}/.classpath$
+^${rToPomPath}/.settings$
+^${rToPomPath}/.project$
+
+	<#if model.getConfig().preCompileBinary()>
+# The following ignores can be used as we are deploying the fat jar to CRAN or github
+^${rToPomPath}/pom.xml
+^${rToPomPath}/.mvn$
+^${rToPomPath}/mvnw$
+^${rToPomPath}/mvnw.cmd$
+
+	<#else>
+# Support for compiling the binary at runtime is required. This means including pom.xml, mvnw, mvnw.cmd, and .mvn directories 
+# and the java source into the package which generates a R CMD check warning. On the plus side we don't need the now empty directory where the jar should have been.    
+^inst/java$
+
+	</#if>
+</#if>
+
 index.html
-^.github$
 
 # created during rJava setup on github workflow.
+# this is specifically to prevent a NOTE on the github workflow.
+^.github$
 ^reconf.sh$

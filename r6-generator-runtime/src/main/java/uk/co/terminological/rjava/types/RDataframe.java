@@ -108,7 +108,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return this;
 	}
 
-	public String toString() {
+	public synchronized String toString() {
 		return "groups: "+this.groups+"\n"+
 			this.entrySet().stream()
 			.map(
@@ -122,16 +122,16 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return this.get(key).size();
 	}
 	
-	public int ncol() {
+	public synchronized int ncol() {
 		return this.size();
 	}
 	
-	public Class<? extends RPrimitive> getTypeOfColumn(String name) {
+	public synchronized Class<? extends RPrimitive> getTypeOfColumn(String name) {
 		return this.get(name).getType();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Class<? extends RVector<?>> getVectorTypeOfColumn(String name) { //throws IncompatibleTypeException {
+	public synchronized Class<? extends RVector<?>> getVectorTypeOfColumn(String name) { //throws IncompatibleTypeException {
 		return (Class<? extends RVector<?>>) this.get(name).getClass();
 //		if (this.get(name).getType().equals(RCharacter.class)) return RCharacterVector.class;
 //		if (this.get(name).getType().equals(RInteger.class)) return RIntegerVector.class;
@@ -189,7 +189,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return this;
 	}
 	
-	public RDataframeRow getRow(int i) {
+	public synchronized RDataframeRow getRow(int i) {
 		if (i<0) throw new BeforeFirstElementException();
 		if (i>=this.nrow()) throw new AfterLastElementException(); 
 		return new RDataframeRow(this, i);
@@ -222,19 +222,19 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return this;
 	}
 	
-	public RDataframe withColIfAbsent(String s, RVector<?> col) {
+	public synchronized RDataframe withColIfAbsent(String s, RVector<?> col) {
 		if (!this.containsKey(s))
 			this.addCol(s, col);
 		return this;
 	}
 	
-	public <X extends RPrimitive> RDataframe withColIfAbsent(String s, X col) {
+	public synchronized <X extends RPrimitive> RDataframe withColIfAbsent(String s, X col) {
 		if (!this.containsKey(s))
 			this.addCol(s, col);
 		return this;
 	}
 	
-	public <X extends RPrimitive> RDataframe mergeWithCol(String s, X col, BiFunction<X,X,X> mergeOperation) {
+	public synchronized <X extends RPrimitive> RDataframe mergeWithCol(String s, X col, BiFunction<X,X,X> mergeOperation) {
 		if (!this.containsKey(s))
 			this.addCol(s, col);
 		else {
@@ -243,7 +243,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return this;
 	}
 	
-	public <X extends RPrimitive> RDataframe mergeWithCol(String s, RVector<X> col, BiFunction<X,X,X> mergeOperation) {
+	public synchronized <X extends RPrimitive> RDataframe mergeWithCol(String s, RVector<X> col, BiFunction<X,X,X> mergeOperation) {
 		if (!this.containsKey(s))
 			this.addCol(s, col);
 		else {
@@ -266,7 +266,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return this;
 	}
 	
-	public RVector<?> getCol(String name) {
+	public synchronized RVector<?> getCol(String name) {
 		return this.get(name);
 	}
 	
@@ -318,7 +318,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return attach(type).streamCoerce();
 	}
 	
-	public Stream<LinkedHashMap<String,Object>> streamJava() {
+	public synchronized Stream<LinkedHashMap<String,Object>> streamJava() {
 		return IntStream.range(0, RDataframe.this.size()).mapToObj(row -> {
 			LinkedHashMap<String,Object> tmp = new LinkedHashMap<>();
 			RDataframe.this.keySet().forEach(k -> tmp.put(k, RConverter.unconvert(RDataframe.this.get(k).get(row))));
@@ -343,15 +343,15 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		
 	}
 	
-	public String[] rKeys() {
+	public synchronized String[] rKeys() {
 		return this.keySet().toArray(new String[] {});
 	}
 	
-	public RVector<?> rColumn(String key) {
+	public synchronized RVector<?> rColumn(String key) {
 		return this.get(key);
 	}
 	
-	public String rConversion() {
+	public synchronized String rConversion() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrintStream sb = new PrintStream(baos);
 		sb.println("function(jObj) {");
@@ -385,7 +385,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 
 	
 	@Override
-	public Iterator<RDataframeRow> iterator() {
+	public synchronized Iterator<RDataframeRow> iterator() {
 		int nrow = nrow();
 		return new Iterator<RDataframeRow>() {
 			int i=0;
@@ -404,7 +404,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		};
 	}
 	
-	public String rCode() {
+	public synchronized String rCode() {
 		return "tibble::tibble("+
 				this.entrySet().stream()
 				.map(kv -> kv.getKey()+"="+kv.getValue().rCode())
@@ -419,7 +419,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return out;
 	}
 	
-	public Set<RNamedPrimitives> distinct() {
+	public synchronized Set<RNamedPrimitives> distinct() {
 		Set<RNamedPrimitives> tmp = new LinkedHashSet<>();
 		for (RDataframeRow row: this) {
 			tmp.add((RNamedPrimitives) row);
@@ -437,7 +437,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return tmp;
 	}
 
-	public RDataframe select(String... columns) {
+	public synchronized RDataframe select(String... columns) {
 		LinkedHashSet<String> cols = new LinkedHashSet<String>(this.groups);
 		cols.addAll(Arrays.asList(columns));
 		String addingGrp = cols.stream().filter(c -> this.groups.contains(c)).collect(Collectors.joining(", ")); 
@@ -456,13 +456,13 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		return this;
 	}
 	
-	public RDataframe drop(String... columns) {
+	public synchronized RDataframe drop(String... columns) {
 		Set<String> cols = new LinkedHashSet<>(this.keySet());
 		Stream.of(columns).forEach(cols::remove);
 		return this.select(cols.toArray(new String[] {}));
 	}
 	
-	public RDataframe filter(RNamedPrimitives match) {
+	public synchronized RDataframe filter(RNamedPrimitives match) {
 		BitSet filter = (new BitSet(this.nrow()));
 		filter.set(0, this.nrow(), true);
 		match.forEach((k,v) -> { 
@@ -486,7 +486,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * @param predicate - a test of the individual contents of the column
 	 * @return A new dataframe
 	 */
-	public <Y extends RPrimitive> RDataframe filter(String name, Class<Y> type, Predicate<Y> predicate) {
+	public synchronized <Y extends RPrimitive> RDataframe filter(String name, Class<Y> type, Predicate<Y> predicate) {
 		return filter(RNamedPredicate.from(name, type, predicate));
 	}
 	
@@ -506,7 +506,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * @param tests A set of tests
 	 * @return a new dataframe containing only items which pass all the filter test
 	 */
-	public RDataframe filter(RNamedPredicate<?>... tests) {
+	public synchronized RDataframe filter(RNamedPredicate<?>... tests) {
 		
 		// return everything if no conditions
 		BitSet filter = (new BitSet(this.nrow()));
@@ -549,12 +549,12 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	
 	
 
-	public <Y extends RVector<?>> Y pull(String col,Class<Y> vectorClass) {
+	public  synchronized <Y extends RVector<?>> Y pull(String col,Class<Y> vectorClass) {
 		if (!this.containsKey(col)) throw new NameNotFoundException(col);
 		return this.get(col).as(vectorClass);
 	}
 	
-	public RVector<?> pull(String col) {
+	public synchronized RVector<?> pull(String col) {
 		if (!this.containsKey(col)) throw new NameNotFoundException(col);
 		return this.get(col);
 	}
@@ -583,7 +583,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 		);
 	}
 	
-	public String asCsv() {
+	public synchronized String asCsv() {
 		StringBuilder out = new StringBuilder();
 		out.append(
 				this.keySet().stream().map(s -> "\""+s+"\"").collect(Collectors.joining(","))+"\n"
@@ -602,7 +602,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * @param mapping - the operation to apply to the column (must result in an RPrimitive of some type)
 	 * @return the same dataframe with a changed column
 	 */
-	public <X extends RPrimitive,Y extends RPrimitive> RDataframe mutate(String columnName, Class<X> inputType, Function<X,Y> mapping) {
+	public synchronized <X extends RPrimitive,Y extends RPrimitive> RDataframe mutate(String columnName, Class<X> inputType, Function<X,Y> mapping) {
 		return mutate(columnName,mapping);
 	}
 	
@@ -616,7 +616,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * @return the same dataframe with a changed column
 	 */
 	@SuppressWarnings("unchecked")
-	public <X extends RPrimitive,Y extends RPrimitive> RDataframe mutate(String columnName, Function<X,Y> mapping) {
+	public synchronized <X extends RPrimitive,Y extends RPrimitive> RDataframe mutate(String columnName, Function<X,Y> mapping) {
 		try {
 			RVector<X> tmp = (RVector<X>) this.get(columnName);
 			List<Y> tmp2 = tmp.stream().map(mapping).collect(Collectors.toList());

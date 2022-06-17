@@ -60,7 +60,7 @@ public class JarCompilerPlugin extends PluginBase {
 		getLog().info("Copying library files.");
 		try {
 			
-			Files.createDirectories(rootDir);
+			Files.createDirectories(rProjectDir);
 			Files.copy(
 					Paths.get(targetDir.getAbsolutePath(), jarFile), 
 					jarLoc, StandardCopyOption.REPLACE_EXISTING);

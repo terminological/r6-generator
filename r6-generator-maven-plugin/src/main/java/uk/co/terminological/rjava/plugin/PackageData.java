@@ -60,6 +60,9 @@ public class PackageData {
 	private Boolean debug;
 	
 	@Parameter
+	private Boolean preCompileBinary;
+	
+	@Parameter
 	private Boolean usePkgdown;
 	
 	@Parameter
@@ -129,6 +132,14 @@ public class PackageData {
 		return useRoxygen2 != null && useRoxygen2.booleanValue(); 
 	}
 	
+	/** {@code <preCompileBinary>true</preCompileBinary>}
+	 * 
+	 * defaults to true. if false then no fat jar will be included in the R package and it will have to be compiled from source 
+	 * @return precompile flag
+	 */
+	public boolean preCompileBinary() {
+		return preCompileBinary == null || preCompileBinary.booleanValue(); 
+	}
 	
 	/** {@code <useJavadoc>true</useJavadoc>}
 	 * 

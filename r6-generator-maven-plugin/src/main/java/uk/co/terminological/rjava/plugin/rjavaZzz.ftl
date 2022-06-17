@@ -47,7 +47,6 @@
 			if(.Platform$OS.type == "windows") {
 			  	system2(paste0(pomLoc,"/mvnw.cmd"), args = c("package","-Dmaven.test.skip=true"))
 			} else {
-				cat("./mvnw package")
 				system2(paste0(pomLoc,"/mvnw"), args = c("package","-Dmaven.test.skip=true"))
 			}
 			

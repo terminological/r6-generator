@@ -21,7 +21,7 @@ c(
 		author = person(given="Rob", family="Challen",role="aut",email="rc538@exeter.ac.uk",comment = structure("0000-0002-5504-7768", .Names = "ORCID")),
 		note = "Maven plugin artifact: ${model.getPluginVersion()}",
 		year = 2022,
-		url = "https://github.com/terminological/r6-generator-maven-plugin",
-		doi = "10.5281/zenodo.6576054"
+		url = "https://github.com/terminological/r6-generator",
+		doi = "10.5281/zenodo.6644970"
 	)
 )
