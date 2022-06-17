@@ -11,9 +11,25 @@ public interface RPrimitive extends RObject {
 	
 	
 	
+	/**
+	 * Gets the value of this R object as the type X.
+	 *
+	 * @param <X> the desired type to convert the R data to
+	 * @param type the type of X
+	 * @return the value as an instance of X
+	 * @throws ClassCastException the class cast exception is thrown if this R primitiva cannot be coered to X
+	 */
 	public <X extends Object> X get(Class<X> type) throws ClassCastException;
 	public <X extends Object> X get();
 	
+	
+	/**
+	 * Gets the value of this R object as the type Optional&lt;X&gt; if possible or else and empty optional.
+	 *
+	 * @param <X> the desired output Java type
+	 * @param type the desired output Java type
+	 * @return the optional value
+	 */
 	public default <X extends Object> Optional<X> opt(Class<X> type) {
 		try {
 			return Optional.ofNullable(get(type));
@@ -21,7 +37,17 @@ public interface RPrimitive extends RObject {
 			return Optional.empty();
 		}
 	};
+	public default <X extends Object> Optional<X> opt() {
+		return Optional.ofNullable(get());
+	};
 	
+	/**
+	 * NA values of a specific RPrimitive type.
+	 *
+	 * @param <Y> the generic RPrimitive type
+	 * @param clazz the clazz
+	 * @return the NA value
+	 */
 	@SuppressWarnings("unchecked")
 	public static <Y extends RPrimitive> Y na(Class<? extends RPrimitive> clazz) {
 		if (RCharacter.class.equals(clazz)) return (Y) new RCharacter(); 
@@ -32,11 +58,13 @@ public interface RPrimitive extends RObject {
 		if (RDate.class.equals(clazz)) return (Y) new RDate();
 		throw new IncompatibleTypeException("No primitive defined for: "+clazz.getCanonicalName());
 	}
+		
 	
-	public default <X extends Object> Optional<X> opt() {
-		return Optional.ofNullable(get());
-	};
-	
+	/**
+	 * Checks if the value is NA.
+	 *
+	 * @return true, if isNA
+	 */
 	public boolean isNa();
 	
 	public static RCharacter of(String o) {return (RCharacter) RConverter.convert(o);}

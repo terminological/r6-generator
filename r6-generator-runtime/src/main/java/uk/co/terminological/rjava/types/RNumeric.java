@@ -116,6 +116,9 @@ public class RNumeric implements RPrimitive, JNIPrimitive  {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see uk.co.terminological.rjava.types.RPrimitive#get(java.lang.Class)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <X> X get(Class<X> type) throws ClassCastException {

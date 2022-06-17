@@ -23,7 +23,8 @@ public class RFunctions {
 	}
 	
 	/**
-	 * @param sep any sepearating string
+	 * Paste0 implemenation
+	 * @param sep any separating string
 	 * @param objects the objects to join which will be converted using the toString of the underlying primitive 
 	 * @return a String
 	 */
@@ -90,6 +91,14 @@ public class RFunctions {
 				.reduce(Boolean.FALSE, (b1,b2) -> Boolean.logicalOr(b1, b2));
 	}
 	
+	/**
+	 * Precision equals for numerics.
+	 *
+	 * @param v1 the v1 of the comparison
+	 * @param v2 the v2 of the comparison
+	 * @param epsilon the epsilon
+	 * @return true, if equal within
+	 */
 	public static boolean precisionEquals(RNumeric v1, RNumeric v2, Double epsilon) {
 		if (v1.equals(v2)) return true;
 		if (Double.doubleToRawLongBits(v1.get()) == Double.doubleToRawLongBits(v2.get())) return true;
@@ -97,8 +106,20 @@ public class RFunctions {
 		return false;
 	}
 	
+	/**
+	 * Checks if is na.
+	 *
+	 * @param x the x
+	 * @return true, if is na
+	 */
 	public static boolean isNa(RPrimitive x) {return x.isNa();}
 	
+	/**
+	 * Checks if is finite.
+	 *
+	 * @param x the x
+	 * @return true, if is finite
+	 */
 	public static boolean isFinite(RNumeric x) {
 		return !x.isNa() && !x.get().isNaN() && !x.get().isInfinite();
 	}

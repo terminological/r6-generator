@@ -27,7 +27,6 @@ import com.thoughtworks.qdox.model.impl.DefaultJavaClass;
 import com.thoughtworks.qdox.model.impl.DefaultJavaType;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.types.RObject;
 
 
 

@@ -7,6 +7,10 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * The RName anotation marks getter fields for mapping POJO fields to named lists or dataframe columns.
+ * It is also used to map dataframe columns to annotated java interface methods using proxy classes.  
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 @Inherited

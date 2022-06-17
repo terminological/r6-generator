@@ -17,6 +17,11 @@ import java.util.stream.Stream;
 import uk.co.terminological.rjava.RName;
 import uk.co.terminological.rjava.UnconvertableTypeException;
 
+/**
+ * A RBoundDataframe is a datafram bount to an annotated POJO interface type.
+ *
+ * @param <X> the generic type
+ */
 public class RBoundDataframe<X> extends RDataframe {
 
 	private Class<X> type;
@@ -136,7 +141,7 @@ public class RBoundDataframe<X> extends RDataframe {
 					}
 					
 				}
-				if (method.getName().equals("toString")) return "proxy class of "+type.getCanonicalName();
+				if (method.getName().equals("toString")) return "bound "+type.getSimpleName()+": "+nl.asCsv().trim();
 				// don't support any other methods (n.b. hashcode and equals)
 				if (!methodMap.containsKey(method)) throw new UnsupportedOperationException();
 				RPrimitive value = methodMap.get(method).apply(nl);

@@ -7,6 +7,11 @@ import java.util.stream.Stream;
 import uk.co.terminological.rjava.RObjectVisitor;
 import uk.co.terminological.rjava.ZeroDimensionalArrayException;
 
+/**
+ * The RArrays are actually vectors with the logical dimensions specified seperately, and they can be re-dimensioned on the fly.
+ *
+ * @param <X> the generic type
+ */
 public abstract class RArray<X extends RPrimitive> implements RObject {
 
 	private static final long serialVersionUID = RObject.datatypeVersion;

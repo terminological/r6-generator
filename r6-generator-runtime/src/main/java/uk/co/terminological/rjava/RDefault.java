@@ -6,6 +6,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * The RDefault annotation can be used to define R code that will be used if nothing is passed to the this method for the annotated value.
+ */
 @Retention(RUNTIME)
 @Target(PARAMETER)
 public @interface RDefault {

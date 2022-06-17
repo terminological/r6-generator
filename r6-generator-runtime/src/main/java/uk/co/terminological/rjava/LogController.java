@@ -29,12 +29,22 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 public class LogController {
 
+	/**
+	 * Configure log dynamically. This can be called from R to change the log level
+	 *
+	 * @param logLevel the log level one of ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
+	 */
 	public static void changeLogLevel(String logLevel) {
 		Configurator
 			.setAllLevels(LogManager.getRootLogger().getName(), 
 				Level.toLevel(logLevel, Level.INFO));
 	}
 	
+	/**
+	 * Dynamically reconfigure java logging using a log4j properties file.
+	 *
+	 * @param filename the filename of the properties file.
+	 */
 	public static void reconfigureLog(String filename) {
 		LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
 		File file = new File(filename);
@@ -67,12 +77,22 @@ public class LogController {
 		// System.setOut(new PrintStream(rs));
 	}
 	
+	/**
+	 * Gets the system messages from Java and presents them to R.
+	 *
+	 * @return the system messages
+	 */
 	public static String getSystemMessages() {
 		String out = baos.toString();
 		baos.reset();
 		return out;
 	}
 		
+	/**
+	 * Configure log dynamically. This can be called from R to change the log level
+	 *
+	 * @param logLevel the log level one of ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
+	 */
 	public static void configureLog(String logLevel) {
 
 		

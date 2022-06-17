@@ -8,14 +8,14 @@
 	<parent>
 		<groupId>io.github.terminological</groupId>
 		<artifactId>r6-generator</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>main-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>r6-generator-maven-archetype</artifactId>
 	<packaging>maven-archetype</packaging>
 
 	<name>Archetype - r6-generator-maven-archetype</name>
-
+	<description>An archteype for rapid setup of r6-generator projects in the recommended configuration</description>
 	<url>https://github.com/terminological/r6-generator-maven-archetype</url>
 
 	<build>
