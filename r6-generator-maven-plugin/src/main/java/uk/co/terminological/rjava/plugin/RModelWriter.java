@@ -40,11 +40,12 @@ public class RModelWriter {
 		if (target == null) throw new MojoExecutionException("No target directory has been set");
 
 		// Freemarker stuff
-		cfg = new Configuration(Configuration.VERSION_2_3_25);
-		cfg.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_25).build());
+		cfg = new Configuration(Configuration.VERSION_2_3_31);
+		cfg.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_31).build());
+		cfg.clearTemplateCache();
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
-		cfg.setClassForTemplateLoading(RModelWriter.class,"");
+		cfg.setClassForTemplateLoading(RModelWriter.class,"/");
 
 		// TODO:: these file locations are already defnied by the plugin and should be reused
 		// rather than recalculated. We woudl have to figure out how the plugin passes them though
@@ -65,24 +66,25 @@ public class RModelWriter {
 		typeRoot.put("jarFileName", jarFileName);
 		typeRoot.put("rToPomPath", rToPomPath);
 	
-		doGenerate(new File(target,"NAMESPACE"),getTemplate("/rjavaNamespace.ftl"),typeRoot);
-		doGenerate(new File(target,"DESCRIPTION"),getTemplate("/rjavaDescription.ftl"),typeRoot);
-		doGenerateSafe(new File(instDir,"CITATION"),getTemplate("/rjavaCitation.ftl"),typeRoot);
-		if (model.getConfig().needsLicense()) doGenerate(new File(target,"LICENSE"),getTemplate("/rjavaLicense.ftl"),typeRoot);
-		doGenerate(new File(manDir,"JavaApi.Rd"),getTemplate("/rjavaApiRd.ftl"),typeRoot);
-		doGenerate(new File(manDir,model.getConfig().getPackageName()+"-package.Rd"),getTemplate("/rjavaPackageRd.ftl"),typeRoot);
-		doGenerate(new File(rDir,"JavaApi.R"),getTemplate("/rjavaApiR.ftl"),typeRoot);
-		doGenerate(new File(rDir,"zzz.R"),getTemplate("/rjavaZzz.ftl"),typeRoot);
-		doGenerateSafe(new File(target,"cran-comments.md"),getTemplate("/rjavaCranComments.ftl"),typeRoot);
-		if (model.getConfig().usePkgdown()) doGenerate(new File(target,".Rbuildignore"),getTemplate("/rjavaRbuildignore.ftl"),typeRoot);
-		doGenerateSafe(new File(workflowDir,"R-CMD-check.yaml"),getTemplate("/rjavaGithubWorkflow.ftl"),typeRoot);
+		
+		doGenerate(new File(target,"DESCRIPTION"),getTemplate("rjavaDescription.ftl"),typeRoot);
+		doGenerate(new File(target,"NAMESPACE"),getTemplate("rjavaNamespace.ftl"),typeRoot);
+		doGenerateSafe(new File(instDir,"CITATION"),getTemplate("rjavaCitation.ftl"),typeRoot);
+		if (model.getConfig().needsLicense()) doGenerate(new File(target,"LICENSE"),getTemplate("rjavaLicense.ftl"),typeRoot);
+		doGenerate(new File(manDir,"JavaApi.Rd"),getTemplate("rjavaApiRd.ftl"),typeRoot);
+		doGenerate(new File(manDir,model.getConfig().getPackageName()+"-package.Rd"),getTemplate("rjavaPackageRd.ftl"),typeRoot);
+		doGenerate(new File(rDir,"JavaApi.R"),getTemplate("rjavaApiR.ftl"),typeRoot);
+		doGenerate(new File(rDir,"zzz.R"),getTemplate("rjavaZzz.ftl"),typeRoot);
+		doGenerateSafe(new File(target,"cran-comments.md"),getTemplate("rjavaCranComments.ftl"),typeRoot);
+		if (model.getConfig().usePkgdown()) doGenerate(new File(target,".Rbuildignore"),getTemplate("rjavaRbuildignore.ftl"),typeRoot);
+		doGenerateSafe(new File(workflowDir,"R-CMD-check.yaml"),getTemplate("rjavaGithubWorkflow.ftl"),typeRoot);
 		
 		for (RClass type: model.getClassTypes()) {
 			
 			typeRoot.put("class", type);
 			
-			doGenerate(new File(manDir,type.getSimpleName()+".Rd"),getTemplate("/rjavaRd.ftl"),typeRoot);
-			doGenerate(new File(rDir,type.getSimpleName()+".R"),getTemplate("/rjavaClassR.ftl"),typeRoot);
+			doGenerate(new File(manDir,type.getSimpleName()+".Rd"),getTemplate("rjavaRd.ftl"),typeRoot);
+			doGenerate(new File(rDir,type.getSimpleName()+".R"),getTemplate("rjavaClassR.ftl"),typeRoot);
 			
 		}
 		
