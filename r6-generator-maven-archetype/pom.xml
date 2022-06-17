@@ -14,7 +14,7 @@
 	<artifactId>r6-generator-maven-archetype</artifactId>
 	<packaging>maven-archetype</packaging>
 
-	<name>Archetype - r6-generator-maven-archetype</name>
+	<name>R6 Generator Maven Archetype</name>
 	<description>An archteype for rapid setup of r6-generator projects in the recommended configuration</description>
 	<url>https://github.com/terminological/r6-generator-maven-archetype</url>
 
