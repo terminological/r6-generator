@@ -322,7 +322,7 @@ NULL
 	as.POSIXct(file.info(original)$mtime) < as.POSIXct(file.info(test)$mtime)
 }
 
-# gets the pom.xml file for ${model.getMavenCoordinates()} from a  
+# gets the pom.xml file for ${model.getMavenCoordinates()} from a thin jar
 .extractPom = function() {
 	dir = .workingDir()
 	jarLoc = list.files(.here(c("inst/java","java")), pattern = "${model.getArtifactId()}-${model.getMavenVersion()}\\.jar", full.names = TRUE)

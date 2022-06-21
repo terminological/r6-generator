@@ -4,35 +4,35 @@
 
 This is the main development repository for the r6-generator. 
 
-It is a multi-module maven project for a code generation framework allowing Java libraries to be used in R.
+It is a multi-module Maven project for a code generation framework allowing Java libraries to be used in R.
 
 The best source of documentation is in the example [documenation project](https://github.com/terminological/r6-generator-docs).
 
 ## Rationale
 
-R can use `rJava` or `jsr223` to communicate with `Java`. `R` also has a class system called `R6`.
+R can use `rJava` or `jsr223` to communicate with Java. R also has a class system called `R6`.
 
-If you want to use a java library with native `rJava` or `jsr223` in R there is potentially a lot of glue code needed, and R library specific packaging configuration required.
+If you want to use a Java library with native `rJava` or `jsr223` in R there is potentially a lot of glue code needed, and R library specific packaging configuration required.
 
-However if you don't mind writing an `R`-centric API in `Java` you can generate all of this glue code using a few `Java` annotations and the normal `javadoc` comments. This 
-project provides an annotation processor that writes that glue code and creates a fairly transparent connection between `Java` code and `R` code, with a minimum of hard work. 
-The focus of this is streamlining the creation and maintenance of `R` libraries by `Java` developers, rather than allowing access to arbitrary `Java` code from `R`.
+However if you don't mind writing an R-centric API in Java you can generate all of this glue code using a few Java annotations and the normal javadoc comments. This 
+project provides an annotation processor that writes that glue code and creates a fairly transparent connection between Java code and R code, with a minimum of hard work. 
+The focus of this is streamlining the creation and maintenance of R libraries by Java developers, rather than allowing access to arbitrary Java code from R.
 
-The ultimate aim of this plugin to allow `Java` developers to provide a simple API for a `Java` library, package it using Java's standard dependency management system `Maven`, 
+The ultimate aim of this plugin to allow Java developers to provide a simple API for a Java library, package it using Java's standard dependency management system Maven, 
 push it to github and for that to become seamlessly available as an R library, with a minimal amount of fuss. A focus is on trying to produce robust R packages directly from Java code, with continuous 
 integration testing using Github workflows and which is ready for CRAN submission.
 
 The project has 3 components:
 
-* r6-generator-runtime: a pure Java library which manages data manipulation and marshalling to and from R. This supports the main R datatypes and provides Java versions of these, plus converter methods to ease Java development.
-* r6-generator-maven-plugin: a maven plugin which uses native the `R`-centric `Java` API to generates `R` and `rJava` code that handles the mechanics of installing Java libraries into R, calling java code from R, and wrangling results into a . 
-* r6-generator-maven-archetype: a maven archetype which creates a basic framework with recommended configuration for projects using the maven plugin.  
+* `r6-generator-runtime`: a pure Java library which manages data manipulation and marshalling to and from R. This supports the main R datatypes and provides Java versions of these, plus converter methods to ease Java development.
+* `r6-generator-maven-plugin`: a Maven plugin which uses native the R-centric Java API to generates R and `rJava` code that handles the mechanics of installing Java libraries into R, calling Java code from R, and wrangling results into a . 
+* `r6-generator-maven-archetype`: a Maven archetype which creates a basic framework with recommended configuration for projects using the Maven plugin.  
 
 ## Versions
 
 ### 0.3.0 (not supported)
 
-* This version was the first release to maven central and had security vulnerabilities - It should not be used.
+* This version was the first release to Maven central and had security vulnerabilities - It should not be used.
 * supports fat-jar distributions of all bundled dependencies
 * Doxygen2 and Pkgdown support
 * Support for basic R datatypes, and date, data-frames, numeric arrays, named lists,  
@@ -44,13 +44,13 @@ The project has 3 components:
 * Protoype support for compilation from source at first load of the R-package in R to mitigate size issues with fat-jars with additional `compile-java-goal` configuration.
 * Fixed security vulnerabilities
 * Improved (i.e. working) code generation
-* maven archetype
+* Maven archetype
 
 ### 0.4.0 
 
-* Changes to allow `maven` execution at first package load allowing both dependency management and compilation. 
+* Changes to allow Maven execution at first package load allowing both dependency management and compilation. 
 * Allows removal of the `compile-java-library` goal which is now automatically performed if needed when a `r6-generator` package is loaded. 
-* Supports fat-jar, thin-jar and sources only java library distributions through maven configuration to support minimising package size for CRAN submission.
+* Supports fat-jar, thin-jar and sources only Java library distributions through Maven configuration to support minimising package size for CRAN submission.
 
 ### main-SNAPHOT
 
@@ -76,7 +76,7 @@ Please let me know if you are using the project and happy for me to add it to th
 
 ## r6-generator-runtime
 
-The runtime dependency for r6-generator projects contains java annotations, R like data-structures, and the Java utilities for mapping to and from R-like data structures to native Java
+The runtime dependency for r6-generator projects contains Java annotations, R like data-structures, and the Java utilities for mapping to and from R-like data structures to native Java
 
 These necessary annotations and data structures are required for the Java developer who is trying to create an R library using the `r6-generator-maven-plugin`, and is a required dependency of such a project. 
 
@@ -109,11 +109,11 @@ public class HelloWorld {
 
 	/**
 	 * Description of a hello world function
-	 * @return this java method returns a String
+	 * @return this Java method returns a String
 	 */
 	@RMethod(examples = {
-					"An example",
-					"Spans many lines"
+		"An example",
+		"Spans many lines"
 	})
 	public static String greet() {
 		return "Hello R world. Love from Java."
@@ -126,22 +126,22 @@ Key points:
 * You can annotate multiple classes with `@RClass`.
 * Only public methods annotated with `@RMethod` will feature in the R library.
 * you cannot overload methods or constructors. Only one method with a given name is supported, and only one annotated constructor.
-* methods can return anything from `uk.co.terminological.rjava.types.*`, basic java primitives or Strings or any class that is part of this API and annotated with `@RClass`. 
-* static and non static java methods are supported.
+* methods can return anything from `uk.co.terminological.rjava.types.*`, basic Java primitives or Strings or any class that is part of this API and annotated with `@RClass`. 
+* static and non static Java methods are supported.
 
 ### Datatype conversion
 
 The runtime component of this project contains tools to enable bidirectional lossless transfer of R data structures into Java (`uk.co.terminological.rjava.RConverter`), 
-in a idiom that is relatively comfortable to Java developers, without having to manage the edge cases posed by `R`'s interchangeable use of single values, vectors, and complexities 
+in a idiom that is relatively comfortable to Java developers, without having to manage the edge cases posed by R's interchangeable use of single values, vectors, and complexities 
 around `NA` values. This is a big topic and further documented in the [documenation project](https://github.com/terminological/r6-generator-docs).
 
 ## r6-generator-maven-plugin
 
-This is the main Maven plugin. It contains a code generator which writes glue code and R package configuration files to allow correctly annotated java class to be used within R as an set of R6 classes.
+This is the main Maven plugin. It contains a code generator which writes glue code and R package configuration files to allow correctly annotated Java class to be used within R as an set of R6 classes.
 
-Using the example class above we need to provide R package metadata and code generator configuration to generate an R package to support this java API. This is done through the `Maven` build configuration `pom.xml`:   
+Using the example class above we need to provide R package metadata and code generator configuration to generate an R package to support this Java API. This is done through the Maven build configuration `pom.xml`:   
 
-The required `r6-generator-runtime` dependency provides datatypes, annotations, and support for surfacing `Java` logging on the R console.
+The required `r6-generator-runtime` dependency provides datatypes, annotations, and support for surfacing Java logging on the R console.
 
 ```XML
 ...
@@ -150,14 +150,17 @@ The required `r6-generator-runtime` dependency provides datatypes, annotations, 
 		<r6.version>0.4.0</r6.version>
 	</properties>
 ...
+	<dependencies>
 		<dependency>
 			<groupId>io.github.terminological</groupId>
 			<artifactId>r6-generator-runtime</artifactId>
 			<version>${r6.version}</version>
 		</dependency>
 ...
+	</dependencies>
+...
 ```
-The stable versions of the maven plugin are available on Maven Central. If we are using the development version `main-SNAPSHOT` we will need to enable the snapshot repositories: 
+The stable versions of the Maven plugin are available on Maven Central. If we are using the development version `main-SNAPSHOT` we will need to enable the snapshot repositories: 
 
 ```XML
 
@@ -170,7 +173,7 @@ The stable versions of the maven plugin are available on Maven Central. If we ar
 		</repository>
 	</repositories>
 ...
-	<!-- Resolve maven plugin -->
+	<!-- Resolve Maven plugin -->
 	<pluginRepositories>
 		<pluginRepository>
 		    <id>Sonatype OSSRH</id>
@@ -237,7 +240,7 @@ devtools::load_all("~/Git/your-project-id")
 # the JavaApi class is the entry point for R to your Java code.
 J = myRpackage::JavaApi$get()
 
-# all the API classes and static methods are attached to the J java api object
+# all the API classes and static methods are attached to the J Java api object
 J$HelloWorld$greet()
 
 # everything is automatically documented using the javadoc comments,
@@ -252,7 +255,7 @@ The archetype needs the following information, most of which can be entered inte
 
 * githubOrganisation
 * githubRepository
-* package - the java package, optional, defaults to io.github.<githubOrganisation>
+* package - the Java package, optional, defaults to io.github.${githubOrganisation}
 * rPackageName - optional, defaults to same as githubRepository
 * versionId - optional, defaults to main-SNAPSHOT
 * rPackageVersion - optional, defaults to 0.0.0.9000
@@ -281,7 +284,7 @@ In general the rest of the default values can be accepted.
 
 The newly created Java project will be in the `examplePackage` subdirectory. There is a `README.md` file there which details the next steps.
 
-To generate the R-package from the Java library it needs to be installed using maven. The java component of the library is in the `src`
+To generate the R-package from the Java library it needs to be installed using maven. The Java component of the library is in the `src`
 subdirectory.
 
 
@@ -304,4 +307,26 @@ git push
 
 Once basic setup complete more background on developing your package is available in the [documenation project](https://github.com/terminological/r6-generator-docs).
 
+## Citing r6-generator
 
+If you are building a R-package using r6-generator, your package will automatically cite r6-generator. This can be modified in `inst/CITATION`.
+
+Here is the reference it uses:
+
+```R
+bibentry(bibtype = "Manual",
+		title = "R6 generator maven plugin",
+		author = person(given="Rob", family="Challen",role="aut",email="rc538@exeter.ac.uk",comment = structure("0000-0002-5504-7768", .Names = "ORCID")),
+		note = "Maven plugin artifact: io.github.terminological:r6-generator-maven-plugin:main-SNAPSHOT",
+		year = 2022,
+		url = "https://github.com/terminological/r6-generator",
+		doi = "10.5281/zenodo.6644970"
+	)
+```
+
+And the same in markup:
+
+```
+Challen R (2022). _R6 generator maven plugin_. doi: 10.5281/zenodo.6644970 (URL: https://doi.org/10.5281/zenodo.6644970), Maven plugin artifact: io.github.terminological:r6-generator-maven-plugin:main-SNAPSHOT, <URL:
+https://github.com/terminological/r6-generator>.
+```
