@@ -39,13 +39,24 @@ public abstract class PluginBase extends AbstractMojo {
 		try {
 			Files.delete(t);
 		} catch (IOException e1) {
-			getLog().warn("couldn't remove: "+t.toString());
+			getLog().debug("couldn't remove: "+t.toString());
 		}
 	}
 
 	protected void rmContents(Path dir) throws MojoExecutionException {
 		try (Stream<Path> paths = Files.walk(dir)) {
 			paths.sorted(Comparator.reverseOrder()).filter(f -> !f.equals(dir)).forEach(this::delete);
+		} catch (IOException e1) {
+			throw new MojoExecutionException("Cannot remove files in build directory: "+dir,e1);
+		}
+	}
+	
+	protected void rmJar(Path dir, String artifactiId) throws MojoExecutionException {
+		try (Stream<Path> paths = Files.walk(dir)) {
+			paths
+				.sorted(Comparator.reverseOrder()).filter(f -> !f.equals(dir))
+				.filter(p -> p.getFileName().toString().startsWith(artifactiId))
+				.forEach(this::delete);
 		} catch (IOException e1) {
 			throw new MojoExecutionException("Cannot remove files in build directory: "+dir,e1);
 		}
@@ -76,9 +87,11 @@ public abstract class PluginBase extends AbstractMojo {
 	protected Path docs;
 	protected Path workflows;
 	protected String jarFile;
-	protected Path jarLoc;
+	// protected Path jarLoc;
 	protected Path pomDir;
 	protected String rToPomPath;
+	protected String sourcesFile;
+	protected String thinJarFile;
 	
 
 	public PluginBase() {
@@ -92,8 +105,12 @@ public abstract class PluginBase extends AbstractMojo {
 		manDir = rProjectDir.resolve("man").normalize();
 		docs = rProjectDir.resolve("docs").normalize();
 		workflows = rProjectDir.resolve(".github/workflows").normalize();
+		
 		jarFile = mavenProject.getModel().getBuild().getFinalName()+"-jar-with-dependencies.jar";
-		jarLoc = jarDir.resolve(jarFile);
+		sourcesFile = mavenProject.getModel().getBuild().getFinalName()+"-src.jar";
+		thinJarFile = mavenProject.getModel().getBuild().getFinalName()+".jar";
+		
+		// jarLoc = jarDir.resolve(jarFile);
 		pomDir = Paths.get(mavenProject.getBasedir().getPath()).normalize();
 		rToPomPath = rProjectDir.relativize(pomDir).toString();
 		

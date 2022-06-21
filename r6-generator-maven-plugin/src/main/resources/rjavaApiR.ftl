@@ -30,60 +30,41 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 </#list>
 
 	#' @description
-    #' change the java logging level
-    #' @param logLevel A string such as "DEBUG", "INFO", "WARN"
-    #' @return nothing
-  	changeLogLevel = function(logLevel) {
-  		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "changeLogLevel" , logLevel)
-  		invisible(NULL)
-    },
+	#' change the java logging level
+	#' @param logLevel A string such as "DEBUG", "INFO", "WARN"
+	#' @return nothing
+	changeLogLevel = function(logLevel) {
+		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "changeLogLevel" , logLevel)
+		invisible(NULL)
+	},
 	
 	#' @description
-    #' change the java logging level using a log4j configuration file
-    #' @param log4jproperties An absolute filepath to the log4j propertied file
-    #' @return nothing
+	#' change the java logging level using a log4j configuration file
+	#' @param log4jproperties An absolute filepath to the log4j propertied file
+	#' @return nothing
 	reconfigureLog = function(log4jproperties) {
-  		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "reconfigureLog" , log4jproperties)
-  		invisible(NULL)
-    },
+		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "reconfigureLog" , log4jproperties)
+		invisible(NULL)
+	},
 	
 	#' @description
-    #' print java system messages to the R console and flush the message cache. This is generally called automatically,
-    #' @return nothing
+	#' print java system messages to the R console and flush the message cache. This is generally called automatically,
+	#' @return nothing
 	printMessages = function() {
 		# check = FALSE here to stop exceptions being cleared from the stack.
 		cat(.jcall("uk/co/terminological/rjava/LogController", returnSig = "Ljava/lang/String;", method = "getSystemMessages", check=FALSE))
 		invisible(NULL)
 	},
 	
-	<#-- 
-	#### registration functions
-	
-	register = function(r6obj) {
-		ptr = xptr::xptr_address(r6obj$.jobj@jobj)
-		self$.reg[[ptr]] = r6obj
-	},
-	
-	isRegistered = function(jobj) {
-		ptr = xptr::xptr_address(jobj@jobj)
-		return(!is.null(self$.reg[[ptr]]))
-	},
-	
-	getRegistered = function(jobj) {
-		ptr = xptr::xptr_address(jobj@jobj)
-		return(self$.reg[[ptr]])
-	},
-	-->
-	
  	#### constructor ----
  	#' @description
  	#' Create the R6 api library class. This is the entry point to all Java related classes and methods in this package.
-    #' @param logLevel One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL". (defaults to "${model.getConfig().getDefaultLogLevel()}") 
-    #' @examples
-    #' \dontrun{
-    #' J = ${model.getConfig().getPackageName()}::JavaApi$get();
+	#' @param logLevel One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL". (defaults to "${model.getConfig().getDefaultLogLevel()}") 
+	#' @examples
+	#' \dontrun{
+	#' J = ${model.getConfig().getPackageName()}::JavaApi$get();
 	#' }
-    #' @return nothing
+	#' @return nothing
  	initialize = function(logLevel = <#if model.getConfig().getDebugMode()>"DEBUG"<#else>"${model.getConfig().getDefaultLogLevel()}"</#if>) {
  		if (is.null(JavaApi$singleton)) stop("Startup the java api with JavaApi$get() rather than using this constructor directly")
  	
@@ -97,9 +78,9 @@ JavaApi = R6::R6Class("JavaApi", public=list(
  		#	you don't appear to be able to add parameters to .jpackage but .jinit will pick up the defaults
  		# } else { 
  		# 	use .jpackage with a custom class loader .jpackage(..., parameters=getOption("java.parameters"), own.loader=TRUE) 
- 		#   and then everytime we use .jnew we need to pass .jnew(..., class.loader=.rJava.class.loader) I think.
- 		#   currently the class.loader option exists in rJava < 1.0.0 but the value is NULL
- 		#   this change will have to also be made in the API Rd file on a case specific basis.
+ 		#	and then everytime we use .jnew we need to pass .jnew(..., class.loader=.rJava.class.loader) I think.
+ 		#	currently the class.loader option exists in rJava < 1.0.0 but the value is NULL
+ 		#	this change will have to also be made in the API Rd file on a case specific basis.
  		#	the class loader probably ought to be a field in the API R6 class. plus maybe a wrapper for the .jnew method there 
  		# }
  		-->
@@ -112,27 +93,25 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 		}
 		<#else>
 		if (!.jniInitialized) 
-	        .jinit(parameters=getOption("java.parameters"),silent = TRUE, force.init = FALSE)
+			.jinit(parameters=getOption("java.parameters"),silent = TRUE, force.init = FALSE)
 		</#if>
 		
-		# add in all the jars that come with the library
-	    classes <- system.file("java", package = "${model.getConfig().getPackageName()}")
-	    if (nchar(classes)) {
-	        .jaddClassPath(classes)
-	        jars <- grep(".*\\.jar", list.files(classes, full.names = TRUE), TRUE, value = TRUE)
-	        message(paste0("Adding to classpath: ",jars,collapse='\n'))
-	        .jaddClassPath(jars)
-	    }
-	    
-	    # configure logging
+		# Java dependencies
+		jars = .checkDependencies(quiet = TRUE)
+		
+		message(paste0("Adding to classpath: ",jars,collapse='\n'))
+		.jaddClassPath(jars)
+		
+		# configure logging
  		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "setupRConsole")
  		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "configureLog" , logLevel)
- 		# TODO: this is the library build date code byut it requires testing
+ 		# TODO: this is the library build date code but it requires testing
  		buildDate = .jcall("uk/co/terminological/rjava/LogController", returnSig = "S", method = "getClassBuildTime")
-    	self$.log = .jcall("org/slf4j/LoggerFactory", returnSig = "Lorg/slf4j/Logger;", method = "getLogger", "${model.getConfig().getPackageName()}");
-    	.jcall(self$.log,returnSig = "V",method = "info","Initialised ${model.getConfig().getPackageName()}");
-		.jcall(self$.log,returnSig = "V",method = "debug","Version: ${model.getConfig().getVersion()}");
+		self$.log = .jcall("org/slf4j/LoggerFactory", returnSig = "Lorg/slf4j/Logger;", method = "getLogger", "${model.getConfig().getPackageName()}");
+		.jcall(self$.log,returnSig = "V",method = "info","Initialised ${model.getConfig().getPackageName()}");
+		.jcall(self$.log,returnSig = "V",method = "debug","R package version: ${model.getConfig().getVersion()}");
 		.jcall(self$.log,returnSig = "V",method = "debug","R package generated: ${model.getConfig().getDate()}");
+		.jcall(self$.log,returnSig = "V",method = "debug","Java library version: ${model.getMavenCoordinates()}");
 		.jcall(self$.log,returnSig = "V",method = "debug",paste0("Java library compiled: ",buildDate));
 		.jcall(self$.log,returnSig = "V",method = "debug","Contact: ${model.getConfig().getMaintainerEmail()}");
 		self$printMessages()
@@ -218,6 +197,34 @@ JavaApi$get = function(logLevel = <#if model.getConfig().getDebugMode()>"DEBUG"<
 	return(JavaApi$singleton)
 }
 
+JavaApi$rebuildDependencies = function( ... ) {
+	# remove working directory
+	unlink(.workingDir(), recursive = TRUE)
+	<#if !model.getConfig().preCompileBinary()>
+	# remove previous versions of the compiled binary 
+	unlink(fs::path(.here("java"),"${model.getArtifactId()}-${model.getMavenVersion()}-jar-with-dependencies.jar"))
+	</#if>
+	# rebuild everything
+	classpath = .checkDependencies(quiet = FALSE, ...)
+	
+	# find the jars that come bundled with the library:
+	jars = list.files(.here("java"), pattern=".*\\.jar", full.names = TRUE)
+	jars = jars[!endsWith(jars,"sources.jar") & !endsWith(jars,"javadoc.jar") & !endsWith(jars,"src.jar")]
+	
+	# and add any that have been resolved and downloaded by maven:
+	jars = unique(c(jars,classpath))
+	
+	if (!all(file.exists(jars))) {
+		warning("The library has been rebuilt but there is still some missing dependencies: Out of the following")
+		warning(paste0(jars,collapse="\n"))
+		warning("The missing dependencies are:")
+		warning(paste0(jars[file.exists(jars)],collapse="\n"))
+		warning("Please double check this is not an issue with your connections etc")
+		warning("The output of ${model.getConfig().getPackageName()}::JavaApi$rebuildDependencies(debug=TRUE) may help diagnose the problem")
+	}
+	
+	return(jars)
+}
 
 <#-- 
 # CRAN checks require that the Imports in the description file appear in the namespace file. The 
@@ -231,4 +238,177 @@ NULL
 
 # https://groups.google.com/g/rdevtools/c/qT6cJt6DLJ0
  -->
+
+## package private utility functions for managing maven dependencies ----
+# as this is generated code configuration is hard coded here
+# i.e. these functions are specific for the configuration of this package.
+
+.checkDependencies = function(...) {
+	# Java dependencies
+	<#if model.getConfig().preCompileBinary()>
+		<#if model.getConfig().packageAllDependencies()>
+	# all java library code and dependencies have already been bundled into a single fat jar
+	# compilation was done on the library developers machine and has no external dependencies
+	classpath = NULL
+		<#else>
+	# the main java library has been compiled but external dependencies must be resolved by maven
+	# successful resolution of the classpath libraries depends on the runtime machine and requires
+	# access to the internet at a minimum.
+	pomLoc = .extractPom()
+	classpath = .resolveDependencies(pomLoc, ...) 
+		</#if>
+	<#else>
+	# this is a sources only distribution. The java code must be compiled from the source (distributed in this package as a ${model.getConfig().getPackageName()}-${model.getConfig().getVersion()}-src.jar) 
+	# all the dependencies are resolved and packaged into a single fat jar on compilation
+	# N.b. successful compilation is a machine specific thing as the dependencies may have been installed into maven locally 
+	pomLoc = .extractSources()
+	.compileFatJar(pomLoc, ...)
+	classpath = NULL
+	</#if>
+	
+	# find the jars that come bundled with the library:
+	jars = list.files(.here("java"), pattern=".*\\.jar", full.names = TRUE)
+	jars = jars[!endsWith(jars,"sources.jar") & !endsWith(jars,"javadoc.jar") & !endsWith(jars,"src.jar")]
+	
+	# and add any that have been resolved and downloaded by maven:
+	jars = unique(c(jars,classpath))
+	return(jars)
+}
+
+# package working directory
+.workingDir = function() {
+	tmp = path.expand(rappdirs::user_cache_dir("${model.getConfig().getPackageName()}-${model.getConfig().getVersion()}"))
+	fs::dir_create(tmp)
+	return(tmp)
+}
+
+# package installation directory
+.here = function(paths) {
+	path.expand(system.file(paths, package="${model.getConfig().getPackageName()}"))
+}
+
+# loads a maven wrapper distribution from the internet and unzips it into the package working directory
+.loadMavenWrapper = function() {
+	dir = .workingDir()
+	if (!file.exists(paste0(dir,"/mvnw"))) {
+		destfile = paste0(dir,"/wrapper.zip")
+		message("Bootstrapping maven wrapper.")
+		utils::download.file(
+			"https://repo1.maven.org/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.1.1/maven-wrapper-distribution-3.1.1-bin.zip",
+			destfile = destfile,
+			quiet = TRUE
+		)
+		utils::unzip(destfile,exdir=dir)
+		unlink(destfile)
+		if(!file.exists(paste0(dir,"/mvnw"))) stop("downloading maven wrapper has not been successful")
+	}
+	if(.Platform$OS.type == "windows") {
+		mvnPath = paste0(dir,"/mvnw.cmd")
+	} else {
+		mvnPath = paste0(dir,"/mvnw")
+	}
+	write(c(
+		"distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.3.9/apache-maven-3.3.9-bin.zip",
+		"wrapperUrl=https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.1.1/maven-wrapper-3.1.1.jar"
+	), paste0(dir,"/.mvn/wrapper/maven-wrapper.properties"))
+	Sys.chmod(mvnPath)
+	return(mvnPath)
+}
+
+# detect if `test` file exists and is newer that `original`
+.fileNewer = function(original, test) {
+	if (!file.exists(original)) stop("source file doesn't exist")
+	if (!file.exists(test)) return(FALSE)
+	as.POSIXct(file.info(original)$mtime) < as.POSIXct(file.info(test)$mtime)
+}
+
+# gets the pom.xml file for ${model.getMavenCoordinates()} from a  
+.extractPom = function() {
+	dir = .workingDir()
+	jarLoc = list.files(.here(c("inst/java","java")), pattern = "${model.getArtifactId()}-${model.getMavenVersion()}\\.jar", full.names = TRUE)
+	if (length(jarLoc)==0) stop("couldn't find jar for artifact: ${model.getArtifactId()}-${model.getMavenVersion()}")
+	jarLoc = jarLoc[[1]]
+	pomPath = paste0(dir,"/pom.xml")
+	if (!.fileNewer(jarLoc, pomPath)) {
+		utils::unzip(jarLoc, files = "META-INF/maven/${model.getGroupId()}/${model.getArtifactId()}/pom.xml", junkpaths = TRUE, exdir = dir)
+		if (!file.exists(pomPath)) stop("couldn't extract META-INF/maven/${model.getGroupId()}/${model.getArtifactId()}/pom.xml from ",jarLoc)
+	}
+	return(pomPath)
+}
+
+# gets the pom.xml file for ${model.getMavenCoordinates()} which is the library version we exepct to be bundled in the 
+.extractSources = function() {
+	dir = .workingDir()
+	jarLoc = list.files(.here(c("inst/java","java")), pattern = "${model.getArtifactId()}-${model.getMavenVersion()}-src\\.jar", full.names = TRUE)
+	if (length(jarLoc)==0) stop("couldn't find jar for artifact: ${model.getArtifactId()}-${model.getMavenVersion()}-src.jar")
+	jarLoc = jarLoc[[1]]
+	pomPath = paste0(dir,"/${model.getArtifactId()}-${model.getMavenVersion()}/pom.xml")
+	if (!.fileNewer(jarLoc, pomPath)) {
+		utils::unzip(jarLoc, exdir = dir)
+		if (!file.exists(pomPath)) stop("couldn't extract source files from ",jarLoc)
+	}
+	return(pomPath)
+}
+
+# executes maven assembly plugin and relocates resulting fat jar into java library directory
+.compileFatJar = function(pomPath, ...) {
+	fatJarFinal = fs::path(.here("java"),"${model.getArtifactId()}-${model.getMavenVersion()}-jar-with-dependencies.jar")
+	if (!.fileNewer(pomPath, fatJarFinal)) {
+		message("Compiling java library and downloading dependencies, please be patient.")
+		.executeMaven(
+			pomPath, 
+			goal = c("compile","assembly:assembly"),
+			opts = c(
+				"-DdescriptorId=jar-with-dependencies",
+				"-Dmaven.test.skip=true"
+			),
+			...
+		)
+		message("Compilation complete")
+		fatJar = fs::path_norm(fs::path(pomPath, "../target/${model.getArtifactId()}-${model.getMavenVersion()}-jar-with-dependencies.jar"))
+		fs::file_move(fatJar, fatJarFinal)
+	}
+	return(fatJarFinal)
+}
+
+# execute a `dependency:build-classpath` maven goal on the `pom.xml`
+.resolveDependencies = function(pomPath, ...) {
+	classpathLoc = paste0(.workingDir(), "/classpath.txt" )
+	# If the classpath file is already there we need to check that the entries on the class path are indeed available on this machine
+	# as they may have been moved or deleted
+	if(file.exists(classpathLoc)) {
+		classpathString = unique(readLines(classpathLoc,warn = FALSE))
+		if (!all(file.exists(classpathString))) {
+			# we need to rebuild the classpath file as some dependencies are not available
+			unlink(classpathLoc)
+		}
+	} 
+	if(!.fileNewer(pomPath,classpathLoc)) {
+		message("Calculating classpath and updating dependencies, please be patient.")
+		.executeMaven(
+			pomPath, 
+			goal = "dependency:build-classpath",		
+			opts = c(
+				paste0("-Dmdep.outputFile='",classpathLoc,"'"),
+				paste0("-Dmdep.pathSeparator='\n'"),
+				paste0("-DincludeScope=runtime")
+			),
+			...
+		)
+		message("Dependencies updated")
+	}
+	classpathString = unique(readLines(classpathLoc,warn = FALSE))
+	if (!all(file.exists(classpathString))) 
+		stop("For some inexplicable reason, Maven cannot determine the classpaths of the dependencies of this library on this machine. You can try ${model.getConfig().getPackageName()}::JavaApi$rebuildDependencies()")
+	return(classpathString)
+}
+
+# executes a maven goal plus or minus info or debugging
+.executeMaven = function(pomPath, goal, opts = c(), quiet=TRUE, debug=FALSE, ...) {
+	mvnPath = .loadMavenWrapper()
+	args = c(goal, opts, paste0("-f '",pomPath,"'"))
+	if (quiet) args = c(args, "-q")
+	if (debug) args = c(args, "-X")
+	system2(mvnPath, args)
+}
 

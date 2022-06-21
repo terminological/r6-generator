@@ -120,6 +120,18 @@ public class RModel {
 		this.mavenProject = mavenProject;
 	}
 
+	public String getGroupId() {
+		return this.mavenProject.getGroupId();
+	}
+	
+	public String getArtifactId() {
+		return this.mavenProject.getArtifactId();
+	}
+	
+	public String getMavenVersion() {
+		return this.mavenProject.getVersion();
+	}
+	
 	public String getPluginVersion() {
 		return
 				this.pluginVersion.getGroupId()+":"+
@@ -127,7 +139,7 @@ public class RModel {
 				this.pluginVersion.getVersion();
 	}
 
-	public String getMavenVersion() {
+	public String getMavenCoordinates() {
 		return
 				this.mavenProject.getGroupId()+":"+
 				this.mavenProject.getArtifactId()+":"+

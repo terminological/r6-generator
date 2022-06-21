@@ -4,33 +4,52 @@
 
 # N.B. this is only true is you have uncommented the correct lines in github actions workflow files
 (via GitHub actions)
-* ubuntu-latest; R-release 
-* windows-latest, oldrel-1
-* windows-latest, release
-* windows-latest, devel
-* macOS-latest, oldrel-1
-* macOS-latest, release
-* macOS-latest, devel
-* ubuntu-latest, oldrel-1
-* ubuntu-latest, devel
+ 
+* os: windows-latest, R: oldrel-1
+* os: windows-latest, R: release
+* os: windows-latest, R: devel
+* os: macOS-latest, R: oldrel-1
+* os: macOS-latest, R: release
+* os: macOS-latest, R: devel
+* os: ubuntu-latest; R: release
+* os: ubuntu-latest, R: oldrel-1
+* os: ubuntu-latest, R: devel
+
+for each environment the tests are run with both Java 8 and Java 11. 
 
 ## R CMD check results
 # TODO: insert R CMD check results here before submission
 
-<#if !model.getConfig().preCompileBinary()>
-## CRAN warnings justifications
- 
-`mvnw`, `mvnw.cmd`, `pom.xml` and the `.mvn` subdirectory are required to allow compilation of java files from source, 
-which is needed if the pre-compiled JAR files are >5Mb and too big to submit to CRAN. In this case the use of maven wrapper 
-scripts and maven `pom.xml` allows the most portable Java build experience.
-</#if>
 
 ## CRAN notes justifications
-  
+
+* This project contains a Java library.
 <#if model.getConfig().preCompileBinary()>
-* This library includes a precompiled java binary file. This often will exceed the 5Mb CRAN limits. Unfortunately the 
-alternative of building the library from source code causes a `R CMD check` warning due to inclusion of dependency management
-configuration `pom.xml` files. 
+	<#if model.getConfig().packageAllDependencies()>
+
+* All Java library code and its transitive dependencies have already been bundled into a single binary (JAR file) which is part of
+the package. This minimises the complexity of getting a java library up and running on a target
+system. However bunding java libraries does tend to make the package quite large, and will often exceed the 5Mb CRAN limit. The whole of the JAR file 
+will have to be updated and re-installed for every change to the R package, however this is the most stable option with fewest dependencies on the target system.
+For certain situations, where dependencies are not publicly available, for example, this is the only option.
+	<#else>
+
+* The Java code that is specific to the package has been compiled and is distributed with the package, but not the source code. External dependencies
+from public repositories, will be fetched independently during the first use of this package, which is only possible if the java library only uses public dependencies. 
+This is managed by Java's standard package management system, Maven, which is itself downloaded automatically. This reduces the need for libraries to be distributed 
+with the R package, minimising the footprint of the R package, but downloading and installing the dependencies is a potential point of failure, and may take quite some time on first use of the library. 
+This is mitigated as much as possible by using battle tested standard Java tooling for dependency management, which will only download libraries it has not already used.
+	</#if>
+<#else>
+
+* Only the Java source code is supplied with this distribution, packaged in a JAR file. The Java code must be compiled from the source
+which will be performed upon first use of the library, including the transitive resolution and the download of any dependencies needed. All dependencies must be 
+publicaly available in canonical Maven repositories. This is the most transparent option in terms of the openness of the source code of this R package. 
+However, the build process may be relatively time consuming and a potential point of failure. This is mitigated as much as possible by using battle tested
+standard Java tooling for compilation and dependency management. This strategy should have a relatively small footprint for the R package, and minimise the
+size required for distribution. 
 </#if>
-* R6 is a build time dependency so appears unused when it is in fact not.
+
+* The R6 package is a build time dependency. The note that it is unused can be safely ignored.
+
 * This is a new release.

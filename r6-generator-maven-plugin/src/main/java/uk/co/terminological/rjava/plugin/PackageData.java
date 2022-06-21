@@ -63,6 +63,9 @@ public class PackageData {
 	private Boolean preCompileBinary;
 	
 	@Parameter
+	private Boolean packageAllDependencies;
+	
+	@Parameter
 	private Boolean usePkgdown;
 	
 	@Parameter
@@ -134,11 +137,26 @@ public class PackageData {
 	
 	/** {@code <preCompileBinary>true</preCompileBinary>}
 	 * 
-	 * defaults to true. if false then no fat jar will be included in the R package and it will have to be compiled from source 
+	 * defaults to true. if false then no precompiled files are included and the package will have to be compiled from java source on first load 
 	 * @return precompile flag
 	 */
 	public boolean preCompileBinary() {
 		return preCompileBinary == null || preCompileBinary.booleanValue(); 
+	}
+	
+	/** {@code <packageAllDependencies>true</packageAllDependencies>}
+	 * 
+	 * defaults to false. only relevant if preCompileBinary is true (the default) if packageAllDependencies is true then a fat jar will be precompiled 
+	 * and included in the R package making the package large but completely self contained. This may be needed if the package depends on libraries
+	 * that are not available to download from a public maven repository. 
+	 * 
+	 * If false then only this maven artifact is precompiled making the bundled java library code comparatively small. All other java dependencies declared in the maven file
+	 * are fetched on first use of this library.
+	 *   
+	 * @return package fat jar flag
+	 */
+	public boolean packageAllDependencies() {
+		return packageAllDependencies != null && packageAllDependencies.booleanValue(); 
 	}
 	
 	/** {@code <useJavadoc>true</useJavadoc>}

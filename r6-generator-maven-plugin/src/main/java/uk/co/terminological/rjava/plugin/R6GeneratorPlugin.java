@@ -11,9 +11,13 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,19 +44,117 @@ public class R6GeneratorPlugin extends PluginBase {
 		getLog().debug("Wiping previous files.");
 		// Find additional exports in non-generated R files 
 		List<String> additionalExports = scanDirectoryForExports(rDir);
-		
+
+		//TODO: make this a mvn clean stage
 		rmContents(docs);
 		rmContents(manDir);
+		rmJar(jarDir, this.mavenProject.getArtifactId());
 		rmGenerated(workflows);
 		rmGenerated(rDir);
 		
+    
+		// STEP1: determine what format the package is being deployed in and build the shareable jar files
+		if (!packageData.preCompileBinary()) {
+			
+			deleteJar(this.sourcesFile);
+			getLog().info("Construct source jar");
 		
-		// Assemble and build the fat jar for R plugin
-		// This has been moved to JarCompilerPlugin 
+			// If we are not using a pre-compiled binary then construct a jar of sources 
+			// and move that into inst/java
+//			executeMojo(
+//					plugin(
+//						groupId("org.apache.maven.plugins"),
+//						artifactId("maven-source-plugin"),
+//						version("2.2.1")),
+//					goal("jar-no-fork"),
+//					configuration(
+//							element(name("includePom"),"true")
+//					),
+//					executionEnvironment(
+//							mavenProject,
+//							mavenSession,
+//							pluginManager));
+			
+			executeMojo(
+					plugin(
+						groupId("org.apache.maven.plugins"),
+						artifactId("maven-assembly-plugin"),
+						version("3.2.0")),
+					goal("single"),
+					configuration(
+							element(name("descriptorRefs"), 
+								element(name("descriptorRef"),"src")
+							),
+							element(name("formats"),
+								element(name("foramt"),"jar")
+							)),
+					executionEnvironment(
+							mavenProject,
+							mavenSession,
+							pluginManager));
+			
+			
+			getLog().info("Copying source files into inst/java.");
+			moveJar(this.sourcesFile);
+			
+			
+			
+		} else {
+			if (packageData.packageAllDependencies()) {
+				// If we are using a pre-compiled binary then construct a fat jar of all dependencies 
+				// and move that into inst/java
+				deleteJar(this.jarFile);
+				executeMojo(
+						plugin(
+							groupId("org.apache.maven.plugins"),
+							artifactId("maven-assembly-plugin"),
+							version("3.2.0")),
+						goal("single"),
+						configuration(
+								element(name("descriptorRefs"), 
+									element(name("descriptorRef"),"jar-with-dependencies")
+								)),
+						executionEnvironment(
+								mavenProject,
+								mavenSession,
+								pluginManager));
+				getLog().info("Copying fat jar into inst/java.");
+				moveJar(this.jarFile);
+			} else {
+				// If we are using a pre-compiled binary then construct a regular jar (which is already done by this stage by maven) 
+				// and move that into inst/java
+				deleteJar(this.thinJarFile);
+				getLog().info("Copying thin jar into inst/java.");
+				moveJar(this.thinJarFile);
+			}
+		}
 		
+		// Generate java docs (for pkgdown site / github pages)
+		if (packageData.useJavadoc() && !packageData.getDebugMode()) {
+			getLog().info("Generating javadocs");
+			executeMojo(
+					plugin(
+						groupId("org.apache.maven.plugins"),
+						artifactId("maven-javadoc-plugin"),
+						version("3.2.0")),
+					goal("javadoc"),
+					configuration(
+							element(name("reportOutputDirectory"),docs.toString()),
+							element(name("destDir"),"javadoc"),
+							element(name("javadocExecutable"),packageData.getJavadocExecutable()),
+							element(name("additionalOptions"),
+									element(name("additionalOption"),"-header '<script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>'"),
+									element(name("additionalOption"),"--allow-script-in-comments")),
+							element(name("failOnError"),"false")
+					),
+					executionEnvironment(
+							mavenProject,
+							mavenSession,
+							pluginManager));
+		}
+		
+		// STEP 2: build the model of the code we are going to use to build the API and generate the R package files & documentation
 		getLog().debug("Scanning source code.");
-
-		// build the model of the code we are going to use to build the API
 		Optional<RModel> model = QDoxParser.scanModel(mavenProject.getCompileSourceRoots(), packageData, getLog());
 		if (model.isPresent()) {
 				
@@ -60,13 +162,11 @@ public class R6GeneratorPlugin extends PluginBase {
 			
 			String key = ArtifactUtils.versionlessKey("io.github.terminological","r6-generator-maven-plugin");
 			Artifact pluginVersion = (Artifact) mavenProject.getPluginArtifactMap().get(key);
-			// TODO: get git commit verison information
-			// https://www.baeldung.com/spring-git-information
 			m.setPluginMetadata(pluginVersion);
 			m.setMavenMetadata(mavenProject);
 			m.setRelativePath(mavenProject,rProjectDir);
 					
-			
+			//TODO: tidy up the location of files.
 			//write the code to the desired location.
 			getLog().debug("Writing R6 library code.");
 			RModelWriter writer = new RModelWriter(
@@ -77,9 +177,9 @@ public class R6GeneratorPlugin extends PluginBase {
 					getLog()
 					);
 			writer.write();
-			
 		}
 		
+		// STEP 3: (Optional) Regenerate documentation using ROxygen2
 		if (packageData.useRoxygen2() && !packageData.getDebugMode()) {
 			
 			// must be an array to stop java tokenising it
@@ -108,7 +208,10 @@ public class R6GeneratorPlugin extends PluginBase {
 				throw new MojoExecutionException("Failed to execute pkgdown", e);
 			}
 		}
-	
+		
+		// STEP 3.5: Run a R CMD Check locally to make sure nothing is broken. 
+		
+		// STEP 4: (Optional) Run pkgdown in R to build site documentation.  
 		if (packageData.usePkgdown() && !packageData.getDebugMode()) {
 			
 			// must be an array to stop java tokenising it
@@ -137,58 +240,33 @@ public class R6GeneratorPlugin extends PluginBase {
 				throw new MojoExecutionException("Failed to execute pkgdown", e);
 			}
 		}
-    
-		// Set up maven wrapper
-		// Using a fixed version of maven
-		if (!packageData.preCompileBinary()) {
-			
-			try {
-				Files.delete(jarLoc);
-			} catch (IOException e) {
-				getLog().warn("Couldn't delete the fat jar from: "+this.jarLoc);
-			}
 		
-			getLog().info("Setup maven wrapper scripts to allow compilation of java code.");
-			executeMojo(
-					plugin(
-						groupId("org.apache.maven.plugins"),
-						artifactId("maven-wrapper-plugin"),
-						version("3.1.1")),
-					goal("wrapper"),
-					configuration(
-							element(name("distributionType"),"script"),
-							element(name("mavenVersion"),"3.3.9")
-					),
-					executionEnvironment(
-							mavenProject,
-							mavenSession,
-							pluginManager));
-		}
 		
-		// Generate java docs (for pkgdown site / github pages)
-		if (packageData.useJavadoc() && !packageData.getDebugMode()) {
-			getLog().info("Generating javadocs");
-			executeMojo(
-					plugin(
-						groupId("org.apache.maven.plugins"),
-						artifactId("maven-javadoc-plugin"),
-						version("3.2.0")),
-					goal("javadoc"),
-					configuration(
-							element(name("reportOutputDirectory"),docs.toString()),
-							element(name("destDir"),"javadoc"),
-							element(name("javadocExecutable"),packageData.getJavadocExecutable()),
-							element(name("additionalOptions"),
-									element(name("additionalOption"),"-header '<script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>'"),
-									element(name("additionalOption"),"--allow-script-in-comments")),
-							element(name("failOnError"),"false")
-					),
-					executionEnvironment(
-							mavenProject,
-							mavenSession,
-							pluginManager));
-		}
 		
 	}
 	
+	
+	private void deleteJar(String jarFile) {
+		Path jarLoc = jarDir.resolve(jarFile);
+		try {
+			if (Files.exists(jarLoc)) Files.delete(jarLoc);
+		} catch (IOException e) {
+			getLog().warn("Couldn't delete the jar from: "+jarLoc);
+		}
+	}
+	
+	private void moveJar(String jarFile) throws MojoExecutionException {
+		Path jarLoc = jarDir.resolve(jarFile);
+		try {
+			
+			Files.createDirectories(rProjectDir);
+			File targetDir = new File(mavenProject.getModel().getBuild().getDirectory());
+			Files.copy(
+					Paths.get(targetDir.getAbsolutePath(), jarFile), 
+					jarLoc, StandardCopyOption.REPLACE_EXISTING);
+			
+		} catch (IOException e) {
+			throw new MojoExecutionException("Couldn't move fat jar",e);
+		}
+	}
 }

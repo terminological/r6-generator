@@ -3,7 +3,7 @@ c(
 	bibentry(bibtype = "Manual",
 		title = "${model.getConfig().getTitle()}",
 		year = ${model.getConfig().getYear()},
-		note = "R package version ${model.getConfig().getVersion()}; Maven artifact: ${model.getMavenVersion()}",
+		note = "R package version ${model.getConfig().getVersion()}; Maven artifact: ${model.getMavenCoordinates()}",
 <#if model.getConfig().getUrl()?has_content>
 		url = "${model.getConfig().getUrl()}",
 </#if>
