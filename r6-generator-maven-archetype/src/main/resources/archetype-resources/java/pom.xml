@@ -25,7 +25,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<r6.version>${version}</r6.version>
+		<r6.version>${archetypeVersion}</r6.version>
 	</properties>
 
 	<dependencies>
@@ -43,6 +43,7 @@
 		</dependency>
 	</dependencies>
 
+#if( $archetypeVersion.endsWith("SNAPSHOT") )
 	<!-- Resolve runtime library snapshots on Sonatype OSSRH if using snapshots of the r6-generator -->
 	<repositories>
 		<repository>
@@ -59,6 +60,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+#end
 	<build>
 		<plugins>
 			<plugin>
@@ -110,6 +112,34 @@
 						<id>generate-r-library</id>
 						<goals>
 							<goal>generate-r-library</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- flatten out parent reference in this pom.xml. The parent pom will not be part of deployment but it had to be there for the archetype to work -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.2.7</version>
+				<configuration>
+					<flattenMode>ossrh</flattenMode>
+					<updatePomFile>true</updatePomFile>
+				</configuration>
+				<executions>
+					<!-- enable flattening -->
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<!-- ensure proper cleanup -->
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
 						</goals>
 					</execution>
 				</executions>

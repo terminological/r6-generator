@@ -33,7 +33,16 @@ After this is done this development section does not need to be in your README.m
 
 This template readme should be updated to include documentation for the end users of your R-package with the aims and objectives, installation and usage guide for your users
 
-e.g. To install the package in R:
+`${rPackageName}` is based on a java library and must have a working version of `Java` and `rJava` installed prior to installation. The following commands can ensure that your `rJava` installation is working.
+
+
+```R
+install.packages("rJava")
+rJava::.jinit()
+rJava::J("java.lang.System")$getProperty("java.version")
+```
+
+To install `${rPackageName}` in R:
 
 ```R
 library(devtools)
@@ -49,7 +58,7 @@ A basic usage scenario:
 
 ```R
 # a basic smoke test
-J <- ${rPackageName}::JavaApi$get()
+J = ${rPackageName}::JavaApi$get()
 
 # exploring the API using autocomplete in RStudio
 # is a matter of typing J$<ctrl-space> 
@@ -68,6 +77,6 @@ The following links will take you to the R library documentation (e.g. pkgdown s
 
 see the [full docs](https://${githubOrganisation}.github.io/${rPackageName})
 
-see the [r package](https://${githubOrganisation}.github.io/${rPackageName}/docs/)
+see the [${rPackageName} home page](https://${githubOrganisation}.github.io/${rPackageName}/docs/)
 
-see the [javadoc](https://${githubOrganisation}.github.io/${rPackageName}/docs/javadoc/)
+

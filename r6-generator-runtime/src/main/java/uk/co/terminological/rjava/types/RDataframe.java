@@ -353,7 +353,11 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	
 	public synchronized String rConversion() {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PrintStream sb = new PrintStream(baos);
+		PrintStream sb = new PrintStream(baos) {
+			public void println(String s) {
+				this.print(s+"\n");
+			}
+		};
 		sb.println("function(jObj) {");
 		// create a function for translating each of the component columns
 		List<String> keyList = new ArrayList<String>(this.keySet());

@@ -20,5 +20,4 @@ Imports:
 	R6,
 	fs,
 	rappdirs,
-	rprojroot,
 	utils

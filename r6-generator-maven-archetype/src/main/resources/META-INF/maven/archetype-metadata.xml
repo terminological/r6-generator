@@ -44,6 +44,8 @@
         	<defaultValue>main-SNAPSHOT</defaultValue>
         </requiredProperty>
         
+        <requiredProperty key="archetypeVersion"/>
+        
         <requiredProperty key="rPackageVersion">
         	<defaultValue>0.0.0.9000</defaultValue>
         </requiredProperty>
@@ -76,13 +78,13 @@
 
 	<fileSets>
 		<fileSet filtered="true" packaged="true">
-			<directory>src/src/main/java</directory>
+			<directory>java/src/main/java</directory>
 		</fileSet>
 		<fileSet filtered="true" packaged="true">
-			<directory>src/src/test/java</directory>
+			<directory>java/src/test/java</directory>
 		</fileSet>
 		<fileSet filtered="true">
-			<directory>src</directory>
+			<directory>java</directory>
 			<includes>
 				<include>pom.xml</include>
 				<include>__gitignore__</include>

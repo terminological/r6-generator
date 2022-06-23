@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.maven.MavenExecutionException;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 
@@ -242,7 +244,10 @@ public class PackageData {
 		return title;
 	}
 
-	public String getVersion() {
+	public String getVersion() throws MojoExecutionException {
+		if (version.equals("main-SNAPSHOT")) return "0.0.0.9999";
+		version = version.replace("-SNAPSHOT", ".9999");
+		if (!version.matches("[0-9\\.\\-]+")) throw new MojoExecutionException("Version must be only numerics in form 0.2.0.9000");
 		return version;
 	}
 

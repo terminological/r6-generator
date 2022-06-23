@@ -23,25 +23,21 @@ jobs:
         working-directory: ${model.getRelativePath()}
 
 </#if>
-    continue-on-error: ${r"${{ matrix.config.fail }}"}
+    continue-on-error: false
 
-    name: ${r"${{ matrix.config.os }} R:(${{ matrix.config.r }} Java:${{ matrix.java }})"}
+    name: ${r"${{ matrix.config.os }} R:(${{ matrix.config.r }} Java:${{ matrix.config.java }})"}
 
     strategy:
       fail-fast: false
       matrix:
-        java: [ 8, 11 ]
         config:
-          - {os: ubuntu-latest, r: 'release', fail: false}
-## uncomment this to run on multiple platforms          
-#          - {os: windows-latest, r: 'oldrel-1', fail: true}
-#          - {os: windows-latest, r: 'release', fail: true}
-#          - {os: windows-latest, r: 'devel', http-user-agent: 'release', fail: true}
-#          - {os: macOS-latest, r: 'oldrel-1', fail: true}
-#          - {os: macOS-latest, r: 'release', fail: true}
-#          - {os: macOS-latest, r: 'devel', http-user-agent: 'release', fail: true}
-#          - {os: ubuntu-latest, r: 'oldrel-1', fail: true}
-#          - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release', fail: true}
+          - {os: ubuntu-20.04, r: '4.1.0', java: 11, distribution: zulu}
+          - {os: macOS-11, r: '4.1.0', java: 11, distribution: zulu}
+          - {os: windows-2022, r: '4.1.0', java: 11, distribution: zulu}
+          - {os: ubuntu-20.04, r: '3.6.1', java: 8, distribution: zulu}
+## uncomment this to run on multiple versions of R          
+#          - {os: ubuntu-22.04, r: '4.2.0', java: 17, distribution: zulu}
+
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -55,9 +51,13 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v3
         with:
-          java-version: ${r"${{ matrix.java }}"}
+          java-version: ${r"${{ matrix.config.java }}"}
+          distribution: ${r"${{ matrix.config.distribution }}"}
+          java-package: jdk
+          architecture: x64
+          cache: 'maven'
 
       - name: Info
         run: "bash -c 'java -version && which java && echo $PATH && echo $JAVA_HOME'"
@@ -80,8 +80,16 @@ jobs:
         if: runner.os != 'Windows'
         run: "echo export PATH=$PATH > reconf.sh; echo export JAVA_HOME=$JAVA_HOME >> reconf.sh; echo R CMD javareconf >> reconf.sh; sudo bash reconf.sh"
 
+<#if rToPomPath == "" || rToPomPath == "src">
+      # The java code is in the src directory (or a subdirectory of) this will cause issues with windows runners that try and do a R cmd check
+	  - name: Rename java source directory for windows
+        if: runner.os == 'Windows'
+        run: "mv src javasrc"
+</#if>
+
       - uses: r-lib/actions/check-r-package@v2
         with:
+          args: 'c("--no-manual", "--no-multiarch", "--as-cran")'
           upload-snapshots: true
 <#if model.getRelativePath()?has_content>
           working-directory: ${model.getRelativePath()}

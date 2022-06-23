@@ -34,7 +34,9 @@ The project has 3 components:
 
 * This version was the first release to Maven central and had security vulnerabilities - It should not be used.
 * supports fat-jar distributions of all bundled dependencies
+* Description, namesspace, R6 class files and Rd files generated
 * Doxygen2 and Pkgdown support
+* Git workflows
 * Support for basic R datatypes, and date, data-frames, numeric arrays, named lists,  
 * Annotation driven code generation - including default R values
 * Maven central deployment
@@ -49,12 +51,31 @@ The project has 3 components:
 ### 0.4.0 
 
 * Changes to allow Maven execution at first package load allowing both dependency management and compilation. 
-* Allows removal of the `compile-java-library` goal which is now automatically performed if needed when a `r6-generator` package is loaded. 
-* Supports fat-jar, thin-jar and sources only Java library distributions through Maven configuration to support minimising package size for CRAN submission.
+* Removal of the `compile-java-library` goal which is now automatically performed if needed when a `r6-generator` package is loaded. 
+* Experiemental support for fat-jar, thin-jar and sources only Java library distributions through Maven configuration to support minimising package size for CRAN submission.
+* Erroneous dependency to ossrh-deploy-config-master-SNAPSHOT requires OSSRH snaphot repository information be retained in project POMs  
+
+### 0.4.1
+
+* Flattened pom.xml for r6-generator modules allows fixes dependency on snapshot repositories declaration. Pom flattening also included in
+projects created by archetype.
+* Java log and console messages surfaced as R messages.
+* Package startup is logged via java, rather than through R, respecting log level settings.
+* Version numbering validity checks and repair, enables the reuse of maven artifact version as R package version, e.g. <version>${version}</version>. main-SNAPSHOT will become 0.0.0.9999 R package version.
+* Fixes for windows users with thin-jar and source distributions caused by environment differences and mvn wrapper issues
+* Github workflow and cran-comments changes to use specific versions of OS, R and Java.  Support for windows runners in github workflows to mitigate bug in R for windows that Rcmd.exe fails to respect .Rbuildignore directive to ignore `src` directory leading to a uniformative error about DLLs.
+* fixed windows dataframe conversion bug due to platform encoding
+* Improved archetype README template, moved default directory for java library to `java` due to windows R CMD check issue: 
 
 ### main-SNAPHOT
 
-* no current additional features.
+* TODO: other maven plugin inputs need validity checking?
+* TODO: static methods can be exposed as more regular R functions as well as R6 ones. This needs changes in staticRd, & api templates. we probably ought to check for method name collisions between @RClass though. 
+* TODO: prevent caching issue on failure to generate or load library, leading to unexpected success unsing old library version. 
+* TODO: better approach to automation of whole library testing. Including an option to fail package generation when R tests fail or vignettes cannot be built, and a test package as part of the r6-generator project, with test that run during a integration test phase.
+* TODO: Do we need to build pom flattening into the main plugin?
+* TODO: configure maven archetype for 3 main output types (fat-jar etc) and 4 layouts (R first, java first, siblings, identity).
+
 
 ### Future work
 

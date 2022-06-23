@@ -52,7 +52,7 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 	#' @return nothing
 	printMessages = function() {
 		# check = FALSE here to stop exceptions being cleared from the stack.
-		cat(.jcall("uk/co/terminological/rjava/LogController", returnSig = "Ljava/lang/String;", method = "getSystemMessages", check=FALSE))
+		message(.jcall("uk/co/terminological/rjava/LogController", returnSig = "Ljava/lang/String;", method = "getSystemMessages", check=FALSE))
 		invisible(NULL)
 	},
 	
@@ -98,8 +98,6 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 		
 		# Java dependencies
 		jars = .checkDependencies(quiet = TRUE)
-		
-		message(paste0("Adding to classpath: ",jars,collapse='\n'))
 		.jaddClassPath(jars)
 		
 		# configure logging
@@ -108,6 +106,10 @@ JavaApi = R6::R6Class("JavaApi", public=list(
  		# TODO: this is the library build date code but it requires testing
  		buildDate = .jcall("uk/co/terminological/rjava/LogController", returnSig = "S", method = "getClassBuildTime")
 		self$.log = .jcall("org/slf4j/LoggerFactory", returnSig = "Lorg/slf4j/Logger;", method = "getLogger", "${model.getConfig().getPackageName()}");
+		.jcall(self$.log,returnSig = "V",method = "debug", "Adding to classpath: ")
+		for (jar in jars) {
+		  .jcall(self$.log,returnSig = "V",method = "debug", jar)
+		}
 		.jcall(self$.log,returnSig = "V",method = "info","Initialised ${model.getConfig().getPackageName()}");
 		.jcall(self$.log,returnSig = "V",method = "debug","R package version: ${model.getConfig().getVersion()}");
 		.jcall(self$.log,returnSig = "V",method = "debug","R package generated: ${model.getConfig().getDate()}");
@@ -389,15 +391,20 @@ NULL
 			pomPath, 
 			goal = "dependency:build-classpath",		
 			opts = c(
-				paste0("-Dmdep.outputFile='",classpathLoc,"'"),
-				paste0("-Dmdep.pathSeparator='\n'"),
+				paste0("-Dmdep.outputFile=classpath.txt"),
 				paste0("-DincludeScope=runtime")
 			),
 			...
 		)
 		message("Dependencies updated")
 	}
-	classpathString = unique(readLines(classpathLoc,warn = FALSE))
+	
+	if(.Platform$OS.type == "windows") {
+	  classpathString = unique(scan(classpathLoc, what = "character", sep=";", quiet=TRUE))
+	} else {
+	  classpathString = unique(scan(classpathLoc, what = "character", sep=":", quiet=TRUE))
+	}
+	
 	if (!all(file.exists(classpathString))) 
 		stop("For some inexplicable reason, Maven cannot determine the classpaths of the dependencies of this library on this machine. You can try ${model.getConfig().getPackageName()}::JavaApi$rebuildDependencies()")
 	return(classpathString)
@@ -406,9 +413,15 @@ NULL
 # executes a maven goal plus or minus info or debugging
 .executeMaven = function(pomPath, goal, opts = c(), quiet=TRUE, debug=FALSE, ...) {
 	mvnPath = .loadMavenWrapper()
-	args = c(goal, opts, paste0("-f '",pomPath,"'"))
+	args = c(goal, opts) #, paste0("-f '",pomPath,"'"))
 	if (quiet) args = c(args, "-q")
 	if (debug) args = c(args, "-X")
+	java_home = rJava::.jcall( 'java/lang/System', 'S', 'getProperty', 'java.home' )
+	Sys.setenv(JAVA_HOME=java_home)
+	# required due to an issue in Mvnw.cmd on windows.
+	wd = getwd()
+	setwd(.workingDir())
 	system2(mvnPath, args)
+	setwd(wd)
 }
 
