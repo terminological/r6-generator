@@ -1,4 +1,4 @@
-package uk.co.terminological.rjava.types;
+package uk.co.terminological.rjava.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,43 +10,46 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Stringr {
+import uk.co.terminological.rjava.types.RCharacter;
+import uk.co.terminological.rjava.types.RCharacterVector;
+
+public class RStringr {
 
 	List<String> input;
 	
-	private Stringr(List<String> input) {
+	private RStringr(List<String> input) {
 		this.input = input;
 	}
 	
 	// FLUENT WRAPPERS
 	
-	public static Stringr of(String s) {
-		Stringr out = new Stringr(Collections.singletonList(s));
+	public static RStringr of(String s) {
+		RStringr out = new RStringr(Collections.singletonList(s));
 		return out;
 	}
 
-	public static Stringr of(String... s) {
-		Stringr out = new Stringr(Arrays.asList(s));
+	public static RStringr of(String... s) {
+		RStringr out = new RStringr(Arrays.asList(s));
 		return out;
 	}
 	
-	public static Stringr of(Collection<String> s) {
-		Stringr out = new Stringr(new ArrayList<String>(s));
+	public static RStringr of(Collection<String> s) {
+		RStringr out = new RStringr(new ArrayList<String>(s));
 		return out;
 	}
 	
-	public static Stringr of(Stream<String> s) {
-		Stringr out = new Stringr(s.collect(Collectors.toList()));
+	public static RStringr of(Stream<String> s) {
+		RStringr out = new RStringr(s.collect(Collectors.toList()));
 		return out;
 	}
 	
-	public static Stringr of(RCharacter s) {
-		Stringr out = new Stringr(Collections.singletonList(s.get()));
+	public static RStringr of(RCharacter s) {
+		RStringr out = new RStringr(Collections.singletonList(s.get()));
 		return out;
 	}
 	
-	public static Stringr of(RCharacterVector s) {
-		Stringr out = new Stringr(s.get().collect(Collectors.toList()));
+	public static RStringr of(RCharacterVector s) {
+		RStringr out = new RStringr(s.get().collect(Collectors.toList()));
 		return out;
 	}
 	

@@ -1,7 +1,7 @@
 package uk.co.terminological.rjava.types;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 @RDataType(
 		JavaToR = { 

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import uk.co.terminological.rjava.RConverter;
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * A wrapper for character classes in R. This is not very different from a raw String. If you are not

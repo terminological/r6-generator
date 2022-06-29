@@ -74,6 +74,7 @@ public class RModelWriter {
 		doGenerate(new File(manDir,"JavaApi.Rd"),getTemplate("rjavaApiRd.ftl"),typeRoot);
 		doGenerate(new File(manDir,model.getConfig().getPackageName()+"-package.Rd"),getTemplate("rjavaPackageRd.ftl"),typeRoot);
 		doGenerate(new File(rDir,"JavaApi.R"),getTemplate("rjavaApiR.ftl"),typeRoot);
+		doGenerate(new File(rDir,"StaticApi.R"),getTemplate("rjavaStaticApiR.ftl"),typeRoot);
 		doGenerate(new File(rDir,"zzz.R"),getTemplate("rjavaZzz.ftl"),typeRoot);
 		doGenerateSafe(new File(target,"cran-comments.md"),getTemplate("rjavaCranComments.ftl"),typeRoot);
 		if (model.getConfig().usePkgdown()) doGenerate(new File(target,".Rbuildignore"),getTemplate("rjavaRbuildignore.ftl"),typeRoot);
@@ -85,6 +86,11 @@ public class RModelWriter {
 			
 			doGenerate(new File(manDir,type.getSimpleName()+".Rd"),getTemplate("rjavaRd.ftl"),typeRoot);
 			doGenerate(new File(rDir,type.getSimpleName()+".R"),getTemplate("rjavaClassR.ftl"),typeRoot);
+			
+			for (RMethod method: type.getStaticMethods()) {
+				typeRoot.put("method", method);
+				doGenerate(new File(manDir,method.getSnakeCaseName()+".Rd"),getTemplate("rjavaStaticRd.ftl"),typeRoot);
+			}
 			
 		}
 		

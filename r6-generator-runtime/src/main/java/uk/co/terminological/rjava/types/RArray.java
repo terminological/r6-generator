@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import uk.co.terminological.rjava.RObjectVisitor;
 import uk.co.terminological.rjava.ZeroDimensionalArrayException;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * The RArrays are actually vectors with the logical dimensions specified seperately, and they can be re-dimensioned on the fly.

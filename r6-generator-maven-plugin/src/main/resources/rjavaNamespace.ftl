@@ -4,9 +4,16 @@ export(JavaApi)
 <#list model.getExports() as export>
 export(${export})
 </#list>
+<#list model.getClassTypes() as class>
+	<#list class.getStaticMethods() as method>
+export(${method.getSnakeCaseName()})
+	</#list>
+</#list>
+
 <#-- imports in description but not in namespace. There should be no reason to import these into the namespace. 
 <#list model.getImports() as import>
 import(${import})
 </#list>
 -->
+importFrom(magrittr,"%>%")
 import(rJava)

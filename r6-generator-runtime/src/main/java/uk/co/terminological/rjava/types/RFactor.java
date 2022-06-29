@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import uk.co.terminological.rjava.RConverter;
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * A single value of a factor is largely the same as a String from most perpectives

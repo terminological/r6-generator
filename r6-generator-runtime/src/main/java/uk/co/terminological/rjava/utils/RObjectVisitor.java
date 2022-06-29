@@ -1,4 +1,4 @@
-package uk.co.terminological.rjava;
+package uk.co.terminological.rjava.utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;

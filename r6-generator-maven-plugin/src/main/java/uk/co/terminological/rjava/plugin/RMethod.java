@@ -1,6 +1,7 @@
 package uk.co.terminological.rjava.plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,12 @@ public class RMethod extends RAnnotated {
 	public String getDescription() {
 		return description == null || description.isEmpty() ? "no description" : description;
 	}
+	public String getTitle() {
+		return getDescription().split("\n")[0];
+	}
+	public String getNonTitleDescription() {
+		return Arrays.asList(getDescription().split("\n")).stream().skip(1).collect(Collectors.joining("\n"));
+	}
 	public String getParameterDescription(String paramName) {
 		if (this.getAnnotations().get("param") == null) return paramName;
 		String tmp = this.getAnnotations().get("param").stream()
@@ -75,6 +82,9 @@ public class RMethod extends RAnnotated {
 		return ", "+getParameterNames().stream().map(s->pre+s).collect(Collectors.joining(", "));
 	}
 	public String getFunctionParameterCsv() {
+		return getFunctionParameterCsv(", ");
+	}
+	public String getFunctionParameterCsv(String sep) {
 		return defaults.entrySet().stream()
 				.map(kv -> {
 					String tmp = kv.getKey();
@@ -84,7 +94,7 @@ public class RMethod extends RAnnotated {
 					}
 					return tmp;		
 				})
-				.collect(Collectors.joining(", "));
+				.collect(Collectors.joining(sep));
 	}
 	
 }

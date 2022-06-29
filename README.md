@@ -69,6 +69,9 @@ projects created by archetype.
 
 ### main-SNAPHOT
 
+* Refactored runtime package structure for accidental errors of organisation. renamed Stringr to RStringr for consistency.
+* Title to sentence case to make CRAN happy.
+* Breaking changes refactoring runtime file to subpackage organisation for future proofing. MapRule and StreamRule are no static members of Rule;  RNamedPredicates are now RFilter and in functional packages, RFunctions, RObjectVisitor, RStringr now in utils package. Java8Streams renamed to RStreams for consistency and noved to utils package.
 * TODO: other maven plugin inputs need validity checking?
 * TODO: static methods can be exposed as more regular R functions as well as R6 ones. This needs changes in staticRd, & api templates. we probably ought to check for method name collisions between @RClass though. 
 * TODO: prevent caching issue on failure to generate or load library, leading to unexpected success unsing old library version. 
@@ -80,6 +83,7 @@ projects created by archetype.
 ### Future work
 
 * Support for promises / asynchronous Java calls.
+* Archetype documentation and class fixes
 * Impact of Java 17: JEP 412 foriegn function and memory API.
 * Impact of Java 17: JEP 338 vector API
 * Additional data-type support as required
@@ -293,7 +297,7 @@ cd ~/Git
 mvn archetype:generate \
   -DarchetypeGroupId=io.github.terminological \
   -DarchetypeArtifactId=r6-generator-maven-archetype \
-  -DarchetypeVersion=0.4.0 \
+  -DarchetypeVersion=0.4.1 \
   -DgithubOrganisation=exampleOrganisation \
   -DgithubRepository=examplePackage
 ```
@@ -318,11 +322,12 @@ The resulting generated R-package can be pushed to github where it should trigge
 
 ```BASH
 cd ~/Git/examplePackage
-git init -b main
+git init
+git checkout -b main
 git add . 
 git commit -m "initial commit"
 gh repo create exampleOrganisation/examplePackage --source=. --public
-git push
+git push --set-upstream origin main
 
 ```
 

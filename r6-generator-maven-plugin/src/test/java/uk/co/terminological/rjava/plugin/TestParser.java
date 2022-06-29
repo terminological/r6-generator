@@ -1,6 +1,8 @@
-package uk.co.terminological.jsr233plugin;
+package uk.co.terminological.rjava.plugin;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 public class TestParser {
 
-	@BeforeAll
-	public void setUp() throws Exception {
-		
-	}
+//	@BeforeAll
+//	public final void setUp() throws Exception {
+//		
+//	}
 
 	@Test
 	public final void test() {
@@ -31,6 +33,15 @@ public class TestParser {
 	}
 	
 
+	@Test
+	public final void testSnakeCase() {
+		System.out.println(RAnnotated.getSnakeCase("getCamelCaseABCdef"));
+		System.out.println(RAnnotated.getSnakeCase("GetCamelCaseABCdef"));
+		System.out.println(RAnnotated.getSnakeCase("GetCamel123CaseABCdef"));
+		
+		System.out.println(RAnnotated.rdEscape("hello % this {needs escaping}"));
+	}
+	
 //	@Test
 //	public final void testPaths() {
 //		Path path1 = Paths.get("/home/terminological/tmp");

@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 public interface RObject extends Serializable {
 

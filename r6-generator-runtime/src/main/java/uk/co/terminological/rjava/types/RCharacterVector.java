@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * A java representation of an R character vector. Factory methods are in {@link RVector}.

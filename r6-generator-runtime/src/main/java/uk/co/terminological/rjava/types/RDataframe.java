@@ -28,8 +28,9 @@ import uk.co.terminological.rjava.IncompatibleTypeException;
 import uk.co.terminological.rjava.NameNotFoundException;
 import uk.co.terminological.rjava.RConverter;
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
 import uk.co.terminological.rjava.UnconvertableTypeException;
+import uk.co.terminological.rjava.functionals.RFilter;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 
 /**
@@ -491,7 +492,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * @return A new dataframe
 	 */
 	public synchronized <Y extends RPrimitive> RDataframe filter(String name, Class<Y> type, Predicate<Y> predicate) {
-		return filter(RNamedPredicate.from(name, type, predicate));
+		return filter(RFilter.from(name, type, predicate));
 	}
 	
 	/**
@@ -502,7 +503,7 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * @return A new dataframe
 	 */
 	public <Y extends RPrimitive> RDataframe filter(String name, Predicate<Y> predicate) {
-		return filter(RNamedPredicate.from(name, predicate));
+		return filter(RFilter.from(name, predicate));
 	}
 	
 	/**
@@ -510,13 +511,13 @@ public class RDataframe extends LinkedHashMap<String, RVector<? extends RPrimiti
 	 * @param tests A set of tests
 	 * @return a new dataframe containing only items which pass all the filter test
 	 */
-	public synchronized RDataframe filter(RNamedPredicate<?>... tests) {
+	public synchronized RDataframe filter(RFilter<?>... tests) {
 		
 		// return everything if no conditions
 		BitSet filter = (new BitSet(this.nrow()));
 		filter.set(0, this.nrow(), true);
 		
-		for (RNamedPredicate<?> test: tests) {
+		for (RFilter<?> test: tests) {
 			BitSet and = this.get(test.name()).matches(test.predicate());
 			filter.and(and); 
 		}

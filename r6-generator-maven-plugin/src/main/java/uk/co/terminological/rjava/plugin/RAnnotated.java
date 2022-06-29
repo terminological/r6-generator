@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.thoughtworks.qdox.model.JavaClass;
@@ -75,6 +77,24 @@ public class RAnnotated {
 		return tmp.get().equals(asJavaClass().get());
 	}
 
+	protected static String getSnakeCase(String s) {
+		Pattern p = Pattern.compile("([a-z0-9])([A-Z])");
+		Matcher m =p.matcher(s);
+		StringBuffer sb = new StringBuffer();
+	    while(m.find()) {
+	    	m.appendReplacement(sb, m.group(1)+"_"+m.group(2).toLowerCase());
+	    }
+	    m.appendTail(sb);
+	    String out = sb.toString();
+	    if (p.matcher(out).find()) out = getSnakeCase(out);
+	    return out.replaceAll("([a-z])([0-9])", "$1_$2").toLowerCase();
+	}
+	
+	
+	public String getSnakeCaseName() {
+		return getSnakeCase(this.simpleName);
+	}
+	
 	public String getSimpleName() {
 		return this.simpleName;
 	}
@@ -100,12 +120,27 @@ public class RAnnotated {
 		return (((RAnnotated) other).type.equals(type));
 	}
 	
-	public String doxygen(String s) {
+	public static String rdEscape(String s) {
 		if(s == null) return null;
-		return "\t#' "+s.trim().replaceAll("\\n", "\n\t#' ").trim();
+		return s.replaceAll("%","\\\\%").replaceAll("\\{","\\\\{").replaceAll("\\}","\\\\}");
 	}
-	public String doxygen(String field, String s) {
+	
+	public static String rdEscapeExample(String s) {
 		if(s == null) return null;
-		return "\t#' @"+field+" "+s.trim().replaceAll("\\n", "\n\t#' ").trim();
+		return s.replaceAll("%","\\\\%");
+	}
+	
+	public String doxygen(String s) { return doxygen(s,1); }
+	public String doxygen(String s1, String s2) { return doxygen(s1,s2,1); }
+	
+	public String doxygen(String s, int indent) {
+		if(s == null) return null;
+		String tabs = String.join("", Collections.nCopies(indent, "\t"));
+		return tabs+"#' "+s.trim().replaceAll("\\n", "\n"+tabs+"#' ").trim();
+	}
+	public String doxygen(String field, String s, int indent) {
+		if(s == null) return null;
+		String tabs = String.join("", Collections.nCopies(indent, "\t"));
+		return tabs+"#' @"+field+" "+s.trim().replaceAll("\\n", "\n"+tabs+"#' ").trim();
 	}
 }

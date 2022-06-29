@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import uk.co.terminological.rjava.RConverter;
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * A Java wrapper for factors. R Factors can be mapped to java enumeration by the {@link RConverter} class.

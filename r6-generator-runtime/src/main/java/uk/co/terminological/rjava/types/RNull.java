@@ -1,7 +1,7 @@
 package uk.co.terminological.rjava.types;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * In general you won;t see this class. Its possible to do things in R like x=list(a=NULL) in which case

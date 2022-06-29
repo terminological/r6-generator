@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * A java representation of the R base Date class (will also be used for POSIXt classes)

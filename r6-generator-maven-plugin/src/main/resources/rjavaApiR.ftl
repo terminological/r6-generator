@@ -52,7 +52,8 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 	#' @return nothing
 	printMessages = function() {
 		# check = FALSE here to stop exceptions being cleared from the stack.
-		message(.jcall("uk/co/terminological/rjava/LogController", returnSig = "Ljava/lang/String;", method = "getSystemMessages", check=FALSE))
+		msg = .jcall("uk/co/terminological/rjava/LogController", returnSig = "Ljava/lang/String;", method = "getSystemMessages", check=FALSE)
+		if (!is.null(msg) && trimws(msg) != "") message(trimws(msg))
 		invisible(NULL)
 	},
 	
@@ -85,16 +86,19 @@ JavaApi = R6::R6Class("JavaApi", public=list(
  		# }
  		-->
  	
+ 		tryCatch({
 	 	<#if model.getConfig().getDebugMode()>
-		# pass in debug options
-		if (!.jniInitialized) {
-			.jinit(parameters=c(getOption("java.parameters"),"-Xdebug","-Xrunjdwp:transport=dt_socket,address=8998,server=y,suspend=n"), silent = TRUE, force.init = TRUE)
-			message("java debugging initialised on port 8998")
-		}
+			# pass in debug options
+			if (!.jniInitialized) {
+				.jinit(parameters=c(getOption("java.parameters"),"-Xdebug","-Xrunjdwp:transport=dt_socket,address=8998,server=y,suspend=n"), silent = TRUE, force.init = TRUE)
+				message("java debugging initialised on port 8998")
+			}
 		<#else>
-		if (!.jniInitialized) 
-			.jinit(parameters=getOption("java.parameters"),silent = TRUE, force.init = FALSE)
+			if (!.jniInitialized) 
+				.jinit(parameters=getOption("java.parameters"),silent = TRUE, force.init = FALSE)
 		</#if>
+		}, error = function(e) stop("Java cannot be initialised: ",e$message)
+		)
 		
 		# Java dependencies
 		jars = .checkDependencies(quiet = TRUE)
@@ -420,7 +424,7 @@ NULL
 	Sys.setenv(JAVA_HOME=java_home)
 	# required due to an issue in Mvnw.cmd on windows.
 	wd = getwd()
-	setwd(.workingDir())
+	setwd(fs::path_dir(pomPath))
 	system2(mvnPath, args)
 	setwd(wd)
 }

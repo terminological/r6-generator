@@ -5,7 +5,7 @@
 \alias{${model.getConfig().getPackageName()}-package}
 \title{${model.getConfig().getPackageName()}: ${model.getConfig().getTitle()!}}
 \description{
-\if{html}{\figure{logo.png}{options: align='right'}}
+% \if{html}{\figure{logo.png}{options: align='right'}}
 ${model.getConfig().getDescription()!}
 
 Version: ${model.getConfig().getVersion()}

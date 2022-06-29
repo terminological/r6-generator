@@ -2,7 +2,7 @@ package uk.co.terminological.rjava.types;
 
 import java.util.stream.Collectors;
 
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 public class RDataframeRow extends RNamedPrimitives implements RObject {
 

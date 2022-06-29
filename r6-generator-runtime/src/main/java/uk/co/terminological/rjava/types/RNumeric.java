@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
 import uk.co.terminological.rjava.UnexpectedNaValueException;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * The numeric wrapper handles the translation of R numerics to Java Double.class while the value is passed 

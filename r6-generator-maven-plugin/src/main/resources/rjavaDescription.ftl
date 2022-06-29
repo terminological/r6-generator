@@ -20,4 +20,5 @@ Imports:
 	R6,
 	fs,
 	rappdirs,
-	utils
+	utils,
+    magrittr

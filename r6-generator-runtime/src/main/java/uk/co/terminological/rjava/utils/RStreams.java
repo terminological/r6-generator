@@ -1,4 +1,4 @@
-package uk.co.terminological.rjava;
+package uk.co.terminological.rjava.utils;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,7 +15,7 @@ import uk.co.terminological.rjava.types.RVector;
  * The Class Java8Streams can be statically imported and allows any type to be flatMapped.
  * e.g. streamOfMaybeListsContainingNullValues.flatMap(l -&gt; maybe(l.getOptionalValue()));
  */
-public class Java8Streams {
+public class RStreams {
 
 	/**
 	 * Create a stream from a potentially null singleton or array

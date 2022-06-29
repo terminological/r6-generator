@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -158,6 +159,30 @@ public abstract class PluginBase extends AbstractMojo {
 			throw new MojoExecutionException("Cannot scan source R files for @export statements:",e1);
 		}
 		return additionalExports;
+	}
+	
+	protected void deleteJar(String jarFile) {
+		Path jarLoc = jarDir.resolve(jarFile);
+		try {
+			if (Files.exists(jarLoc)) Files.delete(jarLoc);
+		} catch (IOException e) {
+			getLog().warn("Couldn't delete the jar from: "+jarLoc);
+		}
+	}
+	
+	protected void moveJar(String jarFile) throws MojoExecutionException {
+		Path jarLoc = jarDir.resolve(jarFile);
+		try {
+			
+			Files.createDirectories(rProjectDir);
+			File targetDir = new File(mavenProject.getModel().getBuild().getDirectory());
+			Files.copy(
+					Paths.get(targetDir.getAbsolutePath(), jarFile), 
+					jarLoc, StandardCopyOption.REPLACE_EXISTING);
+			
+		} catch (IOException e) {
+			throw new MojoExecutionException("Couldn't move fat jar",e);
+		}
 	}
 
 }

@@ -3,7 +3,7 @@ package uk.co.terminological.rjava.types;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 
 /** A named object. R seems to be able to attach names to most things. 

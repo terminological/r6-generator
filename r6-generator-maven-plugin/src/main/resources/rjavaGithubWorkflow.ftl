@@ -35,8 +35,8 @@ jobs:
           - {os: macOS-11, r: '4.1.0', java: 11, distribution: zulu}
           - {os: windows-2022, r: '4.1.0', java: 11, distribution: zulu}
           - {os: ubuntu-20.04, r: '3.6.1', java: 8, distribution: zulu}
-## uncomment this to run on multiple versions of R          
-#          - {os: ubuntu-22.04, r: '4.2.0', java: 17, distribution: zulu}
+          - {os: ubuntu-20.04, r: '4.2.0', java: 17, distribution: zulu}
+          - {os: ubuntu-20.04, r: 'devel', java: 17, distribution: zulu, http-user-agent: 'release'}
 
 
     env:
@@ -70,7 +70,8 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          cache-version: 3
+          extra-packages: any::rcmdcheck, any::XML
           needs: check
 <#if model.getRelativePath()?has_content>
           working-directory: ${model.getRelativePath()}
@@ -94,3 +95,11 @@ jobs:
 <#if model.getRelativePath()?has_content>
           working-directory: ${model.getRelativePath()}
 </#if>
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: ${r"${{ matrix.config.os }}"}-${r"${{ matrix.config.r }}"}-${r"${{ matrix.config.java }}"}-results
+          path: check
+ 

@@ -52,29 +52,17 @@ public class R6GeneratorPlugin extends PluginBase {
 		rmGenerated(workflows);
 		rmGenerated(rDir);
 		
+		
     
 		// STEP1: determine what format the package is being deployed in and build the shareable jar files
 		if (!packageData.preCompileBinary()) {
 			
 			deleteJar(this.sourcesFile);
 			getLog().info("Construct source jar");
-		
+			
 			// If we are not using a pre-compiled binary then construct a jar of sources 
 			// and move that into inst/java
-//			executeMojo(
-//					plugin(
-//						groupId("org.apache.maven.plugins"),
-//						artifactId("maven-source-plugin"),
-//						version("2.2.1")),
-//					goal("jar-no-fork"),
-//					configuration(
-//							element(name("includePom"),"true")
-//					),
-//					executionEnvironment(
-//							mavenProject,
-//							mavenSession,
-//							pluginManager));
-			
+			// we use the assembly plugin because it preserves maven directory structure 			
 			executeMojo(
 					plugin(
 						groupId("org.apache.maven.plugins"),
@@ -86,7 +74,7 @@ public class R6GeneratorPlugin extends PluginBase {
 								element(name("descriptorRef"),"src")
 							),
 							element(name("formats"),
-								element(name("foramt"),"jar")
+								element(name("format"),"jar")
 							)),
 					executionEnvironment(
 							mavenProject,
@@ -101,9 +89,12 @@ public class R6GeneratorPlugin extends PluginBase {
 			
 		} else {
 			if (packageData.packageAllDependencies()) {
-				// If we are using a pre-compiled binary then construct a fat jar of all dependencies 
+				// If we are using a pre-compiled binary then construct a fat jar of all dependencies
 				// and move that into inst/java
 				deleteJar(this.jarFile);
+				// We can flatten out all the dependencies of the pom.xml file as they will be included
+				// in the jar
+				// then assemble the fat jar
 				executeMojo(
 						plugin(
 							groupId("org.apache.maven.plugins"),
@@ -124,6 +115,7 @@ public class R6GeneratorPlugin extends PluginBase {
 				// If we are using a pre-compiled binary then construct a regular jar (which is already done by this stage by maven) 
 				// and move that into inst/java
 				deleteJar(this.thinJarFile);
+				// assemble normal jar - this has already been done by this stage
 				getLog().info("Copying thin jar into inst/java.");
 				moveJar(this.thinJarFile);
 			}
@@ -246,27 +238,5 @@ public class R6GeneratorPlugin extends PluginBase {
 	}
 	
 	
-	private void deleteJar(String jarFile) {
-		Path jarLoc = jarDir.resolve(jarFile);
-		try {
-			if (Files.exists(jarLoc)) Files.delete(jarLoc);
-		} catch (IOException e) {
-			getLog().warn("Couldn't delete the jar from: "+jarLoc);
-		}
-	}
-	
-	private void moveJar(String jarFile) throws MojoExecutionException {
-		Path jarLoc = jarDir.resolve(jarFile);
-		try {
-			
-			Files.createDirectories(rProjectDir);
-			File targetDir = new File(mavenProject.getModel().getBuild().getDirectory());
-			Files.copy(
-					Paths.get(targetDir.getAbsolutePath(), jarFile), 
-					jarLoc, StandardCopyOption.REPLACE_EXISTING);
-			
-		} catch (IOException e) {
-			throw new MojoExecutionException("Couldn't move fat jar",e);
-		}
-	}
+
 }

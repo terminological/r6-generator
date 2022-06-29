@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // CS01
 import uk.co.terminological.rjava.types.*;
+import uk.co.terminological.rjava.utils.RFunctions;
+
 import static uk.co.terminological.rjava.RConverter.*;
-import static uk.co.terminological.rjava.MapRule.*;
+import static uk.co.terminological.rjava.Rule.MapRule.*;
 
 import uk.co.terminological.rjava.IncompatibleTypeException;
 import uk.co.terminological.rjava.NameNotFoundException;
 import uk.co.terminological.rjava.RConverter;
-import uk.co.terminological.rjava.RFunctions;
 import uk.co.terminological.rjava.RName;
 // CE01
 import uk.co.terminological.rjava.UnconvertableTypeException;

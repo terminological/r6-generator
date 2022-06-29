@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.MavenExecutionException;
+import org.apache.commons.text.WordUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -241,7 +241,7 @@ public class PackageData {
 	}
 
 	public String getTitle() {
-		return title;
+		return WordUtils.capitalizeFully(title);
 	}
 
 	public String getVersion() throws MojoExecutionException {

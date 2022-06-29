@@ -3,7 +3,7 @@ package uk.co.terminological.rjava.types;
 import java.util.Optional;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 
 /** The logical wrapper handles the translation of R logical to Java Boolean.class while the value is passed 

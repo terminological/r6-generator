@@ -3,8 +3,8 @@ package uk.co.terminological.rjava.types;
 import java.util.Optional;
 
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
 import uk.co.terminological.rjava.UnexpectedNaValueException;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
  * The integer wrapper handles the translation of R integers to Java Integer.class while the value is passed 

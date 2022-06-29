@@ -6,8 +6,8 @@ import java.util.stream.Stream;
 
 import uk.co.terminological.rjava.RConverter;
 import uk.co.terminological.rjava.RDataType;
-import uk.co.terminological.rjava.RObjectVisitor;
 import uk.co.terminological.rjava.UnconvertableTypeException;
+import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /** The R List is a flexible untyped list rather like a JSON document. Any kind of content can be included 
  * (as long as it is wrapped as an {@link RObject}). Using content from lists will require type checking

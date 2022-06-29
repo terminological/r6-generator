@@ -31,7 +31,7 @@ public class BasicExample {
 	@RMethod(examples = {
 			"ex = J$BasicExample$new('Hello from Java constructor!')",
 		})
-	public MinimalExample(@RDefault(rCode="'Hello R World!'") String message) {
+	public BasicExample(@RDefault(rCode="'Hello R World!'") String message) {
 		log.info("A minimal example with: "+message);
 		this.message = message;
 	}
