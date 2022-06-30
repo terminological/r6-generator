@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.terminological</groupId>
   <artifactId>r6-generator-maven-archetype</artifactId>
-  <version>main-SNAPSHOT</version>
+  <version>0.5.0</version>
   <packaging>maven-archetype</packaging>
   <name>R6 Generator Maven Archetype</name>
   <description>An archteype for rapid setup of r6-generator projects in the recommended configuration</description>
