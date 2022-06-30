@@ -37,7 +37,7 @@ projects created by archetype.
 * fixed windows dataframe conversion bug due to platform encoding
 * Improved archetype README template, moved default directory for java library to `java` due to windows R CMD check issue: 
 
-### main-SNAPHOT
+### 0.5.0
 
 * Title to sentence case to make CRAN happy.
 * Breaking API changes refactoring runtime file to subpackage organisation for future proofing. 
@@ -52,11 +52,13 @@ projects created by archetype.
 * Maven archetype enhancements - generated demo project now includes support for importing data, functioning R tests, and a demo get started vignette.
      - configure maven archetype for 3 main output types (fat-jar, thin-jar, compile-source) 
  
+### main-SNAPHOT
+ 
 * TODO: we probably ought to check for static method name collisions between @RClass though.
 * TODO: other maven plugin inputs need validity checking?
 * TODO: prevent caching issue on failure to generate or load library, leading to unexpected success unsing old library version. 
 * TODO: better approach to automation of whole library testing. Including an option to fail package generation when R tests fail or vignettes cannot be built, and a test package as part of the r6-generator project, with test that run during a integration test phase.
-* TODO: configure maven archetype for 3 main output types (fat-jar etc) and 4 layouts (R first, java first, siblings, identity).
+* TODO: configure maven archetype for 4 layouts (R first, java first, siblings, identity).
 
 ### Future work
 
