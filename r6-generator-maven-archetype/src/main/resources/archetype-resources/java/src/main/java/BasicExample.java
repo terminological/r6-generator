@@ -31,21 +31,34 @@ public class BasicExample {
 	@RMethod(examples = {
 			"ex = J$BasicExample$new('Hello from Java constructor!')",
 		})
-	public BasicExample(@RDefault(rCode="'Hello R World!'") String message) {
+	public BasicExample(@RDefault(rCode="'default message'") String message) {
 		log.info("A minimal example with: "+message);
 		this.message = message;
 	}
 	
 	/**
-	 * Description of a hello world function
+	 * Description of a getMessage function
 	 * @return this java method returns the message that the object was created with 
 	 */
 	@RMethod(examples = {
-			"ex = J$BasicExample$new()",
-			"ex$doHelloWorld()"
+			"ex = J$BasicExample$new('Hello world')",
+			"ex$getMessage()"
 		})
-	public RCharacter doHelloWorld() {
+	public RCharacter getMessage() {
 		return RConverter.convert(message);
+	}
+	
+	/**
+	 * A greet function
+	 * 
+	 * responds to someone
+	 * 
+	 * @param name - the name of the person to greet
+	 * @return a greeting 
+	 */
+	@RMethod
+	public static RCharacter greet(@RDefault(rCode="'Anonymous'")String name) {
+		return RConverter.convert("Hello, "+name);
 	}
 	
 }

@@ -40,7 +40,7 @@ This is mitigated as much as possible by using battle tested standard Java tooli
 
 * Only the Java source code is supplied with this distribution, packaged in a JAR file. The Java code must be compiled from the source
 which will be performed upon first use of the library, including the transitive resolution and the download of any dependencies needed. All dependencies must be 
-publicaly available in canonical Maven repositories. This is the most transparent option in terms of the openness of the source code of this R package. 
+publicly available in canonical Maven repositories. This is the most transparent option in terms of the openness of the source code of this R package. 
 However, the build process may be relatively time consuming and a potential point of failure. This is mitigated as much as possible by using battle tested
 standard Java tooling for compilation and dependency management. This strategy should have a relatively small footprint for the R package, and minimise the
 size required for distribution. 

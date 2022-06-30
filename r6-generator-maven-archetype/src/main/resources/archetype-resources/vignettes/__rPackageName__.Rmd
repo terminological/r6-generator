@@ -1,0 +1,57 @@
+---
+title: "${rPackageName}: Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{${rPackageName}: Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This will become the getting started vignette on a `pkgdown` site.
+
+# Installation instructions
+
+`${rPackageName}` is based on a java library and must have a working version of `Java` and `rJava` installed prior to installation. The following commands can ensure that your `rJava` installation is working.
+
+```R
+install.packages("rJava")
+rJava::.jinit()
+rJava::J("java.lang.System")$getProperty("java.version")
+```
+To install `${rPackageName}` in R:
+
+```{r}
+library(devtools)
+
+# you can install from the local copy:
+load_all("~/Git/${githubRepository}")
+
+# or from your github repository:
+# install_github("${githubOrganisation}/${githubRepository}")
+
+library(${rPackageName})
+```
+# Usage
+
+Instructions for your users...
+
+__Hello world - Object oriented style__
+
+```{r}
+J = ${rPackageName}::JavaApi$get()
+ex = J$BasicExample$new("test message")
+ex$getMessage()
+```
+
+__Hello world - R functional style__
+
+```{r}
+${rPackageName}::greet("tester")
+```

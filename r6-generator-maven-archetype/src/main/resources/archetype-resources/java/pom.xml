@@ -101,12 +101,38 @@
 						<usePkgdown>true</usePkgdown> <!-- Pkgdown will generate a nice looking site and run all the vignettes on build -->
 						<useRoxygen2>false</useRoxygen2> <!-- Roxygen can integrate user supplied and generated R code -->
 						<useJavadoc>false</useJavadoc> <!-- building the javadocs into the documentation is nice but can add a lot to size of the package -->
-						<preCompileBinary>true</preCompileBinary> <!-- pre-compiling the binary is probably a safer option -->
-						<packageAllDependencies>true</packageAllDependencies> <!-- packaging all dependencies is the most robust but results in a large package size -->
+#if( $libraryStyle == "compile-source" )
+						<!-- distribute java as source code to be compiled and dependencies linked on first use -->
+						<!-- may be time consuming on first use -->
+						<preCompileBinary>false</preCompileBinary>
+#elseif( $libraryStyle == "thin-jar" )
+						<!-- distribute java as thin jar. dependencies linked on first use -->
+						<!-- minimises R package footprint but requires download on first use -->
+						<preCompileBinary>true</preCompileBinary>
+						<packageAllDependencies>false</packageAllDependencies>
+#else
+						<!-- distribute java as fat jar. all dependencies pre-linked and embedded in distribution -->
+						<!-- packaging all dependencies is the most robust but results in a large package size -->
+						<preCompileBinary>true</preCompileBinary>
+						<packageAllDependencies>true</packageAllDependencies> 
+#end
 					</packageData>
 					<outputDirectory>${D}{project.basedir}/..</outputDirectory>
 				</configuration>
 				<executions>
+					<execution>
+						<id>clean-r-library</id>
+						<goals>
+							<goal>clean-r-library</goal>
+						</goals>
+					</execution>
+					<!-- This execution flattens the pom.xml to remove unnecessary dependencies -->
+					<execution>
+						<id>flatten-pom</id>
+						<goals>
+							<goal>flatten-pom</goal>
+						</goals>
+					</execution>
 					<!-- This execution generates the supporting r code -->
 					<execution>
 						<id>generate-r-library</id>
