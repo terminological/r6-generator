@@ -53,11 +53,13 @@ projects created by archetype.
      - configure maven archetype for 3 main output types (fat-jar, thin-jar, compile-source) 
 * Pipe export bug: maggrittr export not cone correctly unless doxygen used to generate NAMEPSPAGE. must use <useDoxygen>true</useDoxygen> pom option.
  
-### main-SNAPHOT
+### 0.5.1
 
 * Override sisu-guice dependency in plugin POM to try and get rid of illegal access warning. may require google guice 5.0
 * Fix Pipe export bug: exports to include magrittr pipe for all projects.
 * Update cran-comments.md template and .RBuildIgnore template.
+
+### main-SNAPHOT
 
 * TODO: better support for generating examples and test cases.
 * TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
