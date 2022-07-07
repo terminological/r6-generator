@@ -35,6 +35,9 @@ from public repositories, will be fetched independently during the first use of 
 This is managed by Java's standard package management system, Maven, which is itself downloaded automatically. This reduces the need for libraries to be distributed 
 with the R package, minimising the footprint of the R package, but downloading and installing the dependencies is a potential point of failure, and may take quite some time on first use of the library. 
 This is mitigated as much as possible by using battle tested standard Java tooling for dependency management, which will only download libraries it has not already used.
+
+The package download requires a working directory cache which is specified by `rappdirs::user_cache_dir` which allows us to store files that need to shared 
+across R sessions in a way that aligns with the CRAN policies.
 	</#if>
 <#else>
 
@@ -44,6 +47,9 @@ publicly available in canonical Maven repositories. This is the most transparent
 However, the build process may be relatively time consuming and a potential point of failure. This is mitigated as much as possible by using battle tested
 standard Java tooling for compilation and dependency management. This strategy should have a relatively small footprint for the R package, and minimise the
 size required for distribution. 
+
+The package compilation requires a working directory cache which is specified by `rappdirs::user_cache_dir` which allows us to store files that need to shared 
+across R sessions in a way that aligns with the CRAN policies.
 </#if>
 
 * The R6 package is a build time dependency. The note that it is unused can be safely ignored.

@@ -3,18 +3,23 @@
 \name{${method.getSnakeCaseName()}}
 \alias{${method.getSnakeCaseName()}}
 \title{${method.rdEscape(method.getTitle())}}
-\usage{
-${method.getSnakeCaseName()}(
+<#if !method.getParameterNames()?has_content>
+\usage{${method.getSnakeCaseName()}()
+<#else>
+\usage{${method.getSnakeCaseName()}(
 	${method.getFunctionParameterCsv(",\n\t")}
 )
+</#if>
 }
+<#if method.getParameterNames()?has_content>
 \arguments{
 	\if{html}{\out{<div class="arguments">}}
-<#list method.getParameterNames() as paramName>
+	<#list method.getParameterNames() as paramName>
 	\item{${paramName}}{${method.getParameterDescription(paramName)} - (java expects a ${method.getParameterType(paramName).getSimpleName()})}
-</#list>
+	</#list>
 	\if{html}{\out{</div>}}
 }
+</#if>
 \value{
 <#if method.isFactory()>
 R6 ${method.getReturnType().getSimpleName()} object: ${method.getAnnotationValue("return")!}
@@ -25,12 +30,14 @@ ${method.getReturnType().getSimpleName()}: ${method.getAnnotationValue("return")
 \description{
 ${method.rdEscape(method.getNonTitleDescription())!}
 }
+<#if method.hasExamples()>
 \examples{\dontrun{
 <#list method.getAnnotationList("examples") as example>
 ${method.rdEscapeExample(example)}
 </#list>
 }
 }
+</#if>
 \keyword{java api}
 
 

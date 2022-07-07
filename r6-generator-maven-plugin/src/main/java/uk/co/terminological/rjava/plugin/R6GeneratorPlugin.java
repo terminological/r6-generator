@@ -41,16 +41,16 @@ public class R6GeneratorPlugin extends PluginBase {
 		
 		getLog().info("Executing R6 generator");
 		setupPaths();
-		getLog().debug("Wiping previous files.");
+//		getLog().debug("Wiping previous files.");
 		// Find additional exports in non-generated R files 
 		List<String> additionalExports = scanDirectoryForExports(rDir);
 
-		//TODO: make this a mvn clean stage
-		rmContents(docs);
-		rmContents(manDir);
-		rmJar(jarDir, this.mavenProject.getArtifactId());
-		rmGenerated(workflows);
-		rmGenerated(rDir);
+//		//TODO: make this a mvn clean stage
+//		rmContents(docs);
+//		rmContents(manDir);
+//		rmJar(jarDir, this.mavenProject.getArtifactId());
+//		rmGenerated(workflows);
+//		rmGenerated(rDir);
 		
 		
     

@@ -49,13 +49,15 @@ public class RMethod extends RAnnotated {
 				.anyMatch(s2 -> s2.getCanonicalName().equals(this.getReturnType().getCanonicalName()));
 	}
 	public String getDescription() {
-		return description == null || description.isEmpty() ? "no description" : description;
+		return description == null || description.isEmpty() ? "no title" : description;
 	}
 	public String getTitle() {
 		return getDescription().split("\n")[0];
 	}
 	public String getNonTitleDescription() {
-		return Arrays.asList(getDescription().split("\n")).stream().skip(1).collect(Collectors.joining("\n"));
+		String s = Arrays.asList(getDescription().split("\n")).stream().skip(1).collect(Collectors.joining("\n")).trim();
+		if (s == null| s.isEmpty()) return "no description";
+		return s;
 	}
 	public String getParameterDescription(String paramName) {
 		if (this.getAnnotations().get("param") == null) return paramName;
@@ -72,6 +74,9 @@ public class RMethod extends RAnnotated {
 	}
 	public boolean isStatic() {
 		return isStatic;
+	}
+	public boolean hasExamples() {
+		return !this.getAnnotationList("examples").isEmpty();
 	}
 	
 	public String getParameterCsv() {

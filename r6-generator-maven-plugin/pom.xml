@@ -29,6 +29,29 @@
 			<artifactId>maven-plugin-tools-annotations</artifactId>
 			<version>3.6.4</version>
 			<scope>provided</scope>
+			<exclusions>
+				<!-- uses reflective access that became illegal in Java 16 -->
+				<exclusion>
+					<groupId>org.sonatype.sisu</groupId>
+  					<artifactId>sisu-guice</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+<!-- 		<dependency> -->
+<!--   			<groupId>org.sonatype.sisu</groupId> -->
+<!--   			<artifactId>sisu-guice</artifactId> -->
+<!--   			<version>4.2.0</version> -->
+<!--   			<scope>provided</scope> -->
+<!-- 		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
+		<!-- this aims to prevent illegal access warning  -->
+		<dependency>
+		    <groupId>com.google.inject</groupId>
+		    <artifactId>guice</artifactId>
+<!-- 		    <version>5.1.0</version> -->
+			<version>4.2.3</version>
+		    <classifier>no_aop</classifier>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.twdata.maven</groupId>

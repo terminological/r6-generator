@@ -51,21 +51,32 @@ projects created by archetype.
     - Clean phase as a new goal
 * Maven archetype enhancements - generated demo project now includes support for importing data, functioning R tests, and a demo get started vignette.
      - configure maven archetype for 3 main output types (fat-jar, thin-jar, compile-source) 
+* Pipe export bug: maggrittr export not cone correctly unless doxygen used to generate NAMEPSPAGE. must use <useDoxygen>true</useDoxygen> pom option.
  
 ### main-SNAPHOT
- 
+
+* Override sisu-guice dependency in plugin POM to try and get rid of illegal access warning. may require google guice 5.0
+* Fix Pipe export bug: exports to include magrittr pipe for all projects.
+* Update cran-comments.md template and .RBuildIgnore template.
+
+* TODO: better support for generating examples and test cases.
+* TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
+* TODO: configure javadocs for runtime
 * TODO: we probably ought to check for static method name collisions between @RClass though.
 * TODO: other maven plugin inputs need validity checking?
-* TODO: prevent caching issue on failure to generate or load library, leading to unexpected success unsing old library version. 
+* TODO: prevent caching issue on failure to generate or load library, leading to unexpected success using old library version. 
 * TODO: better approach to automation of whole library testing. Including an option to fail package generation when R tests fail or vignettes cannot be built, and a test package as part of the r6-generator project, with test that run during a integration test phase.
 * TODO: configure maven archetype for 4 layouts (R first, java first, siblings, identity).
 
 ### Future work
 
-* Split maven / java code functions within R to a seperate CRAN based native R library.
+* Support a package layout where java code is deployed to a maven repository like jitpack or github packages
+      - R package downloads from that repository
+      - No binaries or source distributed at all with package. 
+* Split maven / java code functions within R to a separate CRAN based native R library.
 * Support for promises / asynchronous Java calls.
 * Archetype documentation and class fixes
-* Impact of Java 17: JEP 412 foriegn function and memory API.
+* Impact of Java 17: JEP 412 foreign function and memory API.
 * Impact of Java 17: JEP 338 vector API
 * Additional data-type support as required
 * All other ideas welcome.

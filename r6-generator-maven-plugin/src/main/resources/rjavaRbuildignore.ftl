@@ -22,6 +22,8 @@
 # windows runners and that causes failure. THe github workflows deal with this edge case by renaming the directory to javasrc,
 ^src$
 ^pom.xml$
+^.factorypath$
+^.flattened-pom.xml$
 
 <#else>
 
@@ -37,7 +39,8 @@
 # they have been packaged into a XX-sources.jar and placed in inst/java
 ^${rToPomPath}/src$
 ^${rToPomPath}/pom.xml$
-
+^${rToPomPath}/.factorypath$
+^${rToPomPath}/.flattened-pom.xml$
 
 </#if>
 index.html

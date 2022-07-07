@@ -117,6 +117,9 @@ public class RInteger implements RPrimitive, JNIPrimitive {
 		return this.self.intValue();
 	}
 	
+	public static RInteger MIN_VALUE = RInteger.from(Integer.MIN_VALUE+1);
+	public static RInteger MAX_VALUE = RInteger.from(Integer.MAX_VALUE);
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Optional<Integer> opt() {return opt(Integer.class);}
