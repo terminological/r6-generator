@@ -51,6 +51,10 @@ public class RModel {
 	public Set<String> getExports() {
 		Set<String> out = getClassTypes().stream().map(c -> c.getSimpleName())
 			.collect(Collectors.toSet());
+		Set<String> out2 = getClassTypes().stream().flatMap(c -> c.getStaticMethods().stream())
+				.map(stat -> stat.getSnakeCaseName())
+				.collect(Collectors.toSet());
+		out.addAll(out2);
 		out.addAll(additionalExports);
 		return out;
 	}
@@ -148,7 +152,10 @@ public class RModel {
 	
 	public void setPluginMetadata(Artifact pluginVersion) {
 		this.pluginVersion = pluginVersion;
-		
+	}
+
+	public boolean detectMethodCollision(String simpleName) {
+		return this.getClassTypes().stream().map(r -> r.simpleName).anyMatch(s -> s.equalsIgnoreCase(simpleName));
 	}
 	
 

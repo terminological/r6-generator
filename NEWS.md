@@ -59,8 +59,9 @@ projects created by archetype.
 * Fix Pipe export bug: exports to include magrittr pipe for all projects.
 * Update cran-comments.md template and .RBuildIgnore template.
 
-### main-SNAPHOT
+### main-SNAPSHOT
 
+* Minor bug fix for arguments layout in man pages for JavaApi methods
 * TODO: better support for generating examples and test cases.
 * TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
 * TODO: configure javadocs for runtime

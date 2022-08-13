@@ -42,7 +42,9 @@ public class RAnnotated {
 	public List<String> getAnnotationList(String s) {
 		return annotations.get(s) == null ? 
 			Collections.emptyList() : 
-				annotations.get(s).stream().map(RAnnotated::stripQuotes)
+				annotations.get(s).stream()
+				.map(RAnnotated::stripQuotes)
+				.filter(s2 -> !s2.trim().isEmpty())
 				.collect(Collectors.toList()) ;
 	}
 	
@@ -128,6 +130,12 @@ public class RAnnotated {
 	public static String rdEscapeExample(String s) {
 		if(s == null) return null;
 		return s.replaceAll("%","\\\\%");
+	}
+	
+	public String indent(String s, int indent) {
+		if(s == null) return null;
+		String tabs = String.join("", Collections.nCopies(indent, "\t"));
+		return tabs+s.trim().replaceAll("\\n", "\n"+tabs).trim();
 	}
 	
 	public String doxygen(String s) { return doxygen(s,1); }

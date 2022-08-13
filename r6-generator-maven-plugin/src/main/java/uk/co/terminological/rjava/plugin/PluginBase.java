@@ -92,6 +92,7 @@ public abstract class PluginBase extends AbstractMojo {
 	protected Path rDir;
 	protected Path manDir;
 	protected Path docs;
+	protected Path testDir;
 	protected Path workflows;
 	protected String jarFile;
 	// protected Path jarLoc;
@@ -111,6 +112,7 @@ public abstract class PluginBase extends AbstractMojo {
 		rDir = rProjectDir.resolve("R").normalize();
 		manDir = rProjectDir.resolve("man").normalize();
 		docs = rProjectDir.resolve("docs").normalize();
+		testDir = rProjectDir.resolve("tests/testthat").normalize();
 		workflows = rProjectDir.resolve(".github/workflows").normalize();
 		
 		jarFile = mavenProject.getModel().getBuild().getFinalName()+"-jar-with-dependencies.jar";
@@ -139,6 +141,7 @@ public abstract class PluginBase extends AbstractMojo {
 			Files.createDirectories(manDir);
 			Files.createDirectories(workflows);
 			Files.createDirectories(docs);
+			Files.createDirectories(testDir);
 		} catch (IOException e1) {
 			throw new MojoExecutionException("Cannot create required directories:",e1);
 		}

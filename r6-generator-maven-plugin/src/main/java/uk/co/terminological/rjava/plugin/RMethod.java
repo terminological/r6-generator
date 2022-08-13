@@ -15,20 +15,32 @@ public class RMethod extends RAnnotated {
 	private LinkedHashMap<String,RType> parameters = new LinkedHashMap<>();
 	private LinkedHashMap<String,String> defaults = new LinkedHashMap<>();
 	private RType returnType;
+	private RClass definingClass;
 	private boolean isStatic;
+	private boolean isConstructor;
 	private String description;
 	
-	public RMethod(RModel model, Map<String,Object> annotations, String mname, String description, boolean isStatic) {
+	public RMethod(RModel model, RClass definingClass, Map<String,Object> annotations, String mname, String description, boolean isStatic, boolean isConstructor) {
 		super(model, annotations, null, mname);
+		this.definingClass = definingClass;
 		this.methodName = mname;
 		this.description = description;
 		this.isStatic = isStatic;
+		this.isConstructor = isConstructor;
 	}
 	
 	public void setReturnType(RType returnType) {this.returnType = returnType;}
 	public void addParameter(String name, RType parameterType, String defaultExpr) {
 		parameters.put(name, parameterType);
 		defaults.put(name, defaultExpr);
+	}
+	
+	public String getSnakeCaseName() {
+		if (this.getModel().detectMethodCollision(this.simpleName)) {
+			return getSnakeCase(this.definingClass.simpleName)+"_"+getSnakeCase(this.simpleName);
+		} else {
+			return getSnakeCase(this.simpleName);
+		}
 	}
 	
 	public RType getReturnType() {
@@ -75,8 +87,15 @@ public class RMethod extends RAnnotated {
 	public boolean isStatic() {
 		return isStatic;
 	}
+	
 	public boolean hasExamples() {
 		return !this.getAnnotationList("examples").isEmpty();
+	}
+	public boolean hasTests() {
+		return !this.getAnnotationList("tests").isEmpty();
+	}
+	public boolean isConstructor() {
+		return isConstructor;
 	}
 	
 	public String getParameterCsv() {

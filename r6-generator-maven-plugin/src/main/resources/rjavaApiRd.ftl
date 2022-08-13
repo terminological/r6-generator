@@ -58,30 +58,26 @@ Generated: ${model.getConfig().getDate()}
 		\subsection{Usage}{
 			\if{html}{\out{<div class="r">}}
 			\preformatted{
-	<#if method.isStatic()>
 J = ${model.getConfig().getPackageName()}::JavaApi$get()
 J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})
-	<#else>
-J = ${model.getConfig().getPackageName()}::JavaApi$get()
-instance = J$${class.getSimpleName()}$new(...);
-instance$${method.getName()}(<#list method.getParameterNames() as paramName>${paramName}<#sep>, </#list>)
-  	</#if>
+<#if !method.isConstructor()>
+# this method is also exposed as a package function:
+${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(${method.getParameterCsv()})
+</#if>
 	  		}
 			\if{html}{\out{</div>}}
 		}
 	
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
-			\describe{
-				\itemize{
+			\itemize{
 	<#if !method.getParameterNames()?has_content>
-					\item{none}
+				\item{none}
 	<#else>
 		<#list method.getParameterNames() as paramName>
-					\item{${method.getParameterDescription(paramName)}}{ - (java expects a ${method.getParameterType(paramName).getSimpleName()})}
+				\item{${method.getParameterDescription(paramName)}}{ - (java expects a ${method.getParameterType(paramName).getSimpleName()})}
 		</#list>
 	</#if>
-				}
 			}
 			\if{html}{\out{</div>}}
 		}

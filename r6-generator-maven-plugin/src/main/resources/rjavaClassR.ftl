@@ -31,10 +31,13 @@ ${class.getSimpleName()} = R6::R6Class("${class.getSimpleName()}", public=list(
 	#' @param jobj The internal rJava reference.
 	#' @param api The R6 api library class.
 	#' @return A new ${class.getSimpleName()} object.
-	#' @examples
-	#' J = ${model.getConfig().getPackageName()}::JavaApi$get();
 	<#assign method=class.getConstructor()>
+	#' @examples
+	#' \dontrun{
+	#' J = ${model.getConfig().getPackageName()}::JavaApi$get()
+	#' # This constructor must be called via the JavaApi where an appropriate set of parameters must be provided.
 	#' instance = J$${class.getSimpleName()}$${method.getName()}(${method.getFunctionParameterCsv()})
+	#' }	
 	initialize = function(jobj,api){
 		self$.jobj = jobj;
 		self$.api = api;
@@ -58,13 +61,16 @@ ${method.doxygen(method.getAnnotationValue("return"))!}
 	#' @return ${method.getReturnType().getSimpleName()}: 
 ${method.doxygen(method.getAnnotationValue("return"))!}
 		</#if>
-		<#if method.getAnnotationList("examples")?has_content>
+		<#if method.hasExamples()>
 	#' @examples
-	#' \dontrun{
+			<#if class.hasExampleSetup()>
+				<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+${method.doxygen(exampleSetup)}
+				</#list>
+			</#if>	
 			<#list method.getAnnotationList("examples") as example>
 ${method.doxygen(example)}
 			</#list>
-	#' }
 		</#if>
 	${method.getName()} = function(${method.getFunctionParameterCsv()}) {
 		# copy parameters

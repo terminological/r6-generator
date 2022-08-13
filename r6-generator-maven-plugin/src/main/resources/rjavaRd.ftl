@@ -13,12 +13,12 @@
 \S4method{new}{${class.getSimpleName()}}(${method.getParameterCsv()})
 }
  -->
-<#assign method=class.getConstructor()>
-<#if method.getParameterNames()?has_content>
+<#assign constr=class.getConstructor()>
+<#if constr.getParameterNames()?has_content>
 \arguments{
 	\if{html}{\out{<div class="arguments">}}
-	<#list method.getParameterNames() as paramName>
-	\item{${paramName}}{${method.getParameterDescription(paramName)} - (java expects a ${method.getParameterType(paramName).getSimpleName()})}
+	<#list constr.getParameterNames() as paramName>
+	\item{${paramName}}{${constr.getParameterDescription(paramName)} - (java expects a ${constr.getParameterType(paramName).getSimpleName()})}
 	</#list>
 	\if{html}{\out{</div>}}
 }
@@ -37,21 +37,48 @@ Generated: ${model.getConfig().getDate()}
 	${class.getDetails()!}
 }
 
-\examples{\dontrun{
-J = ${model.getConfig().getPackageName()}::JavaApi$get();
-<#assign method=class.getConstructor()>
-instance = J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})
-
-<#list class.getMethods() as method>
+\examples{
 ## -----------------------------------
-## Method `${class.getSimpleName()}$${method.getName()}`
+## Construct new instance of ${class.getSimpleName()}
 ## -----------------------------------
-	<#list method.getAnnotationList("examples") as example>
-${example}
+<#if constr.hasExamples()>
+	<#if class.hasExampleSetup()>
+		<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+${constr.rdEscapeExample(exampleSetup)}
+		</#list>
+	</#if>
+	<#list constr.getAnnotationList("examples") as example>
+${constr.rdEscapeExample(example)}
 	</#list>
+<#else>
+\dontrun{
+J = ${model.getConfig().getPackageName()}::JavaApi$get()
+# appropriate parameter values must be provided
+instance = J$${class.getSimpleName()}$new(${constr.getParameterCsv()})
+}
+</#if>
+<#list class.getInstanceMethods() as method>
 
+## -----------------------------------
+## Method `${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})`
+## -----------------------------------
+	<#if method.hasExamples()>
+		<#if class.hasExampleSetup()>
+			<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+${method.rdEscapeExample(exampleSetup)}
+			</#list>
+		</#if>
+		<#list method.getAnnotationList("examples") as example>
+${method.rdEscapeExample(example)}
+		</#list>
+	<#else>
+\dontrun{
+# appropriate parameter values must be provided
+instance$${method.getName()}(${method.getParameterCsv()})
+}
+	</#if>
 </#list>
-}}
+}
 
 \keyword{java api}
 
@@ -62,18 +89,7 @@ ${example}
 			\item \href{#method-${method.getName()}}{\code{J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})}}
 		}
 	}
-	\subsection{Static methods}{
-		\itemize{
-<#if !class.getStaticMethods()?has_content>
-			\item{none}
-<#else>
-	<#list class.getStaticMethods() as method>
-			\item \href{#method-${method.getName()}}{\code{J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})}}
-	</#list>
-</#if>
-		}
-	}
-	\subsection{Instance methods}{
+	\subsection{Class methods}{
 		\itemize{
 <#if !class.getInstanceMethods()?has_content>
 			\item{none}
@@ -87,25 +103,70 @@ ${example}
 		}
 	}
 
-<#list class.getConstructorAndMethods() as method>
 	\if{html}{\out{<hr>}}
-	\if{html}{\out{<a id="method-${method.getName()}"></a>}}
+	\if{html}{\out{<a id="method-${constr.getName()}"></a>}}
 	
-	\subsection{Method \code{${method.getName()}()}}{
-		${method.getDescription()}
-	
+	\subsection{Constructor \code{${constr.getName()}()}}{
+${method.getDescription()}
 
 		\subsection{Usage}{
 			\if{html}{\out{<div class="r">}}
 			\preformatted{
-	<#if method.isStatic()>
 J = ${model.getConfig().getPackageName()}::JavaApi$get()
-J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})
+instance = J$${class.getSimpleName()}$new(${constr.getParameterCsv()});
+  			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+	<#if !constr.getParameterNames()?has_content>
+				\item{none}
 	<#else>
+		<#list constr.getParameterNames() as paramName>
+				\item{${constr.getParameterDescription(paramName)}}{ - (java expects a ${constr.getParameterType(paramName).getSimpleName()})}
+		</#list>
+	</#if>
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+the new R6 ${class.getSimpleName()} object
+		}
+
+	<#if constr.hasExamples()>
+		\subsection{Examples}{
+			\if{html}{\out{<div class="r example copy">}}
+			\preformatted{
+		<#if class.hasExampleSetup()>
+			<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+${method.rdEscapeExample(exampleSetup)}
+			</#list>
+		</#if>
+		<#list constr.getAnnotationList("examples") as example>
+${method.rdEscapeExample(example)}
+		</#list>
+			}
+			\if{html}{\out{</div>}}
+		}
+	</#if>	
+	}
+
+<#list class.getInstanceMethods() as method>
+	\if{html}{\out{<hr>}}
+	\if{html}{\out{<a id="method-${method.getName()}"></a>}}
+	
+	\subsection{Method \code{${method.getName()}()}}{
+${method.getDescription()}
+
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
 J = ${model.getConfig().getPackageName()}::JavaApi$get()
-instance = J$${class.getSimpleName()}$new(...);
+instance = J$${class.getSimpleName()}$new(${constr.getParameterCsv()});
 instance$${method.getName()}(${method.getParameterCsv()})
-  	</#if>
   			}
 			\if{html}{\out{</div>}}
 		}
@@ -126,25 +187,28 @@ instance$${method.getName()}(${method.getParameterCsv()})
 
 		\subsection{Returns}{
 	<#if method.isFactory()>
-			R6 ${method.getReturnType().getSimpleName()} object: ${method.getAnnotationValue("return")!}
+R6 ${method.getReturnType().getSimpleName()} object: ${method.getAnnotationValue("return")!}
 	<#else>
-			${method.getReturnType().getSimpleName()}: ${method.getAnnotationValue("return")!}
+${method.getReturnType().getSimpleName()}: ${method.getAnnotationValue("return")!}
 	</#if>
 		}
 
+	<#if method.hasExamples()>
 		\subsection{Examples}{
 			\if{html}{\out{<div class="r example copy">}}
 			\preformatted{
-	<#if !method.getAnnotationList("examples")?has_content>
-not available
-	<#else>
+		<#if class.hasExampleSetup()>
+			<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+${method.rdEscapeExample(exampleSetup)}
+			</#list>
+		</#if>
 		<#list method.getAnnotationList("examples") as example>
-${example}
+${method.rdEscapeExample(example)}
 		</#list>
-	</#if>
 			}
 			\if{html}{\out{</div>}}
 		}
+	</#if>
 	}
 </#list>
 }

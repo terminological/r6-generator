@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.terminological</groupId>
   <artifactId>r6-generator-runtime</artifactId>
-  <version>0.5.1</version>
+  <version>main-SNAPSHOT</version>
   <name>R6 Generator Runtime</name>
   <description>A runtime library supporting R6 packaging for java libraries and easy use of R data structures within Java</description>
   <url>https://github.com/terminological/r6-generator-runtime</url>

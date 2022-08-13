@@ -50,7 +50,8 @@ library(devtools)
 load_all("~/Git/${githubRepository}")
 
 # or from your github repository:
-# install_github("${githubOrganisation}/${githubRepository}")
+# install_github("${githubOrganisation}/${githubRepository}", build_opts = c("--no-multiarch"))
+# N.B. the no-multiarch option is required for windows users.
 ```
 
 A basic usage scenario:

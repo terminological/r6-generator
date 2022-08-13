@@ -30,4 +30,15 @@ public @interface RClass {
 	 */
 	String[] suggests() default {};
 	
+	/**
+	 * The common setup for examples of functions in this class.
+	 * @return must be valid R code that provides necessary setup for manual examples of the generated code.
+	 */
+	String[] exampleSetup() default {};
+	
+	/**
+	 * The common setup for tests of functions in this class.
+	 * @return must be valid R code that provides necessary setup for testing the generated code.
+	 */
+	String[] testSetup() default {};
 }

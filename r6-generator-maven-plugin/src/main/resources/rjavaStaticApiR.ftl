@@ -24,13 +24,11 @@ ${method.doxygen(method.getAnnotationValue("return"),0)!}
 #' @return ${method.getReturnType().getSimpleName()}: 
 ${method.doxygen(method.getAnnotationValue("return"),0)!}
 		</#if>
-		<#if method.getAnnotationList("examples")?has_content>
+		<#if method.hasExamples()>
 #' @examples
-#' \dontrun{
 			<#list method.getAnnotationList("examples") as example>
 ${method.doxygen(example,0)}
 			</#list>
-#' }
 		</#if>
 #' @export
 ${method.getSnakeCaseName()} = function(${method.getFunctionParameterCsv()}) {

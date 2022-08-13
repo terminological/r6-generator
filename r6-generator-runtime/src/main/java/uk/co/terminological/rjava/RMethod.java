@@ -20,6 +20,15 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 public @interface RMethod {
 
+	/**
+	 * Populate R examples
+	 * @return A list of R commands that will be executed as an example. 
+	 */
 	String[] examples() default {};
 	
+	/**
+	 * Populate R testthat tests
+	 * @return A list of R commands that will be executed as an test of this function. 
+	 */
+	String[] tests() default {};
 }

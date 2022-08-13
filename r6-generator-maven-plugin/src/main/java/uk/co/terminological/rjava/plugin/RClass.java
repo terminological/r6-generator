@@ -70,6 +70,15 @@ public class RClass extends RAnnotated {
 	public boolean hasStaticMethods() {
 		return !getStaticMethods().isEmpty();
 	}
+	
+	public boolean hasExampleSetup() {
+		return !this.getAnnotationList("exampleSetup").isEmpty();
+	}
+	public boolean hasTestSetup() {
+		return !this.getAnnotationList("testSetup").isEmpty();
+	}
+	
+	
 	public List<RMethod> getInstanceMethods() {
 		return getMethods().stream().filter(m -> !m.isStatic()).collect(Collectors.toList());
 	}

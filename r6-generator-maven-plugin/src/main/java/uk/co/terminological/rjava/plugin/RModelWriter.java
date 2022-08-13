@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.util.FileUtils;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
@@ -58,6 +57,9 @@ public class RModelWriter {
 		File manDir = new File(target,"man");
 		manDir.mkdirs();
 		
+		File testDir = new File(target,"tests/testthat");
+		testDir.mkdirs();
+		
 		File workflowDir = new File(target,".github/workflows");
 		workflowDir.mkdirs();
 		
@@ -70,6 +72,7 @@ public class RModelWriter {
 		doGenerate(new File(target,"DESCRIPTION"),getTemplate("rjavaDescription.ftl"),typeRoot);
 		doGenerateSafe(new File(target,"NAMESPACE"),getTemplate("rjavaNamespace.ftl"),typeRoot);
 		doGenerateSafe(new File(instDir,"CITATION"),getTemplate("rjavaCitation.ftl"),typeRoot);
+		doGenerate(new File(testDir.getParentFile(),"testthat.R"),getTemplate("rjavaTestRunner.ftl"),typeRoot);
 		if (model.getConfig().needsLicense()) doGenerate(new File(target,"LICENSE"),getTemplate("rjavaLicense.ftl"),typeRoot);
 		doGenerate(new File(manDir,"JavaApi.Rd"),getTemplate("rjavaApiRd.ftl"),typeRoot);
 		doGenerate(new File(manDir,model.getConfig().getPackageName()+"-package.Rd"),getTemplate("rjavaPackageRd.ftl"),typeRoot);
@@ -86,6 +89,7 @@ public class RModelWriter {
 			
 			doGenerate(new File(manDir,type.getSimpleName()+".Rd"),getTemplate("rjavaRd.ftl"),typeRoot);
 			doGenerate(new File(rDir,type.getSimpleName()+".R"),getTemplate("rjavaClassR.ftl"),typeRoot);
+			doGenerateSafe(new File(testDir,"test-"+type.getSimpleName()+".R"),getTemplate("rjavaTests.ftl"),typeRoot);
 			
 			for (RMethod method: type.getStaticMethods()) {
 				typeRoot.put("method", method);

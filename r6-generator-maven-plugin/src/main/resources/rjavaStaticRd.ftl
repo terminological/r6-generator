@@ -31,11 +31,10 @@ ${method.getReturnType().getSimpleName()}: ${method.getAnnotationValue("return")
 ${method.rdEscape(method.getNonTitleDescription())!}
 }
 <#if method.hasExamples()>
-\examples{\dontrun{
-<#list method.getAnnotationList("examples") as example>
+\examples{
+	<#list method.getAnnotationList("examples") as example>
 ${method.rdEscapeExample(example)}
-</#list>
-}
+	</#list>
 }
 </#if>
 \keyword{java api}
