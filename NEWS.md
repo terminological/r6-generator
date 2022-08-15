@@ -66,6 +66,9 @@ projects created by archetype.
 * support for generating examples and test cases.
 * handling for static method name collisions.
 
+### 0.5.3
+
+* fix xml regression
 
 ### main-SNAPSHOT
 
