@@ -71,6 +71,10 @@ projects created by archetype.
 * fix xml regression
 * BUG: when tests resused as examples testthat is not declared and tests fail. Tests using testthat::expect_... functions must use fully qualified.
 
+### 0.5.4
+
+* fix testthat/examples reuse bugs
+
 ### main-SNAPSHOT
 
 * fixed missing library(testthat) in examples
