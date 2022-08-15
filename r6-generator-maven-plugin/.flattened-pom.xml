@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.terminological</groupId>
   <artifactId>r6-generator-maven-plugin</artifactId>
-  <version>main-SNAPSHOT</version>
+  <version>0.5.2</version>
   <packaging>maven-plugin</packaging>
   <name>R6 Generator Maven Plugin</name>
   <description>A maven plugin for generating R6 package encapsualting java libraries</description>
@@ -32,7 +32,7 @@
     <dependency>
       <groupId>io.github.terminological</groupId>
       <artifactId>r6-generator-runtime</artifactId>
-      <version>main-SNAPSHOT</version>
+      <version>0.5.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
