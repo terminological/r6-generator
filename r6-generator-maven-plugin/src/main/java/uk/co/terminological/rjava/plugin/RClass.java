@@ -78,7 +78,7 @@ public class RClass extends RAnnotated {
 		return !this.getAnnotationList("testSetup").isEmpty();
 	}
 	public List<String> getExampleSetup() {
-		if (!this.getAnnotationList("exampleSetup").isEmpty()) return getTestSetup();
+		if (this.getAnnotationList("exampleSetup").isEmpty()) return getTestSetup();
 		return this.getAnnotationList("exampleSetup");
 	}
 	public List<String> getTestSetup() {

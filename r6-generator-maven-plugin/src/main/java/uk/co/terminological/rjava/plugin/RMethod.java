@@ -98,7 +98,12 @@ public class RMethod extends RAnnotated {
 		return !this.getAnnotationList("tests").isEmpty();
 	}
 	public List<String> getExamples() {
-		if (!this.getAnnotationList("examples").isEmpty()) return getTests();
+		if (this.getAnnotationList("examples").isEmpty()) {
+			List<String> out = new ArrayList<String>();
+			out.add("library(testthat)");
+			out.addAll(getTests());
+			return out;
+		}
 		return this.getAnnotationList("examples");
 	}
 	public List<String> getTests() {

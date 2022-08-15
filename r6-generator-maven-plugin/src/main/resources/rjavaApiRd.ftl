@@ -34,7 +34,6 @@ Generated: ${model.getConfig().getDate()}
 \author{\email{${model.getConfig().getMaintainerEmail()}}}
 
 \examples{
-
 ## -----------------------------------
 ## Check library dependencies for ${model.getConfig().getPackageName()}
 ## -----------------------------------

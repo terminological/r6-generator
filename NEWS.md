@@ -69,9 +69,11 @@ projects created by archetype.
 ### 0.5.3
 
 * fix xml regression
+* BUG: when tests resused as examples testthat is not declared and tests fail. Tests using testthat::expect_... functions must use fully qualified.
 
 ### main-SNAPSHOT
 
+* fixed missing library(testthat) in examples
 * TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
 * TODO: configure javadocs for runtime
 * TODO: other maven plugin inputs need validity checking?
