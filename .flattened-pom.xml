@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.terminological</groupId>
   <artifactId>r6-generator</artifactId>
-  <version>main-SNAPSHOT</version>
+  <version>0.5.4</version>
   <packaging>pom</packaging>
   <name>R6 generator</name>
   <description>R can use RJava or jsr223 to communicate with java. R also has a class system called R6. If you want to use a java library 

@@ -167,7 +167,7 @@ public class R6GeneratorPlugin extends PluginBase {
 		}
 		
 		// STEP 3: (Optional) Regenerate documentation using ROxygen2
-		if (packageData.useRoxygen2() && !packageData.getDebugMode()) {
+		if (packageData.useRoxygen2()) {
 			
 			// must be an array to stop java tokenising it
 			String rCMD[] = {"R","-e","devtools::document(pkg = '"+rProjectDir+"')"};
@@ -192,14 +192,14 @@ public class R6GeneratorPlugin extends PluginBase {
 					}
 				}
 			} catch (IOException | InterruptedException e) {
-				throw new MojoExecutionException("Failed to execute pkgdown", e);
+				throw new MojoExecutionException("Failed to execute devtools::document", e);
 			}
 		}
 		
 		// STEP 3.5: Run a R CMD Check locally to make sure nothing is broken. 
 		
 		// STEP 4: (Optional) Run pkgdown in R to build site documentation.  
-		if (packageData.usePkgdown() && !packageData.getDebugMode()) {
+		if (packageData.usePkgdown()) {
 			
 			// must be an array to stop java tokenising it
 			String rCMD[] = {"R","-e","pkgdown::build_site(pkg = '"+rProjectDir+"')"};
@@ -224,7 +224,7 @@ public class R6GeneratorPlugin extends PluginBase {
 					}
 				}
 			} catch (IOException | InterruptedException e) {
-				throw new MojoExecutionException("Failed to execute pkgdown", e);
+				throw new MojoExecutionException("Failed to execute pkgdown::build_site", e);
 			}
 		}
 		

@@ -75,6 +75,7 @@ public class RModelWriter {
 		doGenerate(new File(testDir.getParentFile(),"testthat.R"),getTemplate("rjavaTestRunner.ftl"),typeRoot);
 		if (model.getConfig().needsLicense()) doGenerate(new File(target,"LICENSE"),getTemplate("rjavaLicense.ftl"),typeRoot);
 		doGenerate(new File(manDir,"JavaApi.Rd"),getTemplate("rjavaApiRd.ftl"),typeRoot);
+		doGenerate(new File(manDir,"pipe.Rd"),getTemplate("rjavaPipeRd.ftl"),typeRoot);
 		doGenerate(new File(manDir,model.getConfig().getPackageName()+"-package.Rd"),getTemplate("rjavaPackageRd.ftl"),typeRoot);
 		doGenerate(new File(rDir,"JavaApi.R"),getTemplate("rjavaApiR.ftl"),typeRoot);
 		doGenerate(new File(rDir,"StaticApi.R"),getTemplate("rjavaStaticApiR.ftl"),typeRoot);
