@@ -39,10 +39,10 @@ public class RClass extends RAnnotated {
 	}
 	
 	public String getDetails() {
-		return details == null || details.isEmpty() ? "no details" : details;
+		return details == null || details.isEmpty() ? "no details" : details.replaceAll("<br/?>|<BR/?>", "\n");
 	}
 	public String getDescription() {
-		return description == null || description.isEmpty() ? "missing description" : description;
+		return description == null || description.isEmpty() ? "missing description" : description.replaceAll("<br/?>|<BR/?>", "\n");
 	}
 	public String[] getAuthor() {
 		if (this.getAnnotationValue("author").isEmpty()) return new String[] {};
@@ -72,12 +72,18 @@ public class RClass extends RAnnotated {
 	}
 	
 	public boolean hasExampleSetup() {
-		return !this.getAnnotationList("exampleSetup").isEmpty();
+		return !this.getAnnotationList("exampleSetup").isEmpty() || hasTestSetup();
 	}
 	public boolean hasTestSetup() {
 		return !this.getAnnotationList("testSetup").isEmpty();
 	}
-	
+	public List<String> getExampleSetup() {
+		if (!this.getAnnotationList("exampleSetup").isEmpty()) return getTestSetup();
+		return this.getAnnotationList("exampleSetup");
+	}
+	public List<String> getTestSetup() {
+		return this.getAnnotationList("testSetup");
+	}
 	
 	public List<RMethod> getInstanceMethods() {
 		return getMethods().stream().filter(m -> !m.isStatic()).collect(Collectors.toList());

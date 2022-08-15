@@ -9,11 +9,11 @@
 	<#if method.hasTests()>
 test_that("${class.getSimpleName()}$${method.getName()}() R6 method",	{
 		<#if class.hasTestSetup()>
-			<#list class.getAnnotationList("testSetup") as testSetup>
+			<#list class.getTestSetup() as testSetup>
 ${method.indent(testSetup,1)}
 			</#list>
 		</#if>	
-		<#list method.getAnnotationList("tests") as test>
+		<#list method.getTests() as test>
 ${method.indent(test,1)}
 		</#list>
 })
@@ -26,7 +26,7 @@ ${method.indent(test,1)}
 # ├ ${method.getSnakeCaseName()}() package method ----
 	<#if method.hasTests()>
 test_that("${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}() static method", {
-		<#list method.getAnnotationList("tests") as test>
+		<#list method.getTests() as test>
 ${method.indent(test,1)}
 		</#list>
 })

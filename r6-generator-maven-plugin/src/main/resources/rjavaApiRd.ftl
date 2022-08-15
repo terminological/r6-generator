@@ -33,20 +33,278 @@ Generated: ${model.getConfig().getDate()}
 
 \author{\email{${model.getConfig().getMaintainerEmail()}}}
 
+\examples{
+
+## -----------------------------------
+## Check library dependencies for ${model.getConfig().getPackageName()}
+## -----------------------------------
+${model.getConfig().getPackageName()}::JavaApi$installDependencies()
+
+## -----------------------------------
+## Construct a ${model.getConfig().getPackageName()} Java API instance
+## -----------------------------------
+
+J = ${model.getConfig().getPackageName()}::JavaApi$get()
+# or a more verbose configuration
+# J = ${model.getConfig().getPackageName()}::JavaApi$get("DEBUG")
+
+<#list model.getClassTypes() as class>
+<#list class.getConstructorsAndStaticMethods() as method>
+
+## -----------------------------------
+## Method `J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})`
+<#if !method.isConstructor()>
+## Aliased as `${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(${method.getParameterCsv()})`
+</#if>
+## -----------------------------------
+<#if method.hasExamples()>
+	<#list method.getExamples() as example>
+${method.rdEscapeExample(example)}
+	</#list>
+<#else>
+\dontrun{
+# no example given - appropriate parameter values must be provided:
+J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})
+# or alternatively:
+${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(${method.getParameterCsv()})
+}
+	</#if>
+</#list>
+</#list>
+}
+
 \keyword{java api}
 
-\section{Static methods and constructors}{
+\section{Package initialisation and control}{
 	\itemize{
-		\item \code{JavaApi$get()}
+		\item \href{#method-api-installDependencies}{\code{JavaApi$installDependencies()}}
+		\item \href{#method-api-rebuildDependencies}{\code{JavaApi$rebuildDependencies()}}
+		\item \href{#method-api-versionInformation}{\code{JavaApi$versionInformation()}}
+		\item \href{#method-api-get}{\code{J = JavaApi$get(logLevel)}}
+		\item \href{#method-api-changeLogLevel}{\code{J$changeLogLevel(logLevel)}}
+		\item \href{#method-api-reconfigureLog}{\code{J$reconfigureLog(log4jproperties)}}
+		\item \href{#method-api-printMessages}{\code{J$printMessages()}}
+	}
+}
+
+\section{Package classes and static methods}{
 <#list model.getClassTypes() as class>
+	\if{html}{\out{<hr>}}
+	\itemize{
 		\item \href{#method-${class.getSimpleName()}-new}{\code{J$${class.getSimpleName()}$new(${class.getConstructor().getParameterCsv()})}}
 	<#list class.getStaticMethods() as method>
 		\item \href{#method-${class.getSimpleName()}-${method.getName()}}{\code{J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})}}
 	</#list>
-</#list>
 	}
-	
+</#list>
+}
 
+\section{Package initialisation and control}{
+	\if{html}{\out{<a id="method-api-installDependencies"></a>}}
+	\subsection{Package method \code{JavaApi$installDependencies()}}{
+		This package level method checks for, and installs any dependencies needed for the running of the package.
+		It is called automatically on first package load and so in general does not need to be used directly.
+	
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
+${model.getConfig().getPackageName()}::JavaApi$installDependencies()
+			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+				\item{none}
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+nothing. called for side effects.
+		}
+	}
+	\if{html}{\out{</div>}}
+	
+	\if{html}{\out{<hr>}}
+	\if{html}{\out{<a id="method-api-rebuildDependencies"></a>}}
+	\subsection{Package method \code{JavaApi$rebuildDependencies()}}{
+		This package level method removes existing dependencies and re-installs dependencies needed for the running of the package.
+		It is called automatically on first package load and so in general does not need to be called.
+	
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
+${model.getConfig().getPackageName()}::JavaApi$rebuildDependencies()
+			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+				\item{none}
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+nothing. called for side effects.
+		}
+	}
+	\if{html}{\out{</div>}}
+	
+	\if{html}{\out{<hr>}}
+	\if{html}{\out{<a id="method-api-versionInformation"></a>}}
+	\subsection{Package method \code{JavaApi$versionInformation()}}{
+		This package level method returns debugging version information for the package
+	
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
+${model.getConfig().getPackageName()}::JavaApi$versionInformation()
+			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+				\item{none}
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+A list containing a set of versioning information about this package.
+		}
+	}
+	\if{html}{\out{</div>}}
+	
+	\if{html}{\out{<hr>}}
+	\if{html}{\out{<a id="method-api-get"></a>}}
+	\subsection{Package method \code{JavaApi$get()}}{
+		This is the main entry point for the package and the root of the Java API in this package. All classes defined in the package
+		are made available as items under this root. The JavaApi object manages the communication between R and Java.
+	
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
+J = ${model.getConfig().getPackageName()}::JavaApi$get()
+# package classes and functions are nested under the `J` api object.
+			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+				\item{logLevel}{The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+A R6 ${model.getConfig().getPackageName()}::JavaApi object containing the access point to the objects and functions defined in this package 
+		}
+	}
+	\if{html}{\out{</div>}}
+	
+	\if{html}{\out{<hr>}}
+	\if{html}{\out{<a id="method-api-changeLogLevel"></a>}}
+	\subsection{Api method \code{J$changeLogLevel(logLevel)}}{
+		Once the package is initialised the log level can be changed to increase the level of messages from the api.
+	
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
+J = ${model.getConfig().getPackageName()}::JavaApi$get()
+J$changeLogLevel("DEBUG")
+			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+				\item{logLevel}{The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+nothing. used for side effects.
+		}
+	}
+	\if{html}{\out{</div>}}
+	
+	\if{html}{\out{<hr>}}
+	\if{html}{\out{<a id="method-api-reconfigreLog"></a>}}
+	\subsection{Api method \code{J$reconfigureLog(log4jproperties)}}{
+		Experimental / Advanced use: Once the package is initialised the log configureation can be changed to log to 
+		an external file for example.
+	
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
+J = ${model.getConfig().getPackageName()}::JavaApi$get()
+prp = fs::path(getwd(),"log4j.properties")
+if (fs::file_exists(prp)) {
+	J$changeLogLevel(prp)
+}
+			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+				\item{log4jproperties}{a full path to a log4jproperies file}
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+nothing. used for side effects.
+		}
+	}
+	\if{html}{\out{</div>}}
+	
+	\if{html}{\out{<hr>}}
+	\if{html}{\out{<a id="method-api-printMessages"></a>}}
+	\subsection{Api method \code{J$printMessages()}}{
+		Experimental / Internal use: Messages from Java to R are queued and
+		printed after each function call. It is unlikely that any will be not printed
+		so in normal circumstances this function should do nothing.
+	
+		\subsection{Usage}{
+			\if{html}{\out{<div class="r">}}
+			\preformatted{
+J = ${model.getConfig().getPackageName()}::JavaApi$get()
+J$printMessages()
+			}
+			\if{html}{\out{</div>}}
+		}
+	
+		\subsection{Arguments}{
+			\if{html}{\out{<div class="arguments">}}
+			\itemize{
+				\item{none}
+			}
+			\if{html}{\out{</div>}}
+		}
+
+		\subsection{Returns}{
+nothing. used for side effects.
+		}
+	}
+	\if{html}{\out{</div>}}
+	
+}
+
+
+\section{Static methods and constructors}{
 <#list model.getClassTypes() as class>
 <#list class.getConstructorsAndStaticMethods() as method>
 	\if{html}{\out{<hr>}}
@@ -91,6 +349,19 @@ ${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(${method.get
 		}
 	}
 
+	<#if method.hasExamples()>
+		\subsection{Examples}{
+			\if{html}{\out{<div class="r example copy">}}
+			\preformatted{
+		<#list method.getExamples() as example>
+${method.rdEscapeExample(example)}
+		</#list>
+			}
+			\if{html}{\out{</div>}}
+		}
+	</#if>
+
 </#list>
 </#list>
+
 }

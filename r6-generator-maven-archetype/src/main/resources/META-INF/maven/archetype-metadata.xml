@@ -95,9 +95,6 @@
 			<directory>data-raw</directory>
 		</fileSet>
 		<fileSet filtered="true">
-			<directory>tests</directory>
-		</fileSet>
-		<fileSet filtered="true">
 			<directory>vignettes</directory>
 		</fileSet>
 		<fileSet filtered="true">

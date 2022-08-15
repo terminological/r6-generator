@@ -44,7 +44,8 @@ public class RAnnotated {
 			Collections.emptyList() : 
 				annotations.get(s).stream()
 				.map(RAnnotated::stripQuotes)
-				.filter(s2 -> !s2.trim().isEmpty())
+				.map(s2 -> s2.trim())
+				.filter(s2 -> !s2.isEmpty())
 				.collect(Collectors.toList()) ;
 	}
 	

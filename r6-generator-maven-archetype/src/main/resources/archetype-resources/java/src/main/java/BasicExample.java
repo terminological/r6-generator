@@ -13,7 +13,13 @@ import uk.co.terminological.rjava.types.RCharacter;
  * This class is a very basic example of the features of the rJava maven plugin. <br>
  * The class is annotated with an @RClass to identify it as part of the R API. <br>
  */
-@RClass
+@RClass(exampleSetup = {
+	"J = JavaApi$get()",
+	"ex = J$BasicExample$new('Hello world')"
+}, testSetup = {
+	"J = JavaApi$get()",
+	"ex = J$BasicExample$new('test message')"
+})
 public class BasicExample {
 
 	String message;
@@ -29,8 +35,9 @@ public class BasicExample {
 	 * @param message - a hello world message
 	 */
 	@RMethod(examples = {
-			"ex = J$BasicExample$new('Hello from Java constructor!')",
-		})
+		"J = JavaApi$get()",
+		"ex = J$BasicExample$new('Hello from Java constructor!')"
+	})
 	public BasicExample(@RDefault(rCode="'default message'") String message) {
 		log.info("A minimal example with: "+message);
 		this.message = message;
@@ -41,9 +48,10 @@ public class BasicExample {
 	 * @return this java method returns the message that the object was created with 
 	 */
 	@RMethod(examples = {
-			"ex = J$BasicExample$new('Hello world')",
-			"ex$getMessage()"
-		})
+		"ex$getMessage()"
+	}, tests = {
+		"testthat::expect_equal(ex$getMessage(), 'test message')"
+	})
 	public RCharacter getMessage() {
 		return RConverter.convert(message);
 	}
@@ -56,7 +64,11 @@ public class BasicExample {
 	 * @param name - the name of the person to greet
 	 * @return a greeting 
 	 */
-	@RMethod
+	@RMethod(examples = {
+		"greet('friend!')"
+	}, tests = {
+		"expect_equal(greet('friend!'),'Hello, friend!')"
+	})
 	public static RCharacter greet(@RDefault(rCode="'Anonymous'")String name) {
 		return RConverter.convert("Hello, "+name);
 	}

@@ -32,7 +32,7 @@ ${method.rdEscape(method.getNonTitleDescription())!}
 }
 <#if method.hasExamples()>
 \examples{
-	<#list method.getAnnotationList("examples") as example>
+	<#list method.getExamples() as example>
 ${method.rdEscapeExample(example)}
 	</#list>
 }

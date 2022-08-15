@@ -71,7 +71,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 3
-          extra-packages: any::rcmdcheck
+          extra-packages: any::rcmdcheck any::XML
           needs: check
 <#if model.getRelativePath()?has_content>
           working-directory: ${model.getRelativePath()}

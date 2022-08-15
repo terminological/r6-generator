@@ -43,11 +43,11 @@ Generated: ${model.getConfig().getDate()}
 ## -----------------------------------
 <#if constr.hasExamples()>
 	<#if class.hasExampleSetup()>
-		<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+		<#list class.getExampleSetup() as exampleSetup>
 ${constr.rdEscapeExample(exampleSetup)}
 		</#list>
 	</#if>
-	<#list constr.getAnnotationList("examples") as example>
+	<#list constr.getExamples() as example>
 ${constr.rdEscapeExample(example)}
 	</#list>
 <#else>
@@ -64,11 +64,11 @@ instance = J$${class.getSimpleName()}$new(${constr.getParameterCsv()})
 ## -----------------------------------
 	<#if method.hasExamples()>
 		<#if class.hasExampleSetup()>
-			<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+			<#list class.getExampleSetup() as exampleSetup>
 ${method.rdEscapeExample(exampleSetup)}
 			</#list>
 		</#if>
-		<#list method.getAnnotationList("examples") as example>
+		<#list method.getExamples() as example>
 ${method.rdEscapeExample(example)}
 		</#list>
 	<#else>
@@ -141,11 +141,11 @@ the new R6 ${class.getSimpleName()} object
 			\if{html}{\out{<div class="r example copy">}}
 			\preformatted{
 		<#if class.hasExampleSetup()>
-			<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+			<#list class.getExampleSetup() as exampleSetup>
 ${method.rdEscapeExample(exampleSetup)}
 			</#list>
 		</#if>
-		<#list constr.getAnnotationList("examples") as example>
+		<#list constr.getExamples() as example>
 ${method.rdEscapeExample(example)}
 		</#list>
 			}
@@ -198,11 +198,11 @@ ${method.getReturnType().getSimpleName()}: ${method.getAnnotationValue("return")
 			\if{html}{\out{<div class="r example copy">}}
 			\preformatted{
 		<#if class.hasExampleSetup()>
-			<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+			<#list class.getExampleSetup() as exampleSetup>
 ${method.rdEscapeExample(exampleSetup)}
 			</#list>
 		</#if>
-		<#list method.getAnnotationList("examples") as example>
+		<#list method.getExamples() as example>
 ${method.rdEscapeExample(example)}
 		</#list>
 			}

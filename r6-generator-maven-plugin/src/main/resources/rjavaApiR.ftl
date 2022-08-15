@@ -67,10 +67,6 @@ JavaApi = R6::R6Class("JavaApi", public=list(
  	initialize = function(logLevel = <#if model.getConfig().getDebugMode()>"DEBUG"<#else>"${model.getConfig().getDefaultLogLevel()}"</#if>) {
  		if (is.null(JavaApi$singleton)) stop("Startup the java api with JavaApi$get() rather than using this constructor directly")
  	
- 		message("Initialising ${model.getConfig().getTitle()}")
- 		message("Version: ${model.getConfig().getVersion()}")
-		message("Generated: ${model.getConfig().getDate()}")
- 	
  		<#--
  		# TODO: if (substr(packageVersion("rJava"),1,1)=="0") { 
  		# 	use .jinit? at least for debugging mode.
@@ -242,6 +238,25 @@ NULL
 
 # https://groups.google.com/g/rdevtools/c/qT6cJt6DLJ0
  -->
+
+JavaApi$installDependencies = function() {
+	.checkDependencies(quiet=FALSE)
+}
+
+JavaApi$versionInformation = function() {
+	out = list(
+		package = "${model.getConfig().getPackageName()}",
+		r_package_version = "${model.getConfig().getVersion()}",
+		r_package_generated = "${model.getConfig().getDate()}",
+		java_library_version = "${model.getMavenCoordinates()}",
+		maintainer = "${model.getConfig().getMaintainerEmail()}"
+	)
+	# try and get complilation information if library is loaded
+	try({
+		out$java_library_compiled = .jcall("uk/co/terminological/rjava/LogController", returnSig = "S", method = "getClassBuildTime")
+	}, silent=TRUE)
+	return(out)
+}
 
 ## package private utility functions for managing maven dependencies ----
 # as this is generated code configuration is hard coded here

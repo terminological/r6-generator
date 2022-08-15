@@ -59,13 +59,18 @@ projects created by archetype.
 * Fix Pipe export bug: exports to include magrittr pipe for all projects.
 * Update cran-comments.md template and .RBuildIgnore template.
 
-### main-SNAPSHOT
+### 0.5.2
 
 * Minor bug fix for arguments layout in man pages for JavaApi methods
-* TODO: better support for generating examples and test cases.
+* improved documentation of Java api
+* support for generating examples and test cases.
+* handling for static method name collisions.
+
+
+### main-SNAPSHOT
+
 * TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
 * TODO: configure javadocs for runtime
-* TODO: we probably ought to check for static method name collisions between @RClass though.
 * TODO: other maven plugin inputs need validity checking?
 * TODO: prevent caching issue on failure to generate or load library, leading to unexpected success using old library version. 
 * TODO: better approach to automation of whole library testing. Including an option to fail package generation when R tests fail or vignettes cannot be built, and a test package as part of the r6-generator project, with test that run during a integration test phase.

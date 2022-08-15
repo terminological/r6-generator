@@ -34,7 +34,7 @@ library(devtools)
 load_all("~/Git/${githubRepository}")
 
 # or from your github repository:
-# install_github("${githubOrganisation}/${githubRepository}")
+# install_github("${githubOrganisation}/${githubRepository}", args = c("--no-multiarch"))
 
 library(${rPackageName})
 ```
@@ -50,7 +50,7 @@ ex = J$BasicExample$new("test message")
 ex$getMessage()
 ```
 
-__Hello world - R functional style__
+__Hello world - R functional style (static methods)__
 
 ```{r}
 ${rPackageName}::greet("tester")

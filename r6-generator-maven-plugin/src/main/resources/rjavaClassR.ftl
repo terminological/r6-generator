@@ -64,11 +64,11 @@ ${method.doxygen(method.getAnnotationValue("return"))!}
 		<#if method.hasExamples()>
 	#' @examples
 			<#if class.hasExampleSetup()>
-				<#list class.getAnnotationList("exampleSetup") as exampleSetup>
+				<#list class.getExampleSetup() as exampleSetup>
 ${method.doxygen(exampleSetup)}
 				</#list>
 			</#if>	
-			<#list method.getAnnotationList("examples") as example>
+			<#list method.getExamples() as example>
 ${method.doxygen(example)}
 			</#list>
 		</#if>

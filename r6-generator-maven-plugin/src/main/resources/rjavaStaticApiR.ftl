@@ -26,7 +26,7 @@ ${method.doxygen(method.getAnnotationValue("return"),0)!}
 		</#if>
 		<#if method.hasExamples()>
 #' @examples
-			<#list method.getAnnotationList("examples") as example>
+			<#list method.getExamples() as example>
 ${method.doxygen(example,0)}
 			</#list>
 		</#if>

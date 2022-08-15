@@ -30,10 +30,12 @@ public class TestDataGenerator {
 	 * 
 	 * @param dataframe - the dataframe to write
 	 * @param resourceName - the internal name of the resource for Java testing
-	 * @param filename - a filename (maybe generated)
+	 * @param filename - a filename (maybe generated) this defaults to the resources directory of the maven project
 	 * @return nothing
 	 */
-	@RMethod
+	@RMethod(examples = {
+		"serialise_dataframe(iris, resourceName = 'test_iris')"
+	})
 	public static void serialiseDataframe(
 			RDataframe dataframe, 
 			@RDefault(rCode="'test_dataframe'") RCharacter resourceName,
@@ -52,7 +54,9 @@ public class TestDataGenerator {
 	 * @param filename - a filename (maybe generated)
 	 * @return nothing
 	 */
-	@RMethod
+	@RMethod(examples = {
+		"serialise_list(list(1,2,c(3,4,5)))"
+	})
 	public static void serialiseList(
 			RList list, 
 			@RDefault(rCode="'test_list'") RCharacter resourceName,
@@ -71,7 +75,9 @@ public class TestDataGenerator {
 	 * @param filename - a filename (maybe generated)
 	 * @return nothing
 	 */
-	@RMethod
+	@RMethod(examples = {
+		"serialise_named_list(list(a=1,b=2,c=c(3,4,5)))"
+	})
 	public static void serialiseNamedList(
 			RNamedList namedList, 
 			@RDefault(rCode="'test_namedlist'") RCharacter resourceName,

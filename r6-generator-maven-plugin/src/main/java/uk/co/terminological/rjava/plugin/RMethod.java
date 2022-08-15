@@ -61,7 +61,7 @@ public class RMethod extends RAnnotated {
 				.anyMatch(s2 -> s2.getCanonicalName().equals(this.getReturnType().getCanonicalName()));
 	}
 	public String getDescription() {
-		return description == null || description.isEmpty() ? "no title" : description;
+		return description == null || description.isEmpty() ? "no title" : description.replaceAll("<br/?>|<BR/?>", "\n");
 	}
 	public String getTitle() {
 		return getDescription().split("\n")[0];
@@ -89,11 +89,22 @@ public class RMethod extends RAnnotated {
 	}
 	
 	public boolean hasExamples() {
-		return !this.getAnnotationList("examples").isEmpty();
+		return (
+			!this.getAnnotationList("examples").isEmpty() ||
+			hasTests()
+		);
 	}
 	public boolean hasTests() {
 		return !this.getAnnotationList("tests").isEmpty();
 	}
+	public List<String> getExamples() {
+		if (!this.getAnnotationList("examples").isEmpty()) return getTests();
+		return this.getAnnotationList("examples");
+	}
+	public List<String> getTests() {
+		return this.getAnnotationList("tests");
+	}
+	
 	public boolean isConstructor() {
 		return isConstructor;
 	}
