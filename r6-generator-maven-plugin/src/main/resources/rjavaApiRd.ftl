@@ -51,9 +51,9 @@ J = ${model.getConfig().getPackageName()}::JavaApi$get()
 <#list class.getConstructorsAndStaticMethods() as method>
 
 ## -----------------------------------
-## Method `J$${class.getSimpleName()}$${method.getName()}(${method.getParameterCsv()})`
+## Method `J$${class.getSimpleName()}$${method.getName()}(...)`
 <#if !method.isConstructor()>
-## Aliased as `${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(${method.getParameterCsv()})`
+## Aliased as `${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(...)`
 </#if>
 ## -----------------------------------
 <#if method.hasExamples()>
@@ -124,7 +124,6 @@ ${model.getConfig().getPackageName()}::JavaApi$installDependencies()
 nothing. called for side effects.
 		}
 	}
-	\if{html}{\out{</div>}}
 	
 	\if{html}{\out{<hr>}}
 	\if{html}{\out{<a id="method-api-rebuildDependencies"></a>}}
@@ -152,7 +151,6 @@ ${model.getConfig().getPackageName()}::JavaApi$rebuildDependencies()
 nothing. called for side effects.
 		}
 	}
-	\if{html}{\out{</div>}}
 	
 	\if{html}{\out{<hr>}}
 	\if{html}{\out{<a id="method-api-versionInformation"></a>}}
@@ -179,7 +177,6 @@ ${model.getConfig().getPackageName()}::JavaApi$versionInformation()
 A list containing a set of versioning information about this package.
 		}
 	}
-	\if{html}{\out{</div>}}
 	
 	\if{html}{\out{<hr>}}
 	\if{html}{\out{<a id="method-api-get"></a>}}
@@ -208,7 +205,6 @@ J = ${model.getConfig().getPackageName()}::JavaApi$get()
 A R6 ${model.getConfig().getPackageName()}::JavaApi object containing the access point to the objects and functions defined in this package 
 		}
 	}
-	\if{html}{\out{</div>}}
 	
 	\if{html}{\out{<hr>}}
 	\if{html}{\out{<a id="method-api-changeLogLevel"></a>}}
@@ -236,7 +232,6 @@ J$changeLogLevel("DEBUG")
 nothing. used for side effects.
 		}
 	}
-	\if{html}{\out{</div>}}
 	
 	\if{html}{\out{<hr>}}
 	\if{html}{\out{<a id="method-api-reconfigreLog"></a>}}
@@ -268,7 +263,6 @@ if (fs::file_exists(prp)) {
 nothing. used for side effects.
 		}
 	}
-	\if{html}{\out{</div>}}
 	
 	\if{html}{\out{<hr>}}
 	\if{html}{\out{<a id="method-api-printMessages"></a>}}
@@ -298,7 +292,6 @@ J$printMessages()
 nothing. used for side effects.
 		}
 	}
-	\if{html}{\out{</div>}}
 	
 }
 

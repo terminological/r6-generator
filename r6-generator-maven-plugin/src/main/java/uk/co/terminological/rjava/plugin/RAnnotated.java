@@ -130,6 +130,14 @@ public class RAnnotated {
 	
 	public static String rdEscapeExample(String s) {
 		if(s == null) return null;
+		// Make sure this does not end up too long
+		if (s.startsWith("#'")) {
+			s = s.replaceAll("(.{50})(%>%|,|\\+)", "$1$2\n#'");
+		} else if (s.startsWith("#")) {
+			s = s.replaceAll("(.{50})(%>%|,|\\+)", "$1$2\n#");
+		} else {
+			s = s.replaceAll("(.{50})(%>%|,|\\+)", "$1$2\n");
+		}
 		return s.replaceAll("%","\\\\%");
 	}
 	

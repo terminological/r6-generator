@@ -16,6 +16,7 @@ ${method.indent(testSetup,1)}
 		<#list method.getTests() as test>
 ${method.indent(test,1)}
 		</#list>
+	expect_message(message("test case complete"))
 })
 	</#if>
 </#list>
@@ -29,6 +30,7 @@ test_that("${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}()
 		<#list method.getTests() as test>
 ${method.indent(test,1)}
 		</#list>
+	expect_message(message("test case complete"))
 })
 	</#if>
 </#list>

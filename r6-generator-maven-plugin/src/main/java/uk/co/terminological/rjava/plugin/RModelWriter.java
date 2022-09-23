@@ -5,6 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +78,7 @@ public class RModelWriter {
 		doGenerateSafe(new File(instDir,"CITATION"),getTemplate("rjavaCitation.ftl"),typeRoot);
 		doGenerate(new File(testDir.getParentFile(),"testthat.R"),getTemplate("rjavaTestRunner.ftl"),typeRoot);
 		if (model.getConfig().needsLicense()) doGenerate(new File(target,"LICENSE"),getTemplate("rjavaLicense.ftl"),typeRoot);
+		doGenerate(new File(target,"LICENSE.md"),getTemplate("rjavaLicenseMd.ftl"),typeRoot);
 		doGenerate(new File(manDir,"JavaApi.Rd"),getTemplate("rjavaApiRd.ftl"),typeRoot);
 		doGenerate(new File(manDir,"pipe.Rd"),getTemplate("rjavaPipeRd.ftl"),typeRoot);
 		doGenerate(new File(manDir,model.getConfig().getPackageName()+"-package.Rd"),getTemplate("rjavaPackageRd.ftl"),typeRoot);
@@ -97,6 +102,16 @@ public class RModelWriter {
 				doGenerate(new File(manDir,method.getSnakeCaseName()+".Rd"),getTemplate("rjavaStaticRd.ftl"),typeRoot);
 			}
 			
+		}
+		
+		try {
+			Files.copy(
+					RModelWriter.class.getResourceAsStream("/aa_maven.R"), 
+					Paths.get(new File(rDir,"aa_maven.R").getPath()),
+					StandardCopyOption.REPLACE_EXISTING
+			);
+		} catch (IOException e) {
+			throw new MojoExecutionException("could not copy rmaven files: ",e);
 		}
 		
 	}

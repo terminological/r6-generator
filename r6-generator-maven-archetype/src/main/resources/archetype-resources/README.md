@@ -51,7 +51,7 @@ load_all("~/Git/${githubRepository}")
 
 # or from your github repository:
 # install_github("${githubOrganisation}/${githubRepository}", args = c("--no-multiarch"))
-# N.B. the no-multiarch option is required for windows users.
+# N.B. the no-multiarch option is required for windows users with R versions prior to 4.2.0.
 ```
 
 A basic usage scenario:

@@ -74,10 +74,18 @@ projects created by archetype.
 ### 0.5.4
 
 * fix testthat/examples reuse bugs
+* fixed missing library(testthat) in examples
+* BUG: name collision detection borked. Don't name classes and static methods the same thing.
 
 ### main-SNAPSHOT
 
-* fixed missing library(testthat) in examples
+* fixed name collision detection
+* fixed no java initialisation error
+* fixed not run testthat tests with no expects.
+* updated github actions to use only windows runners post R 4.2.0 to avoid multiarch hell
+* include rmaven backend as aa_rmaven.R file to manage dependencies and compilation tasks (i.e. shares code with rmaven)
+* LICENSE.md file
+
 * TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
 * TODO: configure javadocs for runtime
 * TODO: other maven plugin inputs need validity checking?

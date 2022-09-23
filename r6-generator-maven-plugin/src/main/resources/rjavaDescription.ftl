@@ -23,3 +23,7 @@ Imports:
 	rappdirs,
 	utils,
 	magrittr
+<#if model.getConfig().usePkgdown() && model.getConfig().getGithubOrganisation()?? && model.getConfig().getGithubRepository()??>
+URL: https://${model.getConfig().getGithubOrganisation()}.github.io/${model.getConfig().getGithubRepository()}/docs,
+	https://github.com/${model.getConfig().getGithubOrganisation()}/${model.getConfig().getGithubRepository()},
+</#if>

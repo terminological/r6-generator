@@ -80,19 +80,7 @@ JavaApi = R6::R6Class("JavaApi", public=list(
  		# }
  		-->
  	
- 		tryCatch({
-	 	<#if model.getConfig().getDebugMode()>
-			# pass in debug options
-			if (!.jniInitialized) {
-				.jinit(parameters=c(getOption("java.parameters"),"-Xdebug","-Xrunjdwp:transport=dt_socket,address=8998,server=y,suspend=n"), silent = TRUE, force.init = TRUE)
-				message("java debugging initialised on port 8998")
-			}
-		<#else>
-			if (!.jniInitialized) 
-				.jinit(parameters=getOption("java.parameters"),silent = TRUE, force.init = FALSE)
-		</#if>
-		}, error = function(e) stop("Java cannot be initialised: ",e$message)
-		)
+ 		.startJvm()
 		
 		# Java dependencies
 		jars = .checkDependencies(quiet = TRUE)
@@ -198,22 +186,8 @@ JavaApi$get = function(logLevel = <#if model.getConfig().getDebugMode()>"DEBUG"<
 }
 
 JavaApi$rebuildDependencies = function( ... ) {
-	# remove working directory
-	unlink(.workingDir(), recursive = TRUE)
-	<#if !model.getConfig().preCompileBinary()>
-	# remove previous versions of the compiled binary 
-	unlink(fs::path(.here("java"),"${model.getArtifactId()}-${model.getMavenVersion()}-jar-with-dependencies.jar"))
-	</#if>
-	# rebuild everything
-	classpath = .checkDependencies(quiet = FALSE, ...)
-	
-	# find the jars that come bundled with the library:
-	jars = list.files(.here("java"), pattern=".*\\.jar", full.names = TRUE)
-	jars = jars[!endsWith(jars,"sources.jar") & !endsWith(jars,"javadoc.jar") & !endsWith(jars,"src.jar")]
-	
-	# and add any that have been resolved and downloaded by maven:
-	jars = unique(c(jars,classpath))
-	
+	.startJvm()
+	jars = .checkDependencies(nocache=TRUE, quiet=FALSE)
 	if (!all(file.exists(jars))) {
 		warning("The library has been rebuilt but there is still some missing dependencies: Out of the following")
 		warning(paste0(jars,collapse="\n"))
@@ -226,21 +200,10 @@ JavaApi$rebuildDependencies = function( ... ) {
 	return(jars)
 }
 
-<#-- 
-# CRAN checks require that the Imports in the description file appear in the namespace file. The 
-# r6-maven-plugin does make sure of this but if you then use pkgdown to generate the namespace file it takes 
-# them out again unless they are referenced somewhere:
-
-<#list model.getImports() as import>
-#' @import ${import}
-</#list>
-NULL
-
-# https://groups.google.com/g/rdevtools/c/qT6cJt6DLJ0
- -->
-
 JavaApi$installDependencies = function() {
-	.checkDependencies(quiet=FALSE)
+	.startJvm()
+	jars = .checkDependencies(nocache=FALSE, quiet=FALSE)
+	.jaddClassPath(jars)
 }
 
 JavaApi$versionInformation = function() {
@@ -261,6 +224,79 @@ JavaApi$versionInformation = function() {
 ## package private utility functions for managing maven dependencies ----
 # as this is generated code configuration is hard coded here
 # i.e. these functions are specific for the configuration of this package.
+
+
+.checkDependencies = function(nocache = FALSE, ...) {
+	<#if model.getConfig().preCompileBinary()>
+		<#if model.getConfig().packageAllDependencies()>
+	package_jar = .package_jars(package="${model.getConfig().getPackageName()}",types="fat-jar")
+		<#else>
+	package_jar = .package_jars(package="${model.getConfig().getPackageName()}",types="thin-jar")
+		</#if>
+	<#else>
+	package_jar = .package_jars(package="${model.getConfig().getPackageName()}",types="src")
+	</#if>
+	package_jar = package_jar[startsWith(fs::path_file(package_jar),"${model.getArtifactId()}-${model.getMavenVersion()}")]
+	
+	# Java dependencies
+	<#if model.getConfig().preCompileBinary()>
+		<#if model.getConfig().packageAllDependencies()>
+	# all java library code and dependencies have already been bundled into a single fat jar
+	# compilation was done on the library developers machine and has no external dependencies
+	jars = package_jar
+		<#else>
+	# the main java library has been compiled but external dependencies must be resolved by maven
+	# successful resolution of the classpath libraries depends on the runtime machine and requires
+	# access to the internet at a minimum.
+	maven_dependencies = .resolve_dependencies(artifact="${model.getMavenCoordinates()}", nocache=nocache, path=package_jar, ...)
+	jars = .package_jars(package="${model.getConfig().getPackageName()}",types="thin-jar")
+	# all jars in R package and maven dependencies
+	jars = unique(c(jars,maven_dependencies))
+		</#if>
+	<#else>
+	# this is a sources only distribution. The java code must be compiled from the source (distributed in this package as a ${model.getArtifactId()}-${model.getMavenVersion()}-src.jar) 
+	# all the dependencies are resolved and packaged into a single fat jar on compilation
+	# N.b. successful compilation is a machine specific thing as the dependencies may have been installed into maven locally 
+	jars = .compile_jar(path=package_jar, nocache=nocache, with_dependencies=TRUE, ...)
+	</#if>
+	
+	# find the jars that come bundled with the library:
+	# and add any that have been resolved and downloaded by maven:
+	return(jars)
+}
+
+
+.startJvm = function() {
+	.start_jvm(debug=<#if model.getConfig().getDebugMode()>TRUE<#else>FALSE</#if>)
+}
+
+<#-- 
+.startJvm = function() {
+	tryCatch({
+<#if model.getConfig().getDebugMode()>
+		# pass in debug options
+		if (!.jniInitialized) {
+			.jinit(parameters=c(getOption("java.parameters"),"-Xdebug","-Xrunjdwp:transport=dt_socket,address=8998,server=y,suspend=n"), silent = TRUE, force.init = TRUE)
+			message("java debugging initialised on port 8998")
+		}
+<#else>
+		if (!.jniInitialized) 
+			.jinit(parameters=getOption("java.parameters"),silent = TRUE, force.init = FALSE)
+</#if>
+	}, error = function(e) stop("Java cannot be initialised: ",e$message))
+}
+
+# package installation directory
+.here = function(paths) {
+	path.expand(system.file(paths, package="${model.getConfig().getPackageName()}"))
+}
+
+# package working directory
+.workingDir = function() {
+	tmp = path.expand(rappdirs::user_cache_dir("${model.getConfig().getPackageName()}-${model.getConfig().getVersion()}"))
+	fs::dir_create(tmp)
+	return(tmp)
+}
 
 .checkDependencies = function(...) {
 	# Java dependencies
@@ -294,17 +330,7 @@ JavaApi$versionInformation = function() {
 	return(jars)
 }
 
-# package working directory
-.workingDir = function() {
-	tmp = path.expand(rappdirs::user_cache_dir("${model.getConfig().getPackageName()}-${model.getConfig().getVersion()}"))
-	fs::dir_create(tmp)
-	return(tmp)
-}
 
-# package installation directory
-.here = function(paths) {
-	path.expand(system.file(paths, package="${model.getConfig().getPackageName()}"))
-}
 
 # loads a maven wrapper distribution from the internet and unzips it into the package working directory
 .loadMavenWrapper = function() {
@@ -376,7 +402,7 @@ JavaApi$versionInformation = function() {
 		message("Compiling java library and downloading dependencies, please be patient.")
 		.executeMaven(
 			pomPath, 
-			goal = c("compile","assembly:assembly"),
+			goal = c("compile","assembly:single","package"),
 			opts = c(
 				"-DdescriptorId=jar-with-dependencies",
 				"-Dmaven.test.skip=true"
@@ -440,5 +466,5 @@ JavaApi$versionInformation = function() {
 	setwd(fs::path_dir(pomPath))
 	system2(mvnPath, args)
 	setwd(wd)
-}
+}-->
 

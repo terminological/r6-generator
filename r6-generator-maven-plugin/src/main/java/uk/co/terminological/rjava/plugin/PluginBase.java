@@ -24,9 +24,9 @@ import org.codehaus.plexus.util.FileUtils;
 
 public abstract class PluginBase extends AbstractMojo {
 
-	@Component
+	@Parameter( defaultValue = "${project}", readonly = true )
 	protected MavenProject mavenProject;
-	@Component
+	@Parameter( defaultValue = "${session}", readonly = true )
 	protected MavenSession mavenSession;
 	@Component
 	protected BuildPluginManager pluginManager;

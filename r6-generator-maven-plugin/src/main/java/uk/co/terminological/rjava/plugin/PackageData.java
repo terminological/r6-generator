@@ -75,10 +75,16 @@ public class PackageData {
 	
 	@Parameter
 	private Boolean useJavadoc;
-
+	
 	@Parameter
 	private String doi;
-
+	
+	@Parameter
+	private String githubOrganisation;
+	
+	@Parameter
+	private String githubRepository;
+	
 	@Parameter
 	private String url;
 	
@@ -95,6 +101,14 @@ public class PackageData {
 
 	public String getMaintainerOrganisation() {
 		return maintainerOrganisation;
+	}
+	
+	public String getGithubOrganisation() {
+		return githubOrganisation;
+	}
+	
+	public String getGithubRepository() {
+		return githubRepository;
 	}
 	
 	public String getMaintainerEmail() {
@@ -220,6 +234,10 @@ public class PackageData {
 		return license + (needsLicense() ? " + file LICENSE" : "");
 	}
 
+	public String getLicenseType() {
+		return license;
+	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}

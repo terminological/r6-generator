@@ -155,7 +155,11 @@ public class RModel {
 	}
 
 	public boolean detectMethodCollision(String simpleName) {
-		return this.getClassTypes().stream().map(r -> r.simpleName).anyMatch(s -> s.equalsIgnoreCase(simpleName));
+		return this.getClassTypes().stream()
+				.flatMap(r->r.getStaticMethods().stream())
+				.map(m -> m.getSimpleName())
+				.filter(s -> s.equalsIgnoreCase(simpleName))
+				.count() > 1;
 	}
 	
 

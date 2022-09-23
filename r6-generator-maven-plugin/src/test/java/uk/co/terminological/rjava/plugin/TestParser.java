@@ -49,4 +49,18 @@ public class TestParser {
 //		System.out.println(path1.relativize(path2).toString());
 //		System.out.println(path1.relativize(path2).toString().equals(""));
 //	}
+	
+	@Test
+	public final void testLongString() {
+		String s = "## this is a long %>% string more than 100 characters %>% breaking just before here is ok as %>% will be about the right length + maybe here also will trigger it";
+		if (s.startsWith("#'")) {
+			s = s.replaceAll("(.{50})(%>%|,|\\+)", "$1$2\n#'");
+		} else if (s.startsWith("#")) {
+			s = s.replaceAll("(.{50})(%>%|,|\\+)", "$1$2\n#");
+		} else {
+			s = s.replaceAll("(.{50})(%>%|,|\\+)", "$1$2\n");
+		}
+		System.out.print(s);
+		
+	}
 }

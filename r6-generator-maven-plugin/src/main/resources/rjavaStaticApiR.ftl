@@ -11,9 +11,9 @@
 
 	<#list class.getStaticMethods() as method>
 
-${method.doxygen(method.getName(),0)}:
+${method.doxygen(method.getName(),0)}: ${method.getTitle()}
 #' 
-${method.doxygen(method.getDescription(),0)}
+${method.doxygen(method.getNonTitleDescription(),0)}
 		<#list method.getParameterNames() as param>
 ${method.doxygen("param",method.getParameterDescription(param),0)} - (java expects a ${method.getParameterType(param).getSimpleName()})
 		</#list>
