@@ -9,8 +9,8 @@
     if (!rJava::.jniInitialized) {
       warning(
       "Initialising rJava with default parameters to check for JAVA_HOME. ",
-      "This probably should have been called after rJava::.jinit() or rmaven::start_jvm()")
-      try({start_jvm(quiet = TRUE)},silent=TRUE)
+      "This probably should have been called after rJava::.jinit() or .start_jvm()")
+      try({.start_jvm(quiet = TRUE)},silent=TRUE)
     }
     jh = tryCatch({rJava::.jcall( 'java/lang/System', 'S', 'getProperty', 'java.home' )},error = function(e) NA)
   }
@@ -68,7 +68,7 @@
 #
 # This does not do anything if the `JVM` has already been started. Otherwise
 # starts the JVM via `rJava` with a set of options Additional JVM options
-# (beyond debugging) can be set with the
+# (beyond debugging) can be set with thepackage
 # `options("java.parameters"=c("-Xprof","-Xrunhprof"))`
 #
 # debug turn on debugging
@@ -123,7 +123,7 @@
         rJava::.jinit(parameters=opts,silent = TRUE, force.init = FALSE)
       }
     } else {
-      if(!quiet) warning("The JVM was already initialised when start_jvm(...) was called. ",
+      if(!quiet) warning("The JVM was already initialised when .start_jvm(...) was called. ",
                          "The following parameters were not applied: ", opts)
     }
   }, error = function(e) {
@@ -718,7 +718,7 @@ manually by looking at: ",dir,"\n",sep="")
   target = fs::path(outputDirectory,.filename(coordinates))
   if (nocache) unlink(target)
   if (!fs::file_exists(.m2_path(coordinates))) {
-    fetch_artifact(artifact=artifact, verbose = verbose)
+    .fetch_artifact(artifact=artifact, verbose = verbose)
   }
   if (!fs::file_exists(.m2_path(coordinates))) {
     .execute_maven(
@@ -769,7 +769,7 @@ manually by looking at: ",dir,"\n",sep="")
 
   # does this refer to something that has not yet been downloaded
   if (path == .m2_path(coordinates) && !fs::file_exists(path)) {
-    fetch_artifact(coordinates=coordinates, verbose = verbose)
+    .fetch_artifact(coordinates=coordinates, verbose = verbose)
   }
 
   # this is a jar file (or war, or ejb)
@@ -858,7 +858,7 @@ manually by looking at: ",dir,"\n",sep="")
   if (is.null(path)) {
     path = .m2_path(coordinates)
     if (!file.exists(path) || nocache) {
-      fetch_artifact(coordinates = coordinates, nocache = nocache, verbose = verbose)
+      .fetch_artifact(coordinates = coordinates, nocache = nocache, verbose = verbose)
     }
   }
 

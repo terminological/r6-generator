@@ -229,12 +229,12 @@ JavaApi$versionInformation = function() {
 .checkDependencies = function(nocache = FALSE, ...) {
 	<#if model.getConfig().preCompileBinary()>
 		<#if model.getConfig().packageAllDependencies()>
-	package_jar = .package_jars(package="${model.getConfig().getPackageName()}",types="fat-jar")
+	package_jar = .package_jars(package_name="${model.getConfig().getPackageName()}",types="fat-jar")
 		<#else>
-	package_jar = .package_jars(package="${model.getConfig().getPackageName()}",types="thin-jar")
+	package_jar = .package_jars(package_name="${model.getConfig().getPackageName()}",types="thin-jar")
 		</#if>
 	<#else>
-	package_jar = .package_jars(package="${model.getConfig().getPackageName()}",types="src")
+	package_jar = .package_jars(package_name="${model.getConfig().getPackageName()}",types="src")
 	</#if>
 	package_jar = package_jar[startsWith(fs::path_file(package_jar),"${model.getArtifactId()}-${model.getMavenVersion()}")]
 	
