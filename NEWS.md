@@ -77,7 +77,7 @@ projects created by archetype.
 * fixed missing library(testthat) in examples
 * BUG: name collision detection borked. Don't name classes and static methods the same thing.
 
-### main-SNAPSHOT
+### 0.5.5
 
 * fixed name collision detection
 * fixed no java initialisation error
@@ -85,6 +85,8 @@ projects created by archetype.
 * updated github actions to use only windows runners post R 4.2.0 to avoid multiarch hell
 * include rmaven backend as aa_rmaven.R file to manage dependencies and compilation tasks (i.e. shares code with rmaven)
 * LICENSE.md file
+
+### main-SNAPSHOT
 
 * TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
 * TODO: configure javadocs for runtime
@@ -98,7 +100,6 @@ projects created by archetype.
 * Support a package layout where java code is deployed to a maven repository like jitpack or github packages
       - R package downloads from that repository
       - No binaries or source distributed at all with package. 
-* Split maven / java code functions within R to a separate CRAN based native R library.
 * Support for promises / asynchronous Java calls.
 * Archetype documentation and class fixes
 * Impact of Java 17: JEP 412 foreign function and memory API.

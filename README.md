@@ -6,7 +6,7 @@ This is the main development repository for the r6-generator.
 
 It is a multi-module Maven project containing a code generation framework allowing Java libraries to be used in R.
 
-Beyond this README, the best source of documentation is in the example [documenation project](https://github.com/terminological/r6-generator-docs).
+Beyond this README, the best source of documentation is in the example [documentation project](https://github.com/terminological/r6-generator-docs).
 
 ## Rationale
 
@@ -22,7 +22,7 @@ The focus of this is streamlining the creation and maintenance of R libraries by
 The project has 3 components:
 
 * `r6-generator-runtime`: a pure Java library which manages data manipulation and marshalling to and from R. This supports the main R datatypes and provides Java versions of these, plus converter methods to ease Java development.
-* `r6-generator-maven-plugin`: a Maven plugin which uses native the R-centric Java API to generates R and `rJava` code that handles the mechanics of installing Java libraries into R, calling Java code from R, and marshalling data across the R-Java interface ni a lossless manner. 
+* `r6-generator-maven-plugin`: a Maven plugin which uses native the R-centric Java API to generates R and `rJava` code that handles the mechanics of installing Java libraries into R, calling Java code from R, and marshalling data across the R-Java interface in a lossless manner. 
 * `r6-generator-maven-archetype`: a Maven archetype which creates a basic framework with recommended configuration for projects using the Maven plugin.  
 
 ## r6-generator projects in the wild
@@ -94,7 +94,7 @@ Key points:
 
 The runtime component of this project contains tools to enable bidirectional lossless transfer of R data structures into Java (`uk.co.terminological.rjava.RConverter`), 
 in a idiom that is relatively comfortable to Java developers, without having to manage the edge cases posed by R's interchangeable use of single values, vectors, and complexities 
-around `NA` values and different flavours of null. This is a big topic and further documented in the [documenation project](https://github.com/terminological/r6-generator-docs).
+around `NA` values and different flavours of null. This is a big topic and further documented in the [documentation project](https://github.com/terminological/r6-generator-docs).
 
 ## r6-generator-maven-plugin
 
@@ -144,7 +144,7 @@ The stable versions of the Maven plugin are available on Maven Central. If we ar
 ...
 ```
 
-Maven plugin example configuration - this particular example generates the R package into the directory above `pom.xml` in the source tree. Other options are available and discussed in the [documenation project](https://github.com/terminological/r6-generator-docs).
+Maven plugin example configuration - this particular example generates the R package into the directory above `pom.xml` in the source tree. Other options are available and discussed in the [documentation project](https://github.com/terminological/r6-generator-docs) but this is the recommended way to layout a project.
 
 ```XML
 ...
@@ -256,8 +256,8 @@ mvn archetype:generate \
   -DgithubRepository=examplePackage
 ```
 
-With the organisation and repository I suggest not using names with hyphens for the repository as they cannot be used as R package names.
-The use of camel-case is probably also not ideal.
+I suggest not using names with hyphens for the repository as they cannot be used as R package names.
+The use of camel-case in this example is probably also not ideal.
 
 In general the rest of the default values can be accepted.
 
@@ -273,6 +273,7 @@ mvn install
 ```
 
 The resulting generated R-package can be pushed to github where it should trigger appropriate workflows if the organisation and repository names given above match.
+(N.b. github workflows need to be enabled on the repository)
 
 ```BASH
 cd ~/Git/examplePackage
@@ -291,7 +292,7 @@ Once basic setup complete more background on developing your package is availabl
 
 If you are building a R-package using r6-generator, your package will automatically cite r6-generator. This behaviour can be modified by editing `inst/CITATION`.
 
-Here is the reference it uses:
+Here is the reference it uses (although the version will likely be different):
 
 ```R
 bibentry(bibtype = "Manual",
