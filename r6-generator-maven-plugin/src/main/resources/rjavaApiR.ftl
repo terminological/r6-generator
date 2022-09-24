@@ -249,7 +249,7 @@ JavaApi$versionInformation = function() {
 	# successful resolution of the classpath libraries depends on the runtime machine and requires
 	# access to the internet at a minimum.
 	maven_dependencies = .resolve_dependencies(artifact="${model.getMavenCoordinates()}", nocache=nocache, path=package_jar, ...)
-	jars = .package_jars(package="${model.getConfig().getPackageName()}",types="thin-jar")
+	jars = .package_jars(package_name="${model.getConfig().getPackageName()}",types="thin-jar")
 	# all jars in R package and maven dependencies
 	jars = unique(c(jars,maven_dependencies))
 		</#if>
