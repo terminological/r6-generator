@@ -196,7 +196,7 @@ J = ${model.getConfig().getPackageName()}::JavaApi$get()
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
 			\itemize{
-				\item{logLevel}{The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
+				\item{logLevel}{ The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
 			}
 			\if{html}{\out{</div>}}
 		}
@@ -223,7 +223,7 @@ J$changeLogLevel("DEBUG")
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
 			\itemize{
-				\item{logLevel}{The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
+				\item{logLevel}{ The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
 			}
 			\if{html}{\out{</div>}}
 		}
@@ -254,7 +254,7 @@ if (fs::file_exists(prp)) {
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
 			\itemize{
-				\item{log4jproperties}{a full path to a log4jproperies file}
+				\item{log4jproperties}{ a full path to a log4jproperies file}
 			}
 			\if{html}{\out{</div>}}
 		}

@@ -85,15 +85,25 @@ projects created by archetype.
 * updated github actions to use only windows runners post R 4.2.0 to avoid multiarch hell
 * include rmaven backend as aa_rmaven.R file to manage dependencies and compilation tasks (i.e. shares code with rmaven)
 * LICENSE.md file
+* Bug in description - missing stringr dependency. Workaround to add @RClass(imports={"stringr"}) to one of the code declarations 
+
+### 0.5.6
+
+* fix missing stringr dependency
+* configurable R CMD Check during build. errors or warnings terminate build
+* change failed packagedown site build to terminate build reather than issue warning
+* improved URLS in description file
+
 
 ### main-SNAPSHOT
-
+* TOD0: run tests and examples during build to identify errors early.
 * TODO: configure site layout documentation for plugin https://maven.apache.org/guides/development/guide-plugin-documentation.html
 * TODO: configure javadocs for runtime
 * TODO: other maven plugin inputs need validity checking?
 * TODO: prevent caching issue on failure to generate or load library, leading to unexpected success using old library version. 
 * TODO: better approach to automation of whole library testing. Including an option to fail package generation when R tests fail or vignettes cannot be built, and a test package as part of the r6-generator project, with test that run during a integration test phase.
 * TODO: configure maven archetype for 4 layouts (R first, java first, siblings, identity).
+* TODO: package level annotation for DESCRIPTION imports without NAMESPACE imports.
 
 ### Future work
 

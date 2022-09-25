@@ -197,6 +197,34 @@ public class R6GeneratorPlugin extends PluginBase {
 		}
 		
 		// STEP 3.5: Run a R CMD Check locally to make sure nothing is broken. 
+		if (packageData.useCmdCheck()) {
+			
+			// must be an array to stop java tokenising it
+			String rCMD[] = {"R","-e","tmp = devtools::check(pkg = '"+rProjectDir+"', args = c('--no-manual', '--no-multiarch')); if(length(tmp$errors) + length(tmp$warnings) > 0) stop('R CMD Check created errors or warnings')"};
+			getLog().info("Running R CMD Check.");
+			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
+			// Runtime run = Runtime.getRuntime();
+			try {
+				ProcessBuilder processBuilder = new ProcessBuilder(rCMD);
+				processBuilder.redirectErrorStream(true);
+				Process pr = processBuilder.start();
+				int res = pr.waitFor();
+				BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+				String line = "";
+				if(res != 0) {
+					while ((line=buf.readLine())!=null) {
+						getLog().error(line);
+					}
+					throw new MojoExecutionException("R CMD Check did not complete normally.");
+				} else {
+					while ((line=buf.readLine())!=null) {
+						getLog().info(line);
+					}
+				}
+			} catch (IOException | InterruptedException e) {
+				throw new MojoExecutionException("Failed to execute R CMD Check", e);
+			}
+		}
 		
 		// STEP 4: (Optional) Run pkgdown in R to build site documentation.  
 		if (packageData.usePkgdown()) {
@@ -217,7 +245,7 @@ public class R6GeneratorPlugin extends PluginBase {
 					while ((line=buf.readLine())!=null) {
 						getLog().error(line);
 					}
-					getLog().error("Pkgdown did not complete normally. Details in the log file.");
+					throw new MojoExecutionException("Pkgdown did not complete normally.");
 				} else {
 					while ((line=buf.readLine())!=null) {
 						getLog().info(line);

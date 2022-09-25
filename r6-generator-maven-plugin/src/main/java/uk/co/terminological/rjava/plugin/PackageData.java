@@ -3,6 +3,7 @@ package uk.co.terminological.rjava.plugin;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -74,6 +75,9 @@ public class PackageData {
 	private Boolean useRoxygen2;
 	
 	@Parameter
+	private Boolean useCmdCheck;
+	
+	@Parameter
 	private Boolean useJavadoc;
 	
 	@Parameter
@@ -140,6 +144,15 @@ public class PackageData {
 	 */
 	public boolean usePkgdown() {
 		return usePkgdown != null && usePkgdown.booleanValue(); 
+	}
+	
+	/** {@code <usePkgdown>true</usePkgdown>}
+	 * 
+	 * build machine must have R and pkgdown installed
+	 * @return pkgDown flag
+	 */
+	public boolean useCmdCheck() {
+		return useCmdCheck != null && useCmdCheck.booleanValue(); 
 	}
 	
 	/** {@code <usePkgdown>true</usePkgdown>}
@@ -297,6 +310,22 @@ public class PackageData {
 		return url;
 	}
 
+	public List<String> getUrls() {
+		List<String> out = new ArrayList<>();
+		if (url != null) out.add(url);
+		if (this.getGithubOrganisation() != null && this.getGithubRepository() != null) {
+			if (url == null) {
+				out.add(
+					"https://"+this.getGithubOrganisation()+".github.io/"+this.getGithubRepository()+"/index.html"
+				);
+			}
+			out.add(
+				"https://github.com/"+this.getGithubOrganisation()+"/"+this.getGithubRepository()
+				);
+		}
+		return out;
+	}
+	
 	public void setUrl(String url) {
 		this.url = url;
 	}
