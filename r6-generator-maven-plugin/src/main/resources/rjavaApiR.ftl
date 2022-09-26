@@ -9,10 +9,14 @@
 #' Generated: ${model.getConfig().getDate()}
 #'
 #' Contact: ${model.getConfig().getMaintainerEmail()}
+<#--
+We don't really want these imported in this way, as it leads ROxygen to load them 
+This needs to be fixed properly in a package level annotation probably 
 <#list model.getImports() as import>
 #' @import ${import}
 </#list>	
-#' @import rJava
+-->
+#' @import rJava 
 #' @export
 JavaApi = R6::R6Class("JavaApi", public=list( 
 	#### fields ----

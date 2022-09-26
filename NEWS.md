@@ -94,6 +94,11 @@ projects created by archetype.
 * change failed packagedown site build to terminate build reather than issue warning
 * improved URLS in description file
 
+### 0.5.7
+
+* Fix manual changes to buildignore being overwritten
+* Remove @imports directives as not the correct type of imports, apart from rJava.
+* Add suggests to test and example preamble
 
 ### main-SNAPSHOT
 * TOD0: run tests and examples during build to identify errors early.

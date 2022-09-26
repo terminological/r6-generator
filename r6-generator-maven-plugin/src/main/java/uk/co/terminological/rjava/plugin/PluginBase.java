@@ -148,6 +148,8 @@ public abstract class PluginBase extends AbstractMojo {
 		
 	}
 
+	// TODO: scanDirectoryForImports(Path rDir) which looks for imports devalred in code
+	
 	protected List<String> scanDirectoryForExports(Path rDir) throws MojoExecutionException {
 		List<String> additionalExports = new ArrayList<>();
 		try (Stream<Path> paths = Files.walk(rDir)) {

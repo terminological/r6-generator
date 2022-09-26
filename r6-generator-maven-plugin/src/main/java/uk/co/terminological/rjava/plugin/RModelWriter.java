@@ -86,7 +86,7 @@ public class RModelWriter {
 		doGenerate(new File(rDir,"StaticApi.R"),getTemplate("rjavaStaticApiR.ftl"),typeRoot);
 		doGenerate(new File(rDir,"zzz.R"),getTemplate("rjavaZzz.ftl"),typeRoot);
 		doGenerateSafe(new File(target,"cran-comments.md"),getTemplate("rjavaCranComments.ftl"),typeRoot);
-		if (model.getConfig().usePkgdown()) doGenerate(new File(target,".Rbuildignore"),getTemplate("rjavaRbuildignore.ftl"),typeRoot);
+		doGenerateSafe(new File(target,".Rbuildignore"),getTemplate("rjavaRbuildignore.ftl"),typeRoot);
 		doGenerateSafe(new File(workflowDir,"R-CMD-check.yaml"),getTemplate("rjavaGithubWorkflow.ftl"),typeRoot);
 		
 		for (RClass type: model.getClassTypes()) {

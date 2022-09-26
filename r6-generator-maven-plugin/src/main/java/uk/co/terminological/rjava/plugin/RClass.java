@@ -72,17 +72,25 @@ public class RClass extends RAnnotated {
 	}
 	
 	public boolean hasExampleSetup() {
-		return !this.getAnnotationList("exampleSetup").isEmpty() || hasTestSetup();
+		return !this.getExampleSetup().isEmpty();
 	}
 	public boolean hasTestSetup() {
-		return !this.getAnnotationList("testSetup").isEmpty();
+		return !this.getTestSetup().isEmpty();
 	}
 	public List<String> getExampleSetup() {
-		if (this.getAnnotationList("exampleSetup").isEmpty()) return getTestSetup();
-		return this.getAnnotationList("exampleSetup");
+		if (this.getAnnotationList("exampleSetup").isEmpty()) {
+			return this.getTestSetup();
+		} 
+		List<String> out = this.getAnnotationList("suggests").stream().map(s -> "library("+s+")").collect(Collectors.toList());
+		out.addAll(this.getAnnotationList("imports").stream().map(s -> "library("+s+")").collect(Collectors.toList()));
+		out.addAll(this.getAnnotationList("exampleSetup"));
+		return out;
 	}
 	public List<String> getTestSetup() {
-		return this.getAnnotationList("testSetup");
+		List<String> out = this.getAnnotationList("suggests").stream().map(s -> "library("+s+")").collect(Collectors.toList());
+		out.addAll(this.getAnnotationList("imports").stream().map(s -> "library("+s+")").collect(Collectors.toList()));
+		out.addAll(this.getAnnotationList("testSetup"));
+		return out;
 	}
 	
 	public List<RMethod> getInstanceMethods() {
