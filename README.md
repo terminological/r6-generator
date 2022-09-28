@@ -1,6 +1,7 @@
 # r6-generator
 
 [![DOI](https://zenodo.org/badge/503675575.svg)](https://zenodo.org/badge/latestdoi/503675575)
+[![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://terminological.github.io/r6-generator/javadoc/)
 
 This is the main development repository for the r6-generator. 
 
