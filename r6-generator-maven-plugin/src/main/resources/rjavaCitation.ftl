@@ -17,7 +17,7 @@ c(
 		)
 	),
 	bibentry(bibtype = "Manual",
-		title = "R6 generator maven plugin",
+		title = "r6-generator: Code Generation Framework for using Java within R",
 		author = person(given="Rob", family="Challen",role="aut",email="rob.challen@bristol.ac.uk",comment = structure("0000-0002-5504-7768", .Names = "ORCID")),
 		note = "Maven plugin artifact: ${model.getPluginVersion()}",
 		year = 2022,
