@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"uk.co.terminological.rjava"},{"l":"uk.co.terminological.rjava.functionals"},{"l":"uk.co.terminological.rjava.plugin"},{"l":"uk.co.terminological.rjava.types"},{"l":"uk.co.terminological.rjava.utils"}];updateSearchResults();
