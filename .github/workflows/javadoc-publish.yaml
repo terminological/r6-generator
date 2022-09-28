@@ -1,11 +1,9 @@
- name: Deploy Javadoc
-
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [main, master]
 
+name: Deploy Javadoc
+    
 jobs:
   publish:
     runs-on: ubuntu-latest
