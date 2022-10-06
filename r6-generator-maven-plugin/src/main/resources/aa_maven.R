@@ -43,8 +43,10 @@
       jh = jh_parent
       jh_parent = fs::path_dir(jh)
     }
-    stop("Couldn't find 'bin/javac(.exe)' or 'bin/java(.exe)' in any parent directories starting at ",
+    if (!.is_jre_home(jh)) {
+      stop("Couldn't find 'bin/javac(.exe)' or 'bin/java(.exe)' in any parent directories starting at ",
          jh_orig,", please set options('rmaven.java_home'=...) to the root of a JDK (the directory containing 'bin/javac').")
+    }
   }
   if (set) Sys.setenv("JAVA_HOME"=jh)
   return(jh)
