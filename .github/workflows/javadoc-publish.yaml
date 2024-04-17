@@ -5,8 +5,8 @@ on:
 name: Deploy Javadoc
 
 jobs:
-  if: "!contains(github.event.head_commit.message, 'minor')"
   publish:
+    if: "!contains(github.event.head_commit.message, 'minor')"
     runs-on: ubuntu-latest
     steps:
       - name: Deploy JavaDoc
