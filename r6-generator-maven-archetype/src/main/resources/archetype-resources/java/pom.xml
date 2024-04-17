@@ -110,11 +110,14 @@
 						<!-- minimises R package footprint but requires download on first use -->
 						<preCompileBinary>true</preCompileBinary>
 						<packageAllDependencies>false</packageAllDependencies>
+						
 #else
 						<!-- distribute java as fat jar. all dependencies pre-linked and embedded in distribution -->
 						<!-- packaging all dependencies is the most robust but results in a large package size -->
 						<preCompileBinary>true</preCompileBinary>
-						<packageAllDependencies>true</packageAllDependencies> 
+						<packageAllDependencies>true</packageAllDependencies>
+						<!-- make the jar file smaller by using the shade plugin --> 
+						<useShadePlugin>false</useShadePlugin> 
 #end
 					</packageData>
 					<outputDirectory>${D}{project.basedir}/..</outputDirectory>

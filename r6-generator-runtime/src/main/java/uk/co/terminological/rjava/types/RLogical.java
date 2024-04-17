@@ -40,6 +40,15 @@ public class RLogical implements RPrimitive, JNIPrimitive {
 		self = value;
 	}
 	
+	public RLogical(Integer value) {
+		if (value == null || value == NA_VALUE) self=null;
+		if(value != 0) {
+			self = Boolean.TRUE;
+		} else {
+			self = Boolean.FALSE;
+		}
+	}
+	
 	public RLogical(int value) {
 		if (value == NA_VALUE) {
 			self = null;

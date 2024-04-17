@@ -107,6 +107,10 @@ public class RInteger implements RPrimitive, JNIPrimitive {
 	public static RInteger from(int value) {
 		return new RInteger(value);
 	}
+	
+	public static RInteger from(Integer value) {
+		return new RInteger(value);
+	}
 
 	public int javaPrimitive(int naValue) {
 		return this.self == null ? naValue : this.self;

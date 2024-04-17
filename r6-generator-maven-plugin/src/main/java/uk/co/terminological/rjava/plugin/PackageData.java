@@ -69,6 +69,9 @@ public class PackageData {
 	private Boolean packageAllDependencies;
 	
 	@Parameter
+	private Boolean useShadePlugin;
+	
+	@Parameter
 	private Boolean usePkgdown;
 	
 	@Parameter
@@ -186,6 +189,19 @@ public class PackageData {
 	 */
 	public boolean packageAllDependencies() {
 		return packageAllDependencies != null && packageAllDependencies.booleanValue(); 
+	}
+	
+	/** {@code <useShadePlugin>true</useShadePlugin>}
+	 * 
+	 * defaults to false. only relevant if packageAllDependencies is true (the default). if useShadePlugin is true then a shaded jar will be precompiled 
+	 * and included in the R package making the package large but completely self contained. This may be needed if the package depends on libraries
+	 * that are not available to download from a public maven repository. 
+	 * 
+	 *   
+	 * @return package shaded flag
+	 */
+	public boolean useShadePlugin() {
+		return useShadePlugin != null && useShadePlugin.booleanValue(); 
 	}
 	
 	/** {@code <useJavadoc>true</useJavadoc>}

@@ -58,7 +58,7 @@ public class RNumeric implements RPrimitive, JNIPrimitive  {
 	}
 	
 	public RNumeric(Double value) {
-		if (Double.doubleToRawLongBits(value.doubleValue()) == NA_VALUE_LONG) self = null;
+		if (value != null && Double.doubleToRawLongBits(value.doubleValue()) == NA_VALUE_LONG) self = null;
 		else self = (Double) value;
 	}
 	
@@ -146,6 +146,10 @@ public class RNumeric implements RPrimitive, JNIPrimitive  {
 	public boolean isNa() {return self == null;}
 
 	public static RNumeric from(double value) {
+		return new RNumeric(value);
+	}
+	
+	public static RNumeric from(Double value) {
 		return new RNumeric(value);
 	}
 

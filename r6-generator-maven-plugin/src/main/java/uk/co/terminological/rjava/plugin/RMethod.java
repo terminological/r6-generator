@@ -18,15 +18,19 @@ public class RMethod extends RAnnotated {
 	private RClass definingClass;
 	private boolean isStatic;
 	private boolean isConstructor;
+	private boolean async;
+	private boolean future;
 	private String description;
 	
-	public RMethod(RModel model, RClass definingClass, Map<String,Object> annotations, String mname, String description, boolean isStatic, boolean isConstructor) {
+	public RMethod(RModel model, RClass definingClass, Map<String,Object> annotations, String mname, String description, boolean isStatic, boolean isConstructor, boolean async, boolean future) {
 		super(model, annotations, null, mname);
 		this.definingClass = definingClass;
 		this.methodName = mname;
 		this.description = description;
 		this.isStatic = isStatic;
 		this.isConstructor = isConstructor;
+		this.async = async;
+		this.future = future;
 	}
 	
 	public void setReturnType(RType returnType) {this.returnType = returnType;}
@@ -77,15 +81,26 @@ public class RMethod extends RAnnotated {
 			.filter(val -> val.trim().startsWith(paramName))
 			.collect(Collectors.joining());
 		String defaultValue = defaults.get(paramName);
-		defaultValue = defaultValue == null ? null : defaultValue.replaceAll("^\\s*\"|\"\\s*$", "").replaceAll("\\\\", "\\\\\\\\");
-		defaultValue = defaultValue == null ? "" : " - (defaulting to "+defaultValue+")";  
-		return tmp.isEmpty() ? paramName+defaultValue : tmp+defaultValue;
+		if (defaultValue != null) {
+			defaultValue = defaultValue.replaceAll("^\\s*\"|\"\\s*$", "").replaceAll("\\\\", "\\\\\\\\");
+			if (defaultValue.length() > 40) defaultValue = defaultValue.substring(0,37)+"...";
+			defaultValue = " - (defaulting to `"+defaultValue+"`)"; 
+			return tmp.isEmpty() ? paramName+defaultValue : tmp+defaultValue;
+		} else {
+			return tmp.isEmpty() ? paramName : tmp;
+		}
 	}
 	public RType getParameterType(String paramName) {
 		return parameters.get(paramName);
 	}
 	public boolean isStatic() {
 		return isStatic;
+	}
+	public boolean isAsync() {
+		return async;
+	}
+	public boolean isFuture() {
+		return future;
 	}
 	
 	public boolean hasExamples() {
@@ -115,11 +130,19 @@ public class RMethod extends RAnnotated {
 	}
 	
 	public String getParameterCsv() {
-		return getParameterNames().stream().collect(Collectors.joining(", "));
+		return getParameterCsv(", ");
 	}
-	public String getParameterCsv(String pre) {
+	public String getParameterCsv(String sep) {
+		return getParameterNames().stream().collect(Collectors.joining(sep));
+	}
+	public String getPrefixedParameterCsv(String pre) {
 		if (this.parameters.size() == 0) return "";
 		return ", "+getParameterNames().stream().map(s->pre+s).collect(Collectors.joining(", "));
+	}
+	public String getPrefixedParameterCsv(String pre, int tabs) {
+		if (this.parameters.size() == 0) return "";
+		String sep=",\n"+("\t".repeat(tabs));
+		return sep+getParameterNames().stream().map(s->pre+s).collect(Collectors.joining(sep));
 	}
 	public String getFunctionParameterCsv() {
 		return getFunctionParameterCsv(", ");

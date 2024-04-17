@@ -11,10 +11,15 @@ export(${method.getSnakeCaseName()})
 	</#list>
 </#list>
 
-<#-- imports in description but not in namespace. There should be no reason to import these into the namespace. 
+# imports in description but not in namespace. There should be no reason to import these into the namespace.
+# however if you don't CRAN complains that "Namespaces in Imports field not imported from:
+#    ‘R6’ ...
+# All declared Imports should be used."
+# even though in fact they are used but maybe outside of function body. 
 <#list model.getImports() as import>
 import(${import})
 </#list>
--->
 importFrom(magrittr,"%>%")
+importFrom(utils,"capture.output")
 import(rJava)
+import(R6)

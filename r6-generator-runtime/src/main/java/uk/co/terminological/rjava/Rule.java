@@ -2,6 +2,7 @@ package uk.co.terminological.rjava;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public interface Rule<T> {
 		static <X> MapRule<X>[] reflectionRules(Class<X> clazz) {
 			List<MapRule<X>> out = new ArrayList<>();
 			for (Method method: clazz.getMethods()) {
-				if (method.isAccessible() &&
+				if (Modifier.isPublic(method.getModifiers()) &&
 						method.getParameterCount() == 0 
 						&& (
 								ConvertibleTypes.contains(method.getReturnType())

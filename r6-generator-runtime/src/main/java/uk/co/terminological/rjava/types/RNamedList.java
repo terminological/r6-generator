@@ -117,12 +117,12 @@ public class RNamedList extends LinkedHashMap<String, RObject> implements RColle
 		return out;
 	}
 
-	public RNamedList and(String s, RObject o) throws UnconvertableTypeException {
+	public RNamedList and(String s, RObject o) {
 		this.put(s, o);
 		return this;
 	}
 	
-	public static RNamedList with(String s, RObject o) throws UnconvertableTypeException {
+	public static RNamedList with(String s, RObject o) {
 		RNamedList out = new RNamedList();
 		out.and(s,o);
 		return out;

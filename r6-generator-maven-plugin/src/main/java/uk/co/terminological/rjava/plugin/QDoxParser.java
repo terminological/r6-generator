@@ -71,7 +71,6 @@ public class QDoxParser {
 		try {
 			return Optional.of(Class.forName(type.getCanonicalName()));
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			return Optional.empty();
 		}
 		
@@ -183,7 +182,26 @@ public class QDoxParser {
 			//Identify methods
 			for (JavaMethod m: clazz.getMethods(true)) {
 				if (m.isPublic() && hasAnnotation(uk.co.terminological.rjava.RMethod.class,m)) {
-					RMethod method = createMethod(m,model,out);
+					Map<String,Object> methodAnnotationMap = getAnnotation(uk.co.terminological.rjava.RMethod.class,m).map(a -> a.getNamedParameterMap()).get();
+					RMethod method = createMethod(m,model,out, false, false, methodAnnotationMap);
+					out.addMethod(method);
+				}
+			}
+			
+			//Identify async methods
+			for (JavaMethod m: clazz.getMethods(true)) {
+				if (m.isPublic() && hasAnnotation(uk.co.terminological.rjava.RAsync.class,m)) {
+					Map<String,Object> methodAnnotationMap = getAnnotation(uk.co.terminological.rjava.RAsync.class,m).map(a -> a.getNamedParameterMap()).get();
+					RMethod method = createMethod(m, model, out, true, true, methodAnnotationMap);
+					out.addMethod(method);
+				}
+			}
+			
+			//Identify async methods
+			for (JavaMethod m: clazz.getMethods(true)) {
+				if (m.isPublic() && hasAnnotation(uk.co.terminological.rjava.RBlocking.class,m)) {
+					Map<String,Object> methodAnnotationMap = getAnnotation(uk.co.terminological.rjava.RBlocking.class,m).map(a -> a.getNamedParameterMap()).get();
+					RMethod method = createMethod(m, model, out, true, false, methodAnnotationMap);
 					out.addMethod(method);
 				}
 			}
@@ -214,11 +232,10 @@ public class QDoxParser {
 	 * {@link RObject} hierarchy now. This is largely checked by the fact that when creating a type 
 	 * it has to have a @RClass or @RDatatype annotation. 
 	 */
-	public RMethod createMethod(JavaMethod m, RModel model, RClass cls) throws MojoExecutionException {
+	public RMethod createMethod(JavaMethod m, RModel model, RClass cls, boolean async, boolean future, Map<String,Object> annotationMap) throws MojoExecutionException {
 		try {
-			Map<String,Object> annotationMap = getAnnotation(uk.co.terminological.rjava.RMethod.class,m).map(a -> a.getNamedParameterMap()).get();
 			String description = (m.getComment() == null ? "" :m.getComment().trim());
-			RMethod out = new RMethod(model, cls, annotationMap, m.getName(), description, m.isStatic(), false);
+			RMethod out = new RMethod(model, cls, annotationMap, m.getName(), description, m.isStatic(), false, async, future);
 			out.setReturnType( getOrCreateType(m.getReturns(), model));
 			m.getTags().forEach(dt -> out.mergeAnnotations(dt.getName(),dt.getValue()));		
 			for (JavaParameter jp : m.getParameters()) {
@@ -278,7 +295,10 @@ public class QDoxParser {
 			// R6 marshalling logic
 			// They can be manipulated by R and passed back in to java as a robj which needs
 			// unwrapping before being presented
-			String[] j2r = {"function(jObj) return(jObj)"};
+			// change this to wrap the jObj in the correct wrapper, using the class$new(jObj,self) R6 constructor
+			// which assumes the 
+			String simpleName = ((DefaultJavaClass) type).getName();
+			String[] j2r = {"function(jObj) return("+simpleName+"$new(jObj,self))"};
 			String[] r2j = {"function(rObj) return(rObj$.jobj)"};
 			return new RType(model,Arrays.asList(r2j),Arrays.asList(j2r),jni,type, ((DefaultJavaClass) type).getName());
 		
@@ -331,7 +351,7 @@ public class QDoxParser {
 
 	// a default no-args construvtor implementation if the class does not define one. 
 	private RMethod noargsConstructor(JavaClass c, RModel model, RClass cls) throws MojoExecutionException {
-		RMethod out = new RMethod(model, cls, Collections.emptyMap(),"new","the default no-args constructor",true, true);
+		RMethod out = new RMethod(model, cls, Collections.emptyMap(),"new","the default no-args constructor",true, true, false, false);
 		out.setReturnType(model.getRTypeOrThrowError(c));
 		return out;
 	}
@@ -339,7 +359,7 @@ public class QDoxParser {
 	private RMethod createConstructor(JavaConstructor m, RModel model, RClass cls) throws MojoExecutionException {
 		Map<String,Object> annotationMap = getAnnotation(uk.co.terminological.rjava.RMethod.class,m).map(a -> a.getNamedParameterMap()).orElse(Collections.emptyMap());
 		String description = (m.getComment() == null ? "the default no-args constructor" :m.getComment().trim());
-		RMethod out = new RMethod(model, cls, annotationMap,"new",description,true, true);
+		RMethod out = new RMethod(model, cls, annotationMap,"new",description,true, true, false, false);
 		m.getTags().forEach(dt -> out.mergeAnnotations(dt.getName(), dt.getValue()));
 		for (JavaParameter jp: m.getParameters()) {
 			String defaultValue = getAnnotation(uk.co.terminological.rjava.RDefault.class, jp).map(a -> a.getNamedParameter("rCode").toString()).orElse(null);

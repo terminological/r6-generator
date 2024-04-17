@@ -5,12 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -80,7 +80,6 @@ public class RModelWriter {
 		if (model.getConfig().needsLicense()) doGenerate(new File(target,"LICENSE"),getTemplate("rjavaLicense.ftl"),typeRoot);
 		doGenerate(new File(target,"LICENSE.md"),getTemplate("rjavaLicenseMd.ftl"),typeRoot);
 		doGenerate(new File(manDir,"JavaApi.Rd"),getTemplate("rjavaApiRd.ftl"),typeRoot);
-		doGenerate(new File(manDir,"pipe.Rd"),getTemplate("rjavaPipeRd.ftl"),typeRoot);
 		doGenerate(new File(manDir,model.getConfig().getPackageName()+"-package.Rd"),getTemplate("rjavaPackageRd.ftl"),typeRoot);
 		doGenerate(new File(rDir,"JavaApi.R"),getTemplate("rjavaApiR.ftl"),typeRoot);
 		doGenerate(new File(rDir,"StaticApi.R"),getTemplate("rjavaStaticApiR.ftl"),typeRoot);
@@ -104,14 +103,38 @@ public class RModelWriter {
 			
 		}
 		
+		// supporting R files
 		try {
-			Files.copy(
-					RModelWriter.class.getResourceAsStream("/aa_maven.R"), 
-					Paths.get(new File(rDir,"aa_maven.R").getPath()),
-					StandardCopyOption.REPLACE_EXISTING
-			);
-		} catch (IOException e) {
-			throw new MojoExecutionException("could not copy rmaven files: ",e);
+			Stream.of("aa_maven.R","aa_rfuture.R").forEach(x -> {
+				try {
+					Files.copy(
+							RModelWriter.class.getResourceAsStream("/"+x), 
+							Paths.get(new File(rDir,x).getPath()),
+							StandardCopyOption.REPLACE_EXISTING
+					);
+				} catch (IOException e) {
+					throw new RuntimeException("Could not copy file: "+x,e);
+				}
+			});
+		} catch (RuntimeException e) {
+			throw new MojoExecutionException(e.getMessage(),e.getCause());
+		}
+		
+		// documentation
+		try {
+			Stream.of("RFuture.Rd","pipe.Rd").forEach(x -> {
+				try {
+					Files.copy(
+							RModelWriter.class.getResourceAsStream("/"+x), 
+							Paths.get(new File(manDir,x).getPath()),
+							StandardCopyOption.REPLACE_EXISTING
+					);
+				} catch (IOException e) {
+					throw new RuntimeException("Could not copy file: "+x,e);
+				}
+			});
+		} catch (RuntimeException e) {
+			throw new MojoExecutionException(e.getMessage(),e.getCause());
 		}
 		
 	}

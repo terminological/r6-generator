@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.text.WordUtils;
+
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaType;
 
@@ -20,12 +22,15 @@ public class RAnnotated {
 	private RModel model;
 	private Map<String,List<String>> annotations = new HashMap<>();
 	protected JavaType type;
-	protected String simpleName; 
-	public Map<String,List<String>> getAnnotations() {return annotations;}
+	protected String simpleName;
+	
+	public Map<String,List<String>> getAnnotations() {
+		return annotations;
+	}
 	
 	public RAnnotated(RModel model, Map<String,Object> annotation, JavaType type, String name) {
 		this.model=model;
-		this.type = type;
+		this.type=type;
 		this.simpleName= name;
 		annotation.forEach((key,value) -> this.mergeAnnotations(key, value));
 	}
@@ -152,12 +157,14 @@ public class RAnnotated {
 	
 	public String doxygen(String s, int indent) {
 		if(s == null) return null;
+		s = WordUtils.wrap(s, 70);
 		String tabs = String.join("", Collections.nCopies(indent, "\t"));
-		return tabs+"#' "+s.trim().replaceAll("\\n", "\n"+tabs+"#' ").trim();
+		return tabs+"#' "+s.trim().replaceAll("\\n", "\n"+tabs+"#'   ").trim();
 	}
 	public String doxygen(String field, String s, int indent) {
 		if(s == null) return null;
+		s = WordUtils.wrap(s, 70);
 		String tabs = String.join("", Collections.nCopies(indent, "\t"));
-		return tabs+"#' @"+field+" "+s.trim().replaceAll("\\n", "\n"+tabs+"#' ").trim();
+		return tabs+"#' @"+field+" "+s.trim().replaceAll("\\n", "\n"+tabs+"#'   ").trim();
 	}
 }

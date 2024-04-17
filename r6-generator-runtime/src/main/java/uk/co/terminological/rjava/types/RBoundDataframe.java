@@ -18,7 +18,7 @@ import uk.co.terminological.rjava.RName;
 import uk.co.terminological.rjava.UnconvertableTypeException;
 
 /**
- * A RBoundDataframe is a datafram bount to an annotated POJO interface type.
+ * A RBoundDataframe is a dataframe bound to an annotated POJO interface type.
  *
  * @param <X> the generic type
  */

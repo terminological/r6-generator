@@ -333,6 +333,10 @@ ${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(${method.get
 		}
 
 		\subsection{Returns}{
+	<#if method.isFuture()>
+			An `RFuture` with methods `cancel()`, `isCancelled()`, `isDone()` and `get()`. 
+			The result of a `get()` call will be an 
+	</#if>
 	<#if method.isFactory()>
 			R6 ${method.getReturnType().getSimpleName()} object: ${method.getAnnotationValue("return")!}
 	<#else>

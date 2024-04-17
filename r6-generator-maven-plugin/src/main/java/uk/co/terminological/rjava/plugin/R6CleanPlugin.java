@@ -23,9 +23,9 @@ public class R6CleanPlugin extends PluginBase {
 		rmGenerated(rDir);
 		rmGenerated(testDir);
 		
-		deleteJar(this.sourcesFile);
-		deleteJar(this.jarFile);
-		deleteJar(this.thinJarFile);
+		deleteRPackageJar(this.sourcesFile);
+		deleteRPackageJar(this.jarFile);
+		deleteRPackageJar(this.thinJarFile);
 		
 		
 	}

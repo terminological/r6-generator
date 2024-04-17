@@ -10,12 +10,15 @@
 #'
 #' Contact: ${model.getConfig().getMaintainerEmail()}
 <#--
-We don't really want these imported in this way, as it leads ROxygen to load them 
-This needs to be fixed properly in a package level annotation probably 
+We don't really want these imported in this way, but the package level
+imports are needed to make sure that they are used in the NAMESPACE file
+and hence stops CRAN from emitting a warning about them not being used.
+In short it is another CRAN special. 
+-->
+#' @import R6
 <#list model.getImports() as import>
 #' @import ${import}
 </#list>	
--->
 #' @import rJava 
 #' @export
 JavaApi = R6::R6Class("JavaApi", public=list( 
@@ -29,7 +32,7 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 	#' @field .reg the list of references to java objects created by this API 
 	.reg = list(),
 <#list model.getClassTypes() as class>
-	#' @field ${class.getSimpleName()} the ${class.getSimpleName()} class contructors and static methods
+	#' @field ${class.getSimpleName()} the ${class.getSimpleName()} class constructors and static methods
 	${class.getSimpleName()} = NULL,
 </#list>
 
@@ -134,12 +137,12 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 				tmp_${param} = self$.toJava$${method.getParameterType(param).getSimpleName()}(${param});
 	</#list>
 				# invoke constructor method
-				tmp_out = .jnew("${class.getJNIName()}" ${method.getParameterCsv("tmp_")}, check=FALSE);
+				tmp_out = .jnew("${class.getJNIName()}" ${method.getPrefixedParameterCsv("tmp_")}, check=FALSE);
 				self$printMessages()
 				.jcheck() 
 				# convert result back to R (should be a identity conversion)
 				tmp_r6 = ${class.getSimpleName()}$new(
-					self$.fromJava$${method.getReturnType().getSimpleName()}(tmp_out),
+					tmp_out,
 					self
 				);
 				return(tmp_r6)
@@ -150,23 +153,32 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 			<#list method.getParameterNames() as param>
 				tmp_${param} = self$.toJava$${method.getParameterType(param).getSimpleName()}(${param});
 			</#list>
-				#execute static call
-				tmp_out = .jcall("${class.getJNIName()}", returnSig = "${method.getReturnType().getJNIType()}", method="${method.getName()}" ${method.getParameterCsv("tmp_")}, check=FALSE);
-				self$printMessages()
-				.jcheck() 
-			<#if method.isFactory()>
-				<#-- 
-				# get object if it already exists
-				if(self$isRegistered(tmp_out)) return(self$getRegistered(tmp_out))
-				 -->
-				# wrap return java object in R6 class 
-				out = ${class.getSimpleName()}$new(
-					self$.fromJava$${method.getReturnType().getSimpleName()}(tmp_out),
-					self
+			<#if method.isAsync()>
+				# statically construct a JFuture R6 object as return value.
+				# this uses the JFuture constructor with a canonical  name as a parameter. 
+				# in which case we must supply the api
+				out = RFuture$new(
+					r6obj = "${class.getCanonicalName()}",
+					converter = self$.fromJava$${method.getReturnType().getSimpleName()},
+					returnSig = "${method.getReturnType().getJNIType()}", 
+					method = "${method.getName()}"${method.getPrefixedParameterCsv("tmp_",5)},
+					api = self
 				);
-				return(out)
+				# handle any messages and exceptions arising:
+				self$printMessages();
+				.jcheck();
+				<#if method.isFuture()>return(out)<#else>return(out$get())</#if>;
 			<#else>
-				# convert java object back to R
+				# execute static call
+				tmp_out = .jcall(
+					"${class.getJNIName()}", 
+					returnSig = "${method.getReturnType().getJNIType()}", 
+					method = "${method.getName()}"${method.getPrefixedParameterCsv("tmp_",5)}, 
+					check = FALSE);
+				self$printMessages()
+				.jcheck()
+				# static methods cannot return themselves fluently, so this does not need to be checked for.
+				# convert java object back to R. Wrapping in an R6 class as needed
 				out = self$.fromJava$${method.getReturnType().getSimpleName()}(tmp_out);
 				if(is.null(out)) return(invisible(out))
 				return(out)
@@ -233,7 +245,11 @@ JavaApi$versionInformation = function() {
 .checkDependencies = function(nocache = FALSE, ...) {
 	<#if model.getConfig().preCompileBinary()>
 		<#if model.getConfig().packageAllDependencies()>
+			<#if model.getConfig().useShadePlugin()>
+	package_jar = .package_jars(package_name="${model.getConfig().getPackageName()}",types="shaded")
+			<#else>
 	package_jar = .package_jars(package_name="${model.getConfig().getPackageName()}",types="fat-jar")
+			</#if>
 		<#else>
 	package_jar = .package_jars(package_name="${model.getConfig().getPackageName()}",types="thin-jar")
 		</#if>
@@ -273,202 +289,4 @@ JavaApi$versionInformation = function() {
 .startJvm = function() {
 	.start_jvm(debug=<#if model.getConfig().getDebugMode()>TRUE<#else>FALSE</#if>)
 }
-
-<#-- 
-.startJvm = function() {
-	tryCatch({
-<#if model.getConfig().getDebugMode()>
-		# pass in debug options
-		if (!.jniInitialized) {
-			.jinit(parameters=c(getOption("java.parameters"),"-Xdebug","-Xrunjdwp:transport=dt_socket,address=8998,server=y,suspend=n"), silent = TRUE, force.init = TRUE)
-			message("java debugging initialised on port 8998")
-		}
-<#else>
-		if (!.jniInitialized) 
-			.jinit(parameters=getOption("java.parameters"),silent = TRUE, force.init = FALSE)
-</#if>
-	}, error = function(e) stop("Java cannot be initialised: ",e$message))
-}
-
-# package installation directory
-.here = function(paths) {
-	path.expand(system.file(paths, package="${model.getConfig().getPackageName()}"))
-}
-
-# package working directory
-.workingDir = function() {
-	tmp = path.expand(rappdirs::user_cache_dir("${model.getConfig().getPackageName()}-${model.getConfig().getVersion()}"))
-	fs::dir_create(tmp)
-	return(tmp)
-}
-
-.checkDependencies = function(...) {
-	# Java dependencies
-	<#if model.getConfig().preCompileBinary()>
-		<#if model.getConfig().packageAllDependencies()>
-	# all java library code and dependencies have already been bundled into a single fat jar
-	# compilation was done on the library developers machine and has no external dependencies
-	classpath = NULL
-		<#else>
-	# the main java library has been compiled but external dependencies must be resolved by maven
-	# successful resolution of the classpath libraries depends on the runtime machine and requires
-	# access to the internet at a minimum.
-	pomLoc = .extractPom()
-	classpath = .resolveDependencies(pomLoc, ...) 
-		</#if>
-	<#else>
-	# this is a sources only distribution. The java code must be compiled from the source (distributed in this package as a ${model.getConfig().getPackageName()}-${model.getConfig().getVersion()}-src.jar) 
-	# all the dependencies are resolved and packaged into a single fat jar on compilation
-	# N.b. successful compilation is a machine specific thing as the dependencies may have been installed into maven locally 
-	pomLoc = .extractSources()
-	.compileFatJar(pomLoc, ...)
-	classpath = NULL
-	</#if>
-	
-	# find the jars that come bundled with the library:
-	jars = list.files(.here("java"), pattern=".*\\.jar", full.names = TRUE)
-	jars = jars[!endsWith(jars,"sources.jar") & !endsWith(jars,"javadoc.jar") & !endsWith(jars,"src.jar")]
-	
-	# and add any that have been resolved and downloaded by maven:
-	jars = unique(c(jars,classpath))
-	return(jars)
-}
-
-
-
-# loads a maven wrapper distribution from the internet and unzips it into the package working directory
-.loadMavenWrapper = function() {
-	dir = .workingDir()
-	if (!file.exists(paste0(dir,"/mvnw"))) {
-		destfile = paste0(dir,"/wrapper.zip")
-		message("Bootstrapping maven wrapper.")
-		utils::download.file(
-			"https://repo1.maven.org/maven2/org/apache/maven/wrapper/maven-wrapper-distribution/3.1.1/maven-wrapper-distribution-3.1.1-bin.zip",
-			destfile = destfile,
-			quiet = TRUE
-		)
-		utils::unzip(destfile,exdir=dir)
-		unlink(destfile)
-		if(!file.exists(paste0(dir,"/mvnw"))) stop("downloading maven wrapper has not been successful")
-	}
-	if(.Platform$OS.type == "windows") {
-		mvnPath = paste0(dir,"/mvnw.cmd")
-	} else {
-		mvnPath = paste0(dir,"/mvnw")
-	}
-	write(c(
-		"distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.3.9/apache-maven-3.3.9-bin.zip",
-		"wrapperUrl=https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.1.1/maven-wrapper-3.1.1.jar"
-	), paste0(dir,"/.mvn/wrapper/maven-wrapper.properties"))
-	Sys.chmod(mvnPath)
-	return(mvnPath)
-}
-
-# detect if `test` file exists and is newer that `original`
-.fileNewer = function(original, test) {
-	if (!file.exists(original)) stop("source file doesn't exist")
-	if (!file.exists(test)) return(FALSE)
-	as.POSIXct(file.info(original)$mtime) < as.POSIXct(file.info(test)$mtime)
-}
-
-# gets the pom.xml file for ${model.getMavenCoordinates()} from a thin jar
-.extractPom = function() {
-	dir = .workingDir()
-	jarLoc = list.files(.here(c("inst/java","java")), pattern = "${model.getArtifactId()}-${model.getMavenVersion()}\\.jar", full.names = TRUE)
-	if (length(jarLoc)==0) stop("couldn't find jar for artifact: ${model.getArtifactId()}-${model.getMavenVersion()}")
-	jarLoc = jarLoc[[1]]
-	pomPath = paste0(dir,"/pom.xml")
-	if (!.fileNewer(jarLoc, pomPath)) {
-		utils::unzip(jarLoc, files = "META-INF/maven/${model.getGroupId()}/${model.getArtifactId()}/pom.xml", junkpaths = TRUE, exdir = dir)
-		if (!file.exists(pomPath)) stop("couldn't extract META-INF/maven/${model.getGroupId()}/${model.getArtifactId()}/pom.xml from ",jarLoc)
-	}
-	return(pomPath)
-}
-
-# gets the pom.xml file for ${model.getMavenCoordinates()} which is the library version we exepct to be bundled in the 
-.extractSources = function() {
-	dir = .workingDir()
-	jarLoc = list.files(.here(c("inst/java","java")), pattern = "${model.getArtifactId()}-${model.getMavenVersion()}-src\\.jar", full.names = TRUE)
-	if (length(jarLoc)==0) stop("couldn't find jar for artifact: ${model.getArtifactId()}-${model.getMavenVersion()}-src.jar")
-	jarLoc = jarLoc[[1]]
-	pomPath = paste0(dir,"/${model.getArtifactId()}-${model.getMavenVersion()}/pom.xml")
-	if (!.fileNewer(jarLoc, pomPath)) {
-		utils::unzip(jarLoc, exdir = dir)
-		if (!file.exists(pomPath)) stop("couldn't extract source files from ",jarLoc)
-	}
-	return(pomPath)
-}
-
-# executes maven assembly plugin and relocates resulting fat jar into java library directory
-.compileFatJar = function(pomPath, ...) {
-	fatJarFinal = fs::path(.here("java"),"${model.getArtifactId()}-${model.getMavenVersion()}-jar-with-dependencies.jar")
-	if (!.fileNewer(pomPath, fatJarFinal)) {
-		message("Compiling java library and downloading dependencies, please be patient.")
-		.executeMaven(
-			pomPath, 
-			goal = c("compile","assembly:single","package"),
-			opts = c(
-				"-DdescriptorId=jar-with-dependencies",
-				"-Dmaven.test.skip=true"
-			),
-			...
-		)
-		message("Compilation complete")
-		fatJar = fs::path_norm(fs::path(pomPath, "../target/${model.getArtifactId()}-${model.getMavenVersion()}-jar-with-dependencies.jar"))
-		fs::file_move(fatJar, fatJarFinal)
-	}
-	return(fatJarFinal)
-}
-
-# execute a `dependency:build-classpath` maven goal on the `pom.xml`
-.resolveDependencies = function(pomPath, ...) {
-	classpathLoc = paste0(.workingDir(), "/classpath.txt" )
-	# If the classpath file is already there we need to check that the entries on the class path are indeed available on this machine
-	# as they may have been moved or deleted
-	if(file.exists(classpathLoc)) {
-		classpathString = unique(readLines(classpathLoc,warn = FALSE))
-		if (!all(file.exists(classpathString))) {
-			# we need to rebuild the classpath file as some dependencies are not available
-			unlink(classpathLoc)
-		}
-	} 
-	if(!.fileNewer(pomPath,classpathLoc)) {
-		message("Calculating classpath and updating dependencies, please be patient.")
-		.executeMaven(
-			pomPath, 
-			goal = "dependency:build-classpath",		
-			opts = c(
-				paste0("-Dmdep.outputFile=classpath.txt"),
-				paste0("-DincludeScope=runtime")
-			),
-			...
-		)
-		message("Dependencies updated")
-	}
-	
-	if(.Platform$OS.type == "windows") {
-	  classpathString = unique(scan(classpathLoc, what = "character", sep=";", quiet=TRUE))
-	} else {
-	  classpathString = unique(scan(classpathLoc, what = "character", sep=":", quiet=TRUE))
-	}
-	
-	if (!all(file.exists(classpathString))) 
-		stop("For some inexplicable reason, Maven cannot determine the classpaths of the dependencies of this library on this machine. You can try ${model.getConfig().getPackageName()}::JavaApi$rebuildDependencies()")
-	return(classpathString)
-}
-
-# executes a maven goal plus or minus info or debugging
-.executeMaven = function(pomPath, goal, opts = c(), quiet=TRUE, debug=FALSE, ...) {
-	mvnPath = .loadMavenWrapper()
-	args = c(goal, opts) #, paste0("-f '",pomPath,"'"))
-	if (quiet) args = c(args, "-q")
-	if (debug) args = c(args, "-X")
-	java_home = rJava::.jcall( 'java/lang/System', 'S', 'getProperty', 'java.home' )
-	Sys.setenv(JAVA_HOME=java_home)
-	# required due to an issue in Mvnw.cmd on windows.
-	wd = getwd()
-	setwd(fs::path_dir(pomPath))
-	system2(mvnPath, args)
-	setwd(wd)
-}-->
 

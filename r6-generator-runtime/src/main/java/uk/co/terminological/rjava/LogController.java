@@ -111,7 +111,8 @@ public class LogController {
 		// add a layout like pattern, json etc
 		appenderBuilder
 			.add(builder.newLayout("PatternLayout")
-					.addAttribute("pattern", "%d %p %c [%t] %m%n"));
+					// .addAttribute("pattern", "%d %p %c [%t] %m%n"));
+					.addAttribute("pattern", "%m%n"));
 		RootLoggerComponentBuilder rootLogger = 
 				builder.newRootLogger(lev);
 		rootLogger.add(builder.newAppenderRef("Console"));

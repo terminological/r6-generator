@@ -8,11 +8,9 @@ import java.lang.annotation.Target;
 
 /**
  * Methods marked by this annotation will be included in the R library api.
- * In the R API methods must all have different names so method or constructor overloading is not 
- * supported. Both static and non-static methods are supported allowing for factory style constructors.
- * Methods annotated with this block the R process and cannot be interrupted. For this reason they 
- * should always return a value in a socially acceptable time frame. If there is the possibility the
- * method can hang then using an `RBlocking` or `RAsync` alternative annotation is preferred.
+ * Both static and non-static methods are supported. An async method may take a long time to 
+ * execute and so is delegated to a java thread and returns an RFuture which will contain the
+ * asynchronously executed code.
  *  
  * examples field is used to populate .Rd files
  * @author terminological
@@ -21,7 +19,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface RMethod {
+public @interface RAsync {
 
 	/**
 	 * Populate R examples. For non static methods this will be combined with @RClass(exampleSetup) annotation to
@@ -39,4 +37,11 @@ public @interface RMethod {
 	 */
 	String[] tests() default {};
 	
+	/**
+	 * Should the method be synchronised on the enclosing object?
+	 * In general the responsibility of writing thread safe code is the developers. A method annotated with @RAsync
+	 * may be called repeatedly and  
+	 * @return
+	 */
+	boolean synchronise() default false;
 }

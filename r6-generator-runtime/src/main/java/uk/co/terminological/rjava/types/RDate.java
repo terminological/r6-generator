@@ -22,7 +22,7 @@ import uk.co.terminological.rjava.utils.RObjectVisitor;
 				"	if (is.na(rObj)) return(rJava::.jnew('~RDATE~'))",
 				"	if (length(rObj) > 1) stop('input too long')",
 				"   if (rObj<'0001-01-01') message('dates smaller than 0001-01-01 will be converted to NA')",
-				"	tmp = as.character(rObj,format='%C%y-%m-%d')[[1]]",
+				"	tmp = format(rObj,format='%C%y-%m-%d')[[1]]",
 				"	return(rJava::.jnew('~RDATE~',tmp))", 
 				"}"
 		}

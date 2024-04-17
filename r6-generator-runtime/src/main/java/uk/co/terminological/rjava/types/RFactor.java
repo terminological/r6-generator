@@ -7,7 +7,7 @@ import uk.co.terminological.rjava.RDataType;
 import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
- * A single value of a factor is largely the same as a String from most perpectives
+ * A single value of a factor is largely the same as a String from most perspectives
  * but has an associated index value. This is largely expected to make sense in the context of a 
  * {@link RFactorVector}.
  * @author terminological

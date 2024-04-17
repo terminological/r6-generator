@@ -7,7 +7,7 @@
 \usage{${method.getSnakeCaseName()}()
 <#else>
 \usage{${method.getSnakeCaseName()}(
-	${method.getFunctionParameterCsv(",\n\t")}
+	${method.getParameterCsv(",\n\t")}
 )
 </#if>
 }
@@ -21,11 +21,16 @@
 }
 </#if>
 \value{
+<#if method.isFuture()>
+an `RFuture` with methods `cancel()`, `isCancelled()`, `isDone()` and `get()`. 
+The result of a `get()` call will be an 
+</#if>
 <#if method.isFactory()>
 R6 ${method.getReturnType().getSimpleName()} object: ${method.getAnnotationValue("return")!}
 <#else>
 ${method.getReturnType().getSimpleName()}: ${method.getAnnotationValue("return")!}
 </#if>
+
 }
 \description{
 ${method.rdEscape(method.getNonTitleDescription())!}

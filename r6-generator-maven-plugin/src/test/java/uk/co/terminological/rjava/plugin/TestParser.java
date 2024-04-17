@@ -1,11 +1,7 @@
 package uk.co.terminological.rjava.plugin;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.text.StringEscapeUtils;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 

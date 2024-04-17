@@ -23,8 +23,6 @@ ${class.getSimpleName()} = R6::R6Class("${class.getSimpleName()}", public=list(
 	#' @field .jobj internal pointer to the rJava reference to the java object.
 	.jobj = NULL,
 
-	<#-- .ptr = NULL, -->
-
 	#' @description
 	#' Create a new ${class.getSimpleName()} this is not for general use and instances should be created through the
 	#' package api class. See example.
@@ -41,10 +39,6 @@ ${class.getSimpleName()} = R6::R6Class("${class.getSimpleName()}", public=list(
 	initialize = function(jobj,api){
 		self$.jobj = jobj;
 		self$.api = api;
-		<#-- 
-		self$.ptr = xptr::xptr_address(jobj@jobj)
-		api$register(self)
-		 -->
 	},
 	
 	<#list class.getInstanceMethods() as method>
@@ -54,13 +48,9 @@ ${method.doxygen(method.getDescription())}
 		<#list method.getParameterNames() as param>
 ${method.doxygen("param",method.getParameterDescription(param))} - (java expects a ${method.getParameterType(param).getSimpleName()})
 		</#list>
-		<#if method.isFactory()>
-	#' @return R6 ${method.getReturnType().getSimpleName()} object: 
+	#' @return <#if method.isFuture()>an `RFuture` with methods `cancel()`, `isCancelled()`, `isDone()` and `get()`. 
+	#' The result of a `get()` call will be a </#if><#if method.isFactory()>R6 ${method.getReturnType().getSimpleName()} object <#else>${method.getReturnType().getSimpleName()}</#if>
 ${method.doxygen(method.getAnnotationValue("return"))!}
-		<#else>
-	#' @return ${method.getReturnType().getSimpleName()}: 
-${method.doxygen(method.getAnnotationValue("return"))!}
-		</#if>
 		<#if method.hasExamples()>
 	#' @examples
 			<#if class.hasExampleSetup()>
@@ -73,51 +63,61 @@ ${method.doxygen(example)}
 			</#list>
 		</#if>
 	${method.getName()} = function(${method.getFunctionParameterCsv()}) {
-		# copy parameters
+		# copy parameters into Java
 		<#list method.getParameterNames() as param>
 		tmp_${param} = self$.api$.toJava$${method.getParameterType(param).getSimpleName()}(${param});
 		</#list>
+		<#if method.isAsync()>
+		# construct a JFuture R6 object as return value.
+		out = RFuture$new(
+			r6obj = self,
+			converter = self$.api$.fromJava$${method.getReturnType().getSimpleName()},
+			returnSig = "${method.getReturnType().getJNIType()}", 
+			method = "${method.getName()}"${method.getPrefixedParameterCsv("tmp_",3)}
+		);
+		# handle any messages and exceptions arising:
+		self$.api$printMessages();
+		.jcheck();
+		<#if method.isFuture()>return(out)<#else>return(out$get())</#if>;
+		<#else>
 		# execute method call
-		tmp_out = .jcall(self$.jobj, returnSig = "${method.getReturnType().getJNIType()}", method="${method.getName()}" ${method.getParameterCsv("tmp_")}, check=FALSE);
-		self$.api$printMessages()
+		tmp_out = .jcall(
+			self$.jobj, 
+			returnSig = "${method.getReturnType().getJNIType()}", 
+			method = "${method.getName()}"${method.getPrefixedParameterCsv("tmp_",3)}, 
+			check=FALSE
+		);
+		self$.api$printMessages();
 		# check for exceptions and rethrow them
-		.jcheck()
-		<#if method.isFactory()>
-		# is this a fluent method?
-		# if(.jcall(self$.jobj, returnSig="Z", method="equals", .jcast(tmp_out))) {
+		.jcheck();
+			<#if method.isFactory()>
+		# is this a fluent method (output is same as dispatching class)?
 		if(self$.jobj$equals(tmp_out)) {
 			# return fluent method
-			invisible(self)
-		} else {
-			# wrap return java object in R6 class  
-			out = ${method.getReturnType().getSimpleName()}$new(
-				self$.api$.fromJava$${method.getReturnType().getSimpleName()}(tmp_out),
-				self$.api
-			);
-			return(out);
+			return(invisible(self));
 		}
-		<#else>
-		# convert java object back to R
+			</#if>
+		# convert java object back to R. Wrapping to R6 as needed. 
 		out = self$.api$.fromJava$${method.getReturnType().getSimpleName()}(tmp_out);
-		if(is.null(out)) return(invisible(out))
+		if(is.null(out)) return(invisible(out));
 		return(out);
 		</#if>
 	},
-	</#list>
 	
+	</#list>
 	#' @description The output of toString() of this ${class.getSimpleName()}
 	print = function() {
 		tmp_out = .jcall(self$.jobj, returnSig = "Ljava/lang/String;", method="toString");
-		self$.api$printMessages()
-		print(tmp_out)
-		invisible(self)
+		self$.api$printMessages();
+		print(tmp_out);
+		invisible(self);
 	},
 	
 	#' @description The output of equals() of this ${class.getSimpleName()}
 	#' @param object The R6 instance to test for equality to this ${class.getSimpleName()}  
 	equals = function(object) {
-		if (is.null(object$.jobj)) return(FALSE)
-		return(self$.jobj$equals(object$.jobj))
+		if (is.null(object$.jobj)) return(FALSE);
+		return(self$.jobj$equals(object$.jobj));
 	},
 	
 	#' @description Allow this object to be garbage collected.
