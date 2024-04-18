@@ -4,7 +4,7 @@
 	<!--<groupId>io.github.terminological</groupId>-->
 	<artifactId>r6-generator</artifactId>
 	<packaging>pom</packaging>
-	<version>0.5.6-SNAPSHOT</version>
+	<version>0.6.0</version>
 	<name>R6 generator</name>
 	<description>
 	  R can use `rJava` to communicate with java. R also has a class system called R6. If you want to use a java library 
@@ -46,7 +46,8 @@
 		<connection>scm:git:git@github.com:${git.repo}.git</connection>
 		<developerConnection>scm:git:git@github.com:${git.repo}.git</developerConnection>
 		<url>https://github.com/${git.repo}</url>
- 	</scm>
+ 	  <tag>r6-generator-0.6.0</tag>
+  </scm>
 
 	<modules>
 		<module>r6-generator-runtime</module>
