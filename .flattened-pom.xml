@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.terminological</groupId>
   <artifactId>r6-generator</artifactId>
-  <version>main-SNAPSHOT</version>
+  <version>0.5.6-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>R6 generator</name>
   <description>R can use `rJava` to communicate with java. R also has a class system called R6. If you want to use a java library 
@@ -16,7 +16,7 @@
 	  this plugin to allow java developers to provide simple APIs for their libraries, package their library using Maven, push it to github and for that to 
 	  become seamlessly available as an R package, with a minimal amount of fuss. A focus is on trying to produce CI ready libraries 
 	  tested with Github workflows and ready for `r-universe` submission.</description>
-  <url>https://github.com/terminological/r6-generator</url>
+  <url>https://github.com/terminological/r6-generator/r6-generator</url>
   <licenses>
     <license>
       <name>MIT License</name>
@@ -36,20 +36,4 @@
     <developerConnection>scm:git:git@github.com:terminological/r6-generator.git/r6-generator</developerConnection>
     <url>https://github.com/terminological/r6-generator/r6-generator</url>
   </scm>
-  <repositories>
-    <repository>
-      <id>Sonatype OSSRH</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-    </repository>
-  </repositories>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.13</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

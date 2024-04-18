@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.terminological</groupId>
   <artifactId>r6-generator-maven-archetype</artifactId>
-  <version>main-SNAPSHOT</version>
+  <version>0.5.6-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
   <name>R6 Generator Maven Archetype</name>
   <description>An archteype for rapid setup of r6-generator projects in the recommended configuration</description>
@@ -28,20 +28,4 @@
     <developerConnection>scm:git:git@github.com:terminological/r6-generator.git/r6-generator/r6-generator-maven-archetype</developerConnection>
     <url>https://github.com/terminological/r6-generator/r6-generator/r6-generator-maven-archetype</url>
   </scm>
-  <repositories>
-    <repository>
-      <id>Sonatype OSSRH</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-    </repository>
-  </repositories>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.13</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
