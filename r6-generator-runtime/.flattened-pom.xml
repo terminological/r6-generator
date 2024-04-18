@@ -25,6 +25,7 @@
   <scm>
     <connection>scm:git:git@github.com:terminological/r6-generator.git/r6-generator/r6-generator-runtime</connection>
     <developerConnection>scm:git:git@github.com:terminological/r6-generator.git/r6-generator/r6-generator-runtime</developerConnection>
+    <tag>m2repo-0.0.3</tag>
     <url>https://github.com/terminological/r6-generator/r6-generator/r6-generator-runtime</url>
   </scm>
   <dependencies>
@@ -53,4 +54,16 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>Snapshots repository</id>
+      <url>https://maven.pkg.github.com/terminological/m2repo</url>
+    </repository>
+  </repositories>
 </project>
