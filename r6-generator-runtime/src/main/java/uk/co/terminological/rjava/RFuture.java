@@ -31,6 +31,7 @@ public class RFuture implements Future<Object> {
 	Thread thread;
 	MethodRunnable runner;
 	String method;
+	boolean cancelled = false;
 
 	Logger log = LoggerFactory.getLogger(RFuture.class);
 	
@@ -44,6 +45,7 @@ public class RFuture implements Future<Object> {
 			Method m = o.getClass().getMethod(method, types);
 			runner = new MethodRunnable(o,parameters.toArray(),m);
 		}
+		this.method = method;
 		thread = new Thread(runner);
 		thread.start();
 	}
@@ -55,15 +57,16 @@ public class RFuture implements Future<Object> {
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
 		if (thread.isAlive()) {
-			log.debug("Call to Java `"+method+"`(...) was interrupted");
+			log.debug("Java call to `"+method+"(...)` was interrupted");
 			thread.interrupt();
+			cancelled = true;
 		}
-		return thread.isInterrupted();
+		return isCancelled();
 	}
 
 	@Override
 	public boolean isCancelled() {
-		return thread.isInterrupted();
+		return cancelled || thread.isInterrupted();
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class RFuture implements Future<Object> {
 	@Override
 	public Object get() throws InterruptedException, ExecutionException {
 		thread.join();
-		if (!runner.succeeded()) throw new ExecutionException("Call to Java `"+method+"`(...) resulted in an error",(Exception) runner.result());
+		if (!runner.succeeded()) throw new ExecutionException("Java call to `"+method+"(...)` resulted in an error",(Exception) runner.result());
 		return runner.result();
 	}
 
@@ -85,8 +88,8 @@ public class RFuture implements Future<Object> {
 	@Override
 	public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		unit.timedJoin(thread, timeout);
-		if (thread.isAlive()) throw new TimeoutException("Call to Java `"+method+"(...)` has not yet completed");
-		if (!runner.succeeded()) throw new ExecutionException("Call to Java `"+method+"(...)` resulted in an error",(Exception) runner.result());
+		if (thread.isAlive()) throw new TimeoutException("Java call to `"+method+"(...)` has not yet completed");
+		if (!runner.succeeded()) throw new ExecutionException("Java call to `"+method+"(...)` resulted in an error",(Exception) runner.result());
 		return runner.result();
 	}
 	
@@ -105,8 +108,8 @@ public class RFuture implements Future<Object> {
 	}
 	
 	public boolean succeeded() throws TimeoutException {
-		if (thread.isAlive()) throw new TimeoutException("Java call to `"+method+"`(...) has not completed.");
-		return !thread.isInterrupted() && runner.completed();
+		if (thread.isAlive()) throw new TimeoutException("Java call to `"+method+"(...)` has not completed.");
+		return !this.isCancelled() && runner.completed();
 	}
 	
 	/**
@@ -127,7 +130,7 @@ public class RFuture implements Future<Object> {
 	 */
 	public void throwFailure() throws ExecutionException {
 		Exception e = (Exception) runner.result();
-		throw new ExecutionException("Java call to `"+method+"`(...) resulted in an error: "+e.getMessage(), e);
+		throw new ExecutionException("Java call to `"+method+"(...)` resulted in an error: "+e.getMessage(), e);
 	}
 	
 		
@@ -154,9 +157,13 @@ public class RFuture implements Future<Object> {
 			try {
 				result = m.invoke(o, parameters);
 				success = true;
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException("The Java method invoked is not public.");
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException("The parameters provided are illegal or not appropriate.");
+			} catch (InvocationTargetException e) {
 				success = false;
-				result = e;
+				result = e.getCause();
 			}
 			complete = true;
 		}

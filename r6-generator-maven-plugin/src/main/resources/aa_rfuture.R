@@ -148,10 +148,9 @@ RFuture = R6::R6Class("RFuture", public=list(
 			# No.
 			# The thread completed but with errors. The result value in .jthread will
 			# be an exception which we throw. No return value		
-			rJava::.jcall(self$.jthread, returnSig='V', method='throwFailure')
+			rJava::.jcall(self$.jthread, returnSig='V', method='throwFailure', check=FALSE)
 			self$.api$printMessages()
 			.jcheck()
-			 
 		}
 	}
 	
