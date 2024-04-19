@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/503675575.svg)](https://zenodo.org/badge/latestdoi/503675575)
 [![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://terminological.github.io/r6-generator/javadoc/)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.terminological/r6-generator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.terminological/r6-generator)
+![Maven Central Version](https://img.shields.io/maven-central/v/io.github.terminological/r6-generator)
 
 This is the main development repository for the r6-generator. 
 
