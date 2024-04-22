@@ -4,7 +4,7 @@
 	<!--<groupId>io.github.terminological</groupId>-->
 	<artifactId>r6-generator</artifactId>
 	<packaging>pom</packaging>
-	<version>0.6.1</version>
+	<version>0.6.2-SNAPSHOT</version>
 	<name>R6 generator</name>
 	<description>
 	R can use `rJava` to communicate with java. R also has a class system called
@@ -53,7 +53,7 @@
 		<connection>scm:git:git@github.com:${git.repo}.git</connection>
 		<developerConnection>scm:git:git@github.com:${git.repo}.git</developerConnection>
 		<url>https://github.com/${git.repo}</url>
-		<tag>r6-generator-0.6.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<modules>
