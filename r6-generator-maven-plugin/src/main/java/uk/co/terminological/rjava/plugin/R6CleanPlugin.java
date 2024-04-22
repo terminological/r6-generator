@@ -18,15 +18,17 @@ public class R6CleanPlugin extends PluginBase {
 		
 		rmContents(docs);
 		rmContents(manDir);
-		rmJar(jarDir, this.mavenProject.getArtifactId());
+		// rmJar(jarDir, this.mavenProject.getArtifactId());
 		rmGenerated(workflows);
 		rmGenerated(rDir);
 		rmGenerated(testDir);
 		
-		deleteRPackageJar(this.sourcesFile);
-		deleteRPackageJar(this.jarFile);
-		deleteRPackageJar(this.thinJarFile);
-		
+		// Deletes all versions of the jar for this package.
+		deleteRPackageInstalledJars();
+//		deleteRPackageJar(this.sourcesFile);
+//		deleteRPackageJar(this.jarFile);
+//		deleteRPackageJar(this.shadedFile);
+//		deleteRPackageJar(this.thinJarFile);
 		
 	}
 	

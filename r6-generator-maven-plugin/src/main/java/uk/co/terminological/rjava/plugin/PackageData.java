@@ -26,7 +26,7 @@ public class PackageData {
 	@Parameter(required=true)
 	private String title;
 	
-	@Parameter(required=true)
+	@Parameter(required=true, defaultValue="${package.version}")
 	private String version;
 
 	@Parameter(required=true)
@@ -158,9 +158,10 @@ public class PackageData {
 		return useCmdCheck != null && useCmdCheck.booleanValue(); 
 	}
 	
-	/** {@code <usePkgdown>true</usePkgdown>}
+	/** {@code <useRoxygen2>true</useRoxygen2>}
 	 * 
-	 * build machine must have R and devtools installed
+	 * defaults to false, as requires build machine must have R, roxygen and 
+	 * devtools installed
 	 * @return roxygen2 flag
 	 */
 	public boolean useRoxygen2() {
@@ -292,10 +293,8 @@ public class PackageData {
 	}
 
 	public String getVersion() throws MojoExecutionException {
-		if (version.equals("main-SNAPSHOT")) return "0.0.0.9999";
-		version = version.replace("-SNAPSHOT", ".9999");
-		if (!version.matches("[0-9\\.\\-]+")) throw new MojoExecutionException("Version must be only numerics in form 0.2.0.9000");
-		return version;
+		Version tmp = new Version(version);
+		return tmp.rVersion();
 	}
 
 	public void setPackageName(String packageName) {

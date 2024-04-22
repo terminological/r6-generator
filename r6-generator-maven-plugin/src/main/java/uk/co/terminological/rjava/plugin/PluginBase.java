@@ -174,6 +174,23 @@ public abstract class PluginBase extends AbstractMojo {
 		return additionalExports;
 	}
 	
+	protected void deleteRPackageInstalledJars() throws MojoExecutionException {
+		String base = mavenProject.getModel().getArtifactId();
+		try {
+			Files.list(jarDir)
+				.filter(p -> p.getFileName().toString().startsWith(base))
+				.forEach(t -> {
+					try {
+						Files.delete(t);
+					} catch (IOException e) {
+						getLog().warn("Couldn't delete jar: "+t);
+					}
+				});
+		} catch (IOException e) {
+			throw new MojoExecutionException("Jar dir does not exist",e);
+		}
+	}
+	
 	protected void deleteRPackageJar(String jarFile) {
 		Path jarLoc = jarDir.resolve(jarFile);
 		try {

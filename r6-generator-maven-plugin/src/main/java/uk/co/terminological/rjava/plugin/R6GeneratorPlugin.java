@@ -1,8 +1,8 @@
 package uk.co.terminological.rjava.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.attribute;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.attribute;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -232,7 +231,7 @@ public class R6GeneratorPlugin extends PluginBase {
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();
 			try {
-				executeRcommand(rCMD, "ROxygen did not complete normally. The package is probably in an inconsistent state.");
+				executeRcommand(rCMD, "ROxygen did not complete normally. The package may be in an inconsistent state.");
 			} catch (IOException | InterruptedException e) {
 				throw new MojoExecutionException("Failed to execute devtools::document", e);
 			}
@@ -283,7 +282,7 @@ public class R6GeneratorPlugin extends PluginBase {
 			while ((line=buf.readLine())!=null) {
 				getLog().error(line);
 			}
-			throw new MojoExecutionException("Pkgdown did not complete normally.");
+			throw new MojoExecutionException(error);
 		} else {
 			while ((line=buf.readLine())!=null) {
 				getLog().info(line);
