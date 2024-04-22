@@ -7,24 +7,49 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+/**
+ * <p>RNamedPrimitives class.</p>
+ *
+ * @author vp22681
+ * @version $Id: $Id
+ */
 public class RNamedPrimitives extends LinkedHashMap<String,RPrimitive> {
 
+	/**
+	 * <p>Constructor for RNamedPrimitives.</p>
+	 *
+	 * @param tmp a {@link uk.co.terminological.rjava.types.RNamedPrimitives} object
+	 */
 	public RNamedPrimitives(RNamedPrimitives tmp) {
 		super(tmp);
 	}
 	
+	/**
+	 * <p>Constructor for RNamedPrimitives.</p>
+	 */
 	public RNamedPrimitives() {
 		super();
 	}
 
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int
+	 */
 	public int hashCode() {
 		return super.hashCode();
 	}
 	
+	/** {@inheritDoc} */
 	public boolean equals(Object another) {
 		return super.equals(another);
 	}
 	
+	/**
+	 * <p>reverse.</p>
+	 *
+	 * @return a {@link uk.co.terminological.rjava.types.RNamedPrimitives} object
+	 */
 	public RNamedPrimitives reverse() {
 		List<String> reverseOrderedKeys = new ArrayList<String>(this.keySet());
 		Collections.reverse(reverseOrderedKeys);
@@ -33,6 +58,12 @@ public class RNamedPrimitives extends LinkedHashMap<String,RPrimitive> {
 		return out;
 	}
 	
+	/**
+	 * <p>toDataframe.</p>
+	 *
+	 * @param length a int
+	 * @return a {@link uk.co.terminological.rjava.types.RDataframe} object
+	 */
 	public RDataframe toDataframe(int length) {
 		RDataframe out = new RDataframe();
 		this.forEach((k,v) -> {
@@ -42,6 +73,11 @@ public class RNamedPrimitives extends LinkedHashMap<String,RPrimitive> {
 		return out;
 	}
 	
+	/**
+	 * <p>iterator.</p>
+	 *
+	 * @return a {@link java.util.Iterator} object
+	 */
 	public Iterator<Entry<String,RPrimitive>> iterator() {
 		return this.entrySet().iterator();
 //		return new Iterator<RNamed<RPrimitive>>() {

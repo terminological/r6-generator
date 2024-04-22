@@ -10,11 +10,12 @@ import java.lang.annotation.Target;
  * Methods marked by this annotation will be included in the R library api.
  * A blocking function may take a long time to execute and is delegated to
  * a java thread allowing interruption of the call if the R session is interrupted.
- * 
- *  
- * examples field is used to populate .Rd files
- * @author terminological
  *
+ *
+ * examples field is used to populate .Rd files
+ *
+ * @author terminological
+ * @version $Id: $Id
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

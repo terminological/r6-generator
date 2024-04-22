@@ -21,6 +21,8 @@ import uk.co.terminological.rjava.UnconvertableTypeException;
  * A RBoundDataframe is a dataframe bound to an annotated POJO interface type.
  *
  * @param <X> the generic type
+ * @author vp22681
+ * @version $Id: $Id
  */
 public class RBoundDataframe<X> extends RDataframe {
 
@@ -28,10 +30,25 @@ public class RBoundDataframe<X> extends RDataframe {
 	private transient Map<Method,Function<RDataframeRow,RPrimitive>> methodMap;
 	private boolean strict;
 
+	/**
+	 * <p>Constructor for RBoundDataframe.</p>
+	 *
+	 * @param interfaceType a {@link java.lang.Class} object
+	 * @param dataframe a {@link uk.co.terminological.rjava.types.RDataframe} object
+	 * @throws uk.co.terminological.rjava.UnconvertableTypeException if any.
+	 */
 	public RBoundDataframe(Class<X> interfaceType, RDataframe dataframe) throws UnconvertableTypeException {
 		this(interfaceType,dataframe,true);
 	}
 	
+	/**
+	 * <p>Constructor for RBoundDataframe.</p>
+	 *
+	 * @param interfaceType a {@link java.lang.Class} object
+	 * @param dataframe a {@link uk.co.terminological.rjava.types.RDataframe} object
+	 * @param strict a boolean
+	 * @throws uk.co.terminological.rjava.UnconvertableTypeException if any.
+	 */
 	public RBoundDataframe(Class<X> interfaceType, RDataframe dataframe, boolean strict) throws UnconvertableTypeException {
 		super(dataframe);
 		this.type = interfaceType;
@@ -96,18 +113,36 @@ public class RBoundDataframe<X> extends RDataframe {
 		}
     }
     
+    /**
+     * <p>getCoercedRow.</p>
+     *
+     * @param i a int
+     * @return a X object
+     */
     public X getCoercedRow(int i) {
     	return proxyFrom(this.getRow(i));
     }
     
+    /** {@inheritDoc} */
     public RBoundDataframeRow<X> getRow(int i) {
     	return new RBoundDataframeRow<X>(this, i);
     }
     
+    /**
+     * <p>streamCoerce.</p>
+     *
+     * @return a {@link java.util.stream.Stream} object
+     */
     public Stream<X> streamCoerce() {
     	return super.stream().map(this::proxyFrom);
     }
     
+    /**
+     * <p>proxyFrom.</p>
+     *
+     * @param nl a {@link uk.co.terminological.rjava.types.RDataframeRow} object
+     * @return a X object
+     */
     @SuppressWarnings("unchecked")
 	protected X proxyFrom(RDataframeRow nl) {
     	return (X) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, new InvocationHandler() {

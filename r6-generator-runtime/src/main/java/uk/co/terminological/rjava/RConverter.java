@@ -47,10 +47,11 @@ import uk.co.terminological.rjava.types.RVector;
 
 
 
-/** 
+/**
  * Variety of static functions to facilitate data conversion from Java to R.
- * @author terminological
  *
+ * @author terminological
+ * @version $Id: $Id
  */
 public class RConverter {
 
@@ -249,7 +250,7 @@ public class RConverter {
 	 * @param   <X> the generic type of the resulting R value. This will be filled in by the context
 	 * @param o the object that is to be converted
 	 * @return a duck typed RPrimitive of some unknown type.
-	 * @throws UnconvertableTypeException the unconvertable type exception if o cannot be converted to some form of RPrimitive.
+	 * @throws uk.co.terminological.rjava.UnconvertableTypeException the unconvertable type exception if o cannot be converted to some form of RPrimitive.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <X extends RPrimitive> X convertObjectToPrimitive(Object o) throws UnconvertableTypeException {
@@ -282,6 +283,12 @@ public class RConverter {
 		}
 	}
 	
+	/**
+	 * <p>convertObjectToPrimitiveUnsafe.</p>
+	 *
+	 * @param tmp2 a {@link java.lang.Object} object
+	 * @return a {@link uk.co.terminological.rjava.types.RPrimitive} object
+	 */
 	protected static RPrimitive convertObjectToPrimitiveUnsafe(Object tmp2) {
 		try {	
 			return convertObjectToPrimitive(tmp2);
@@ -295,8 +302,8 @@ public class RConverter {
 	 *
 	 * @param   <X> the generic type of the resulting RVector
 	 * @param o the array of java primitives, boxed, BigDecimal, LocalDates, or enumeration.
-	 * @return a subtype of RVector of undefined type 
-	 * @throws UnconvertableTypeException the unconvertable type exception
+	 * @return a subtype of RVector of undefined type
+	 * @throws uk.co.terminological.rjava.UnconvertableTypeException the unconvertable type exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static <X extends RVector<?>> X convertObjectToVector(Object o) throws UnconvertableTypeException {
@@ -323,7 +330,7 @@ public class RConverter {
 	 *
 	 * @param obj the java object of unknown type. Should be something that can be converted to a RPrimitive or RVector
 	 * @return the resulting r object
-	 * @throws UnconvertableTypeException the unconvertable type exception
+	 * @throws uk.co.terminological.rjava.UnconvertableTypeException the unconvertable type exception
 	 */
 	public static RObject convertObject(Object obj) throws UnconvertableTypeException {
 		if (obj instanceof RObject) return (RObject) obj;
@@ -440,14 +447,14 @@ public class RConverter {
 	}
 	
 	/**
-	 * This constructs a converting collector that can be used directly to collect the results. 
-	 * 
+	 * This constructs a converting collector that can be used directly to collect the results.
+	 *
 	 * RConverter.using(integerCollector()).convert(... lots of different types supported, e.g. stream or instance or iterable etc)
 	 *
 	 * @param           <X> the input Java type will allow any collection or stream type to be converted
 	 * @param           <Y> the output RObect type which will be filled in by the collector
 	 * @param collector the collector this is generally expected to be one of RConverter.integerCollector(), longCollector() etc.
-	 * @return the collecting converter whose convert() method can 
+	 * @return the collecting converter whose convert() method can
 	 */
 	public static <X, Y extends RObject> CollectingConverter<X,Y> using(Collector<X,?,Y> collector) {
 		return CollectingConverter.from(collector);
@@ -661,7 +668,7 @@ public class RConverter {
 	 * A stream collector that collects a stream of maps and assembles it into a column
 	 * major dataframe. The keys of the maps define the dataframe column and the values
 	 * the column values. In this case each Map&lt;K,V&gt; represents a single row in the resulting
-	 * dataframe. 
+	 * dataframe.
 	 *
 	 * @return A collector that works in a
 	 *         streamOfMaps.collect(RConvert.mapsToDataFrame())
@@ -715,7 +722,7 @@ public class RConverter {
 	/**
 	 * A stream collector that applies mapping rules to a stream of objects of arbitary type X and coverts a them
 	 * into a dataframe. The mapping rules define a column name and a mapping function that takes an instance of X and
-	 * generates a value. This function may just use a getter to pull a single value out or do an arbitatry complex operation on 
+	 * generates a value. This function may just use a getter to pull a single value out or do an arbitatry complex operation on
 	 * a single X instance.
 	 *
 	 * @param       <X> the generic input
@@ -944,9 +951,9 @@ public class RConverter {
 	 * Create a mapping using a to allow us to extract data from an object of type
 	 * defined by clazz and associate it with a label. This can be used to create a
 	 * custom data mapping. e.g.
-	 * 
+	 *
 	 * mapping("absolutePath", f -&gt; f.getAbsolutePath())
-	 * 
+	 *
 	 * If the compiler cannot work out the type from the context it may be necessary
 	 * to use the 3 parameter version of this method.
 	 *
@@ -971,15 +978,15 @@ public class RConverter {
 	
 	/**
 	 * Create a mapping using a to allow us to extract a set of items of type W from object of type
-	 * Z and flatten a nested data structure, and then mapping each W to columns in a data frame by associated 
+	 * Z and flatten a nested data structure, and then mapping each W to columns in a data frame by associated
 	 * a column name with a function that extracts a value from W. This can be used to create a custom data mapping. e.g.
-	 * 
-	 * 	flatMapping(dir -&gt; dir.getFiles().stream(), 
+	 *
+	 * 	flatMapping(dir -&gt; dir.getFiles().stream(),
 	 * 		mapping("absolutePath", f -&gt; f.getAbsolutePath()),
 	 * 		mapping("readable", f -&gt; f.canRead())
 	 *  )
-	 * 
-	 * 
+	 *
+	 *
 	 * If the compiler cannot work out the type from the context it may be necessary
 	 * to use the 3 parameter version of this method.
 	 *
@@ -1014,7 +1021,7 @@ public class RConverter {
 	 * defined by clazz and associate it with a label. This can be used to create a
 	 * custom data mapping. This 3 parameter form is sometime needed if the compiler has lost the
 	 * plot and we need to give it some help e.g.
-	 * 
+	 *
 	 * mapping(File.class, "absolutePath", f -&gt; f.getAbsolutePath())
 	 *
 	 * @param       <Z> - the input type

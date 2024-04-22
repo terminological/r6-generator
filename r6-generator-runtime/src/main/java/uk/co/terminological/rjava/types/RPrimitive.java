@@ -7,6 +7,12 @@ import java.util.Optional;
 import uk.co.terminological.rjava.IncompatibleTypeException;
 import uk.co.terminological.rjava.RConverter;
 
+/**
+ * <p>RPrimitive interface.</p>
+ *
+ * @author vp22681
+ * @version $Id: $Id
+ */
 public interface RPrimitive extends RObject {
 	
 	
@@ -17,9 +23,15 @@ public interface RPrimitive extends RObject {
 	 * @param <X> the desired type to convert the R data to
 	 * @param type the type of X
 	 * @return the value as an instance of X
-	 * @throws ClassCastException the class cast exception is thrown if this R primitiva cannot be coered to X
+	 * @throws java.lang.ClassCastException the class cast exception is thrown if this R primitiva cannot be coered to X
 	 */
 	public <X extends Object> X get(Class<X> type) throws ClassCastException;
+	/**
+	 * <p>get.</p>
+	 *
+	 * @param <X> a X class
+	 * @return a X object
+	 */
 	public <X extends Object> X get();
 	
 	
@@ -37,6 +49,12 @@ public interface RPrimitive extends RObject {
 			return Optional.empty();
 		}
 	};
+	/**
+	 * <p>opt.</p>
+	 *
+	 * @param <X> a X class
+	 * @return a {@link java.util.Optional} object
+	 */
 	public default <X extends Object> Optional<X> opt() {
 		return Optional.ofNullable(get());
 	};
@@ -67,16 +85,70 @@ public interface RPrimitive extends RObject {
 	 */
 	public boolean isNa();
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.lang.String} object
+	 * @return a {@link uk.co.terminological.rjava.types.RCharacter} object
+	 */
 	public static RCharacter of(String o) {return (RCharacter) RConverter.convert(o);}
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.lang.Double} object
+	 * @return a {@link uk.co.terminological.rjava.types.RNumeric} object
+	 */
 	public static RNumeric of(Double o) {return RConverter.convert(o);}
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.lang.Long} object
+	 * @return a {@link uk.co.terminological.rjava.types.RNumeric} object
+	 */
 	public static RNumeric of(Long o) {return RConverter.convert(o);}
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.math.BigDecimal} object
+	 * @return a {@link uk.co.terminological.rjava.types.RNumeric} object
+	 */
 	public static RNumeric of(BigDecimal o) {return RConverter.convert(o);}
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.lang.Float} object
+	 * @return a {@link uk.co.terminological.rjava.types.RNumeric} object
+	 */
 	public static RNumeric of(Float o) {return RConverter.convert(o);}
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.lang.Integer} object
+	 * @return a {@link uk.co.terminological.rjava.types.RInteger} object
+	 */
 	public static RInteger of(Integer o) {return RConverter.convert(o);}
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.lang.Boolean} object
+	 * @return a {@link uk.co.terminological.rjava.types.RLogical} object
+	 */
 	public static RLogical of(Boolean o) {return RConverter.convert(o);}
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.time.LocalDate} object
+	 * @return a {@link uk.co.terminological.rjava.types.RDate} object
+	 */
 	public static RDate of(LocalDate o) {return RConverter.convert(o);}
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param o a {@link java.lang.Enum} object
+	 * @return a {@link uk.co.terminological.rjava.types.RFactor} object
+	 */
 	public static RFactor of(Enum<?> o) {return RConverter.convert(o);}
 	
 //	public static RCharacter na(RCharacter v) {return new RCharacter();}
@@ -86,6 +158,11 @@ public interface RPrimitive extends RObject {
 //	public static RLogical na(RLogical v) {return new RLogical();}
 //	public static RDate na(RDate v) {return new RDate();}
 	
+	/**
+	 * <p>asCsv.</p>
+	 *
+	 * @return a {@link java.lang.String} object
+	 */
 	public default String asCsv() {
 		return rCode();
 	}

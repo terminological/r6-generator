@@ -12,40 +12,165 @@ import uk.co.terminological.rjava.types.*;
  * Visitor patterns for R object tree.
  * The visitor will perform a depth first tree traversal. By default this will not detect
  * cycles in the object graph as these are quite hard to create in R, and only really an
- * issue for things created in java. If this is needed at {@link OnceOnly} visitor is also 
+ * issue for things created in java. If this is needed at {@link uk.co.terminological.rjava.utils.RObjectVisitor.OnceOnly} visitor is also
  * defined that will only execute for the first instance of an object in the graph.
- * 
+ *
  * @see OnceOnly
  * @see DefaultOptional
  * @see Default
- * 
  * @author terminological
- *
  * @param <X> the output of the visitor
+ * @version $Id: $Id
  */
 public interface RObjectVisitor<X> {
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RCharacter} object
+	 * @return a X object
+	 */
 	public X visit(RCharacter c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RCharacterVector} object
+	 * @return a X object
+	 */
 	public X visit(RCharacterVector c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RDataframe} object
+	 * @return a X object
+	 */
 	public X visit(RDataframe c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RDataframeRow} object
+	 * @return a X object
+	 */
 	public X visit(RDataframeRow c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RDate} object
+	 * @return a X object
+	 */
 	public X visit(RDate c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RDateVector} object
+	 * @return a X object
+	 */
 	public X visit(RDateVector c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RFactor} object
+	 * @return a X object
+	 */
 	public X visit(RFactor c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RFactorVector} object
+	 * @return a X object
+	 */
 	public X visit(RFactorVector c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RInteger} object
+	 * @return a X object
+	 */
 	public X visit(RInteger c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RIntegerVector} object
+	 * @return a X object
+	 */
 	public X visit(RIntegerVector c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RList} object
+	 * @return a X object
+	 */
 	public X visit(RList c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RLogical} object
+	 * @return a X object
+	 */
 	public X visit(RLogical c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RLogicalVector} object
+	 * @return a X object
+	 */
 	public X visit(RLogicalVector c);
 	//public X visit(RMatrix<?> c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RNamed} object
+	 * @return a X object
+	 */
 	public X visit(RNamed<?> c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RNamedList} object
+	 * @return a X object
+	 */
 	public X visit(RNamedList c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RNull} object
+	 * @return a X object
+	 */
 	public X visit(RNull c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RNumeric} object
+	 * @return a X object
+	 */
 	public X visit(RNumeric c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RNumericVector} object
+	 * @return a X object
+	 */
 	public X visit(RNumericVector c);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param rArray a {@link uk.co.terminological.rjava.types.RArray} object
+	 * @return a X object
+	 */
 	public X visit(RArray<?> rArray);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param rna a {@link uk.co.terminological.rjava.types.RUntypedNa} object
+	 * @return a X object
+	 */
 	public X visit(RUntypedNa rna);
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param rUntypedNaVector a {@link uk.co.terminological.rjava.types.RUntypedNaVector} object
+	 * @return a X object
+	 */
 	public X visit(RUntypedNaVector rUntypedNaVector);
 	
 	

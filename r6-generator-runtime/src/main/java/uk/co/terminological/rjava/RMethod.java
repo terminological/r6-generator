@@ -8,15 +8,16 @@ import java.lang.annotation.Target;
 
 /**
  * Methods marked by this annotation will be included in the R library api.
- * In the R API methods must all have different names so method or constructor overloading is not 
+ * In the R API methods must all have different names so method or constructor overloading is not
  * supported. Both static and non-static methods are supported allowing for factory style constructors.
- * Methods annotated with this block the R process and cannot be interrupted. For this reason they 
+ * Methods annotated with this block the R process and cannot be interrupted. For this reason they
  * should always return a value in a socially acceptable time frame. If there is the possibility the
  * method can hang then using an `RBlocking` or `RAsync` alternative annotation is preferred.
- *  
- * examples field is used to populate .Rd files
- * @author terminological
  *
+ * examples field is used to populate .Rd files
+ *
+ * @author terminological
+ * @version $Id: $Id
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

@@ -8,13 +8,14 @@ import java.lang.annotation.Target;
 
 /**
  * Methods marked by this annotation will be included in the R library api.
- * Both static and non-static methods are supported. An async method may take a long time to 
+ * Both static and non-static methods are supported. An async method may take a long time to
  * execute and so is delegated to a java thread and returns an RFuture which will contain the
  * asynchronously executed code.
- *  
- * examples field is used to populate .Rd files
- * @author terminological
  *
+ * examples field is used to populate .Rd files
+ *
+ * @author terminological
+ * @version $Id: $Id
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

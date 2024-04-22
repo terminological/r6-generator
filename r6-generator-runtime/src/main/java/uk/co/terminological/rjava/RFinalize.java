@@ -9,8 +9,9 @@ import java.lang.annotation.Target;
 /**
  * The methods marked by this annotation will be called just prior to garbage collection and can be used to free up resources.
  * Any exceptions thrown by the methods will be ignored.
- * @author terminological
  *
+ * @author terminological
+ * @version $Id: $Id
  */
 @Retention(RUNTIME)
 @Target(METHOD)

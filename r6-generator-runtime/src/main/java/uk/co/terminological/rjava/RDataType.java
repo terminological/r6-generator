@@ -8,9 +8,10 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation identifies a class as a datatype in the R library api
- * Fields here are R code used to handle conversion to and from R. 
- * @author terminological
+ * Fields here are R code used to handle conversion to and from R.
  *
+ * @author terminological
+ * @version $Id: $Id
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

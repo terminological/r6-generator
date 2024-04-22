@@ -12,9 +12,17 @@ import uk.co.terminological.rjava.types.RNumeric;
 import uk.co.terminological.rjava.types.RPrimitive;
 import uk.co.terminological.rjava.types.RVector;
 
+/**
+ * <p>RFunctions class.</p>
+ *
+ * @author vp22681
+ * @version $Id: $Id
+ */
 public class RFunctions {
 
-	/** Type cast a Numeric to Integer
+	/**
+	 * Type cast a Numeric to Integer
+	 *
 	 * @param i RInteger Value
 	 * @return RNumeric with the same value
 	 */
@@ -24,8 +32,9 @@ public class RFunctions {
 	
 	/**
 	 * Paste0 implemenation
+	 *
 	 * @param sep any separating string
-	 * @param objects the objects to join which will be converted using the toString of the underlying primitive 
+	 * @param objects the objects to join which will be converted using the toString of the underlying primitive
 	 * @return a String
 	 */
 	public static RCharacter paste(String sep, RPrimitive... objects) {
@@ -35,6 +44,8 @@ public class RFunctions {
 	}
 	
 	/**
+	 * <p>all.</p>
+	 *
 	 * @param tester - a predicate of RPrimtive pairs
 	 * @param lhs - the lhs RVector
 	 * @param rhs - the rhs RVector
@@ -50,6 +61,8 @@ public class RFunctions {
 	}
 	
 	/**
+	 * <p>all.</p>
+	 *
 	 * @param tester - a predicate of RPrimtives
 	 * @param lhs - the lhs RVector
 	 * @param <X> - any R primitive type
@@ -64,6 +77,8 @@ public class RFunctions {
 	
 	
 	/**
+	 * <p>any.</p>
+	 *
 	 * @param tester - a predicate of RPrimtive pairs
 	 * @param lhs - the lhs RVector
 	 * @param rhs - the rhs RVector
@@ -79,6 +94,8 @@ public class RFunctions {
 	}
 	
 	/**
+	 * <p>any.</p>
+	 *
 	 * @param tester - a predicate of RPrimtive pairs
 	 * @param lhs - the lhs RVector
 	 * @param <X> - any R primitive type

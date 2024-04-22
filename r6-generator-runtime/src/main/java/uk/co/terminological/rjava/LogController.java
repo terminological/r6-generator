@@ -27,6 +27,12 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 //import org.rosuda.JRI.RConsoleOutputStream;
 //import org.rosuda.JRI.Rengine;
 
+/**
+ * <p>LogController class.</p>
+ *
+ * @author vp22681
+ * @version $Id: $Id
+ */
 public class LogController {
 
 	/**
@@ -65,6 +71,9 @@ public class LogController {
 	// we also want this to be a per thread console: 
 	// https://stackoverflow.com/questions/10015182/in-a-multithreaded-java-program-does-each-thread-have-its-own-copy-of-system-ou
 	// TODO: the whole lot needs refactoring to another project.
+	/**
+	 * <p>setupRConsole.</p>
+	 */
 	public static void setupRConsole() {
 		baos = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(baos);
@@ -125,6 +134,7 @@ public class LogController {
 	
 	/**
 	 * Handles files, jar entries, and deployed jar entries in a zip file (EAR).
+	 *
 	 * @return The date if it can be determined, or null if not.
 	 */
 	public static String getClassBuildTime() {

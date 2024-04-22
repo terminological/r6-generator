@@ -12,24 +12,25 @@ import uk.co.terminological.rjava.RDataType;
 import uk.co.terminological.rjava.utils.RObjectVisitor;
 
 /**
- * A Java wrapper for factors. R Factors can be mapped to java enumeration by the {@link RConverter} class.
- * Factory methods are in {@link RVector}. 
- * @author terminological
+ * A Java wrapper for factors. R Factors can be mapped to java enumeration by the {@link uk.co.terminological.rjava.RConverter} class.
+ * Factory methods are in {@link uk.co.terminological.rjava.types.RVector}.
  *
+ * @author terminological
+ * @version $Id: $Id
  */
 @RDataType(
-		JavaToR = { 
+		JavaToR = {
 				"function(jObj) ordered(",
 				"	x = rJava::.jcall(jObj,returnSig='[I',method='rValues'),",
 				"	labels = rJava::.jcall(jObj,returnSig='[Ljava/lang/String;',method='rLevels')",
 				")"
-		}, 
-		RtoJava = { 
-				"function(rObj) {", 
+		},
+		RtoJava = {
+				"function(rObj) {",
 				"	if (is.null(rObj)) return(rJava::.jnew('~RFACTORVECTOR~'))",
 				"	if (!is.factor(rObj)) stop('expected a vector of factors')",
 				"	tmp = as.integer(rObj)",
-				"	return(rJava::.jnew('~RFACTORVECTOR~', rJava::.jarray(tmp), rJava::.jarray(levels(rObj))))", 
+				"	return(rJava::.jnew('~RFACTORVECTOR~', rJava::.jarray(tmp), rJava::.jarray(levels(rObj))))",
 				"}"
 		}
 		//JNIType = "[I"
@@ -40,6 +41,12 @@ public class RFactorVector extends RVector<RFactor> {
 	// transient HashMap<Integer,List<Integer>> index = new HashMap<>();
 	
 	private String[] levels;
+	/**
+	 * <p>Constructor for RFactorVector.</p>
+	 *
+	 * @param values an array of {@link int} objects
+	 * @param levels an array of {@link java.lang.String} objects
+	 */
 	public RFactorVector(int[] values, String[] levels) {
 		super(values.length);
 		this.levels = levels;
@@ -51,15 +58,38 @@ public class RFactorVector extends RVector<RFactor> {
 		
 		//factors are 1 indexed - java arrays zero indexed
 	}
+	/**
+	 * <p>Constructor for RFactorVector.</p>
+	 */
 	public RFactorVector() {super();}
+	/**
+	 * <p>Constructor for RFactorVector.</p>
+	 *
+	 * @param length a int
+	 */
 	public RFactorVector(int length) {super(length);}
+	/**
+	 * <p>Constructor for RFactorVector.</p>
+	 *
+	 * @param levels an array of {@link java.lang.String} objects
+	 */
 	public RFactorVector(String[] levels) {
 		super();
 		this.levels = levels;
 	}
+	/**
+	 * <p>rValues.</p>
+	 *
+	 * @return an array of {@link int} objects
+	 */
 	public int[] rValues() {
 		return this.stream().mapToInt(ri -> ri.rValue()).toArray();
 	}
+	/**
+	 * <p>rLevels.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects
+	 */
 	public String[] rLevels() {
 		if (levels != null) return levels;
 		LinkedHashMap<Integer,String> tmp = new LinkedHashMap<>();
@@ -68,12 +98,18 @@ public class RFactorVector extends RVector<RFactor> {
 		return obs;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public Class<RFactor> getType() {
 		return RFactor.class;
 	}
 
 	
+	/**
+	 * <p>rCode.</p>
+	 *
+	 * @return a {@link java.lang.String} object
+	 */
 	public String rCode() {
 		return "ordered(x=c("+
 				this.stream().map(s -> s==null?"NA":RConverter.rQuote(s.rLabel(), "'")).collect(Collectors.joining(", "))+
@@ -82,6 +118,7 @@ public class RFactorVector extends RVector<RFactor> {
 				+"))";
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public <X> X accept(RObjectVisitor<X> visitor) {
 		X out = visitor.visit(this);
@@ -89,26 +126,39 @@ public class RFactorVector extends RVector<RFactor> {
 		return out;
 	}
 	
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public Stream<String> get() {
 		return this.stream().map(ri -> ri.get());
 	}
 	
+	/**
+	 * <p>opt.</p>
+	 *
+	 * @return a {@link java.util.stream.Stream} object
+	 */
 	@SuppressWarnings("unchecked")
 	public Stream<Optional<String>> opt() {
 		return this.stream().map(s -> s.opt());
 	}
 	
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	@Override
 	public RFactorVector and(RFactor... o) {
 		this.addAll(Arrays.asList(o));
 		return this;
 	}
+	/**
+	 * <p>empty.</p>
+	 *
+	 * @return a {@link uk.co.terminological.rjava.types.RFactorVector} object
+	 */
 	public static RFactorVector empty() {
 		return new RFactorVector();
 	}
 	
+	/** {@inheritDoc} */
 	public void fillNA(int length) {this.fill(RFactor.NA, length);}
 }

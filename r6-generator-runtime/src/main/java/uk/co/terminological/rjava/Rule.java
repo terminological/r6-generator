@@ -14,6 +14,12 @@ import java.util.stream.Stream;
 import uk.co.terminological.rjava.types.RNull;
 import uk.co.terminological.rjava.types.RObject;
 
+/**
+ * <p>Rule interface.</p>
+ *
+ * @author vp22681
+ * @version $Id: $Id
+ */
 public interface Rule<T> {
 
 	/**
@@ -96,6 +102,7 @@ public interface Rule<T> {
 		
 	}
 	
+	/** Constant <code>ConvertibleTypes</code> */
 	static List<Class<?>> ConvertibleTypes = Arrays.asList(
 			String.class,
 			Integer.class,

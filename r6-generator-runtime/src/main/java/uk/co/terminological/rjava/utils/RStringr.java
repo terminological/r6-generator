@@ -13,6 +13,12 @@ import java.util.stream.Stream;
 import uk.co.terminological.rjava.types.RCharacter;
 import uk.co.terminological.rjava.types.RCharacterVector;
 
+/**
+ * <p>RStringr class.</p>
+ *
+ * @author vp22681
+ * @version $Id: $Id
+ */
 public class RStringr {
 
 	List<String> input;
@@ -23,31 +29,67 @@ public class RStringr {
 	
 	// FLUENT WRAPPERS
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param s a {@link java.lang.String} object
+	 * @return a {@link uk.co.terminological.rjava.utils.RStringr} object
+	 */
 	public static RStringr of(String s) {
 		RStringr out = new RStringr(Collections.singletonList(s));
 		return out;
 	}
 
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param s a {@link java.lang.String} object
+	 * @return a {@link uk.co.terminological.rjava.utils.RStringr} object
+	 */
 	public static RStringr of(String... s) {
 		RStringr out = new RStringr(Arrays.asList(s));
 		return out;
 	}
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param s a {@link java.util.Collection} object
+	 * @return a {@link uk.co.terminological.rjava.utils.RStringr} object
+	 */
 	public static RStringr of(Collection<String> s) {
 		RStringr out = new RStringr(new ArrayList<String>(s));
 		return out;
 	}
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param s a {@link java.util.stream.Stream} object
+	 * @return a {@link uk.co.terminological.rjava.utils.RStringr} object
+	 */
 	public static RStringr of(Stream<String> s) {
 		RStringr out = new RStringr(s.collect(Collectors.toList()));
 		return out;
 	}
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param s a {@link uk.co.terminological.rjava.types.RCharacter} object
+	 * @return a {@link uk.co.terminological.rjava.utils.RStringr} object
+	 */
 	public static RStringr of(RCharacter s) {
 		RStringr out = new RStringr(Collections.singletonList(s.get()));
 		return out;
 	}
 	
+	/**
+	 * <p>of.</p>
+	 *
+	 * @param s a {@link uk.co.terminological.rjava.types.RCharacterVector} object
+	 * @return a {@link uk.co.terminological.rjava.utils.RStringr} object
+	 */
 	public static RStringr of(RCharacterVector s) {
 		RStringr out = new RStringr(s.get().collect(Collectors.toList()));
 		return out;
@@ -166,6 +208,14 @@ public class RStringr {
 //		return captureGroup(s, regExp, 0);
 //	}
 //	
+	/**
+	 * <p>capture.</p>
+	 *
+	 * @param s a {@link java.lang.String} object
+	 * @param regExp a {@link java.lang.String} object
+	 * @param group a int
+	 * @return a {@link java.lang.String} object
+	 */
 	public static String capture(String s, String regExp, int group) {
 		// Compile and use regular expression
 		Pattern pattern = Pattern.compile(regExp);
@@ -179,6 +229,13 @@ public class RStringr {
 		}
 	}
 	
+	/**
+	 * <p>extract.</p>
+	 *
+	 * @param s a {@link java.lang.String} object
+	 * @param regExp a {@link java.lang.String} object
+	 * @return a {@link java.lang.String} object
+	 */
 	public static String extract(String s, String regExp) {
 		Pattern pattern = Pattern.compile(regExp);
 		Matcher matcher = pattern.matcher(s);

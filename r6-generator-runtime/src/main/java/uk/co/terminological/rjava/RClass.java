@@ -9,9 +9,10 @@ import java.lang.annotation.Target;
 /**
  * This annotation identifies a class as part of an R library api
  * Fields here will populate data in DESCRIPTION file and allow
- * R to load dependencies when it loads the R library api 
- * @author terminological
+ * R to load dependencies when it loads the R library api
  *
+ * @author terminological
+ * @version $Id: $Id
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
