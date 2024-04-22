@@ -152,7 +152,18 @@ RFuture = R6::R6Class("RFuture", public=list(
 			self$.api$printMessages()
 			.jcheck()
 		}
-	}
+	},
 	
+	print = function() {
+		sprintf("Background call `%s(...)`: %s%s",
+			self$.method,
+			if (self$isDone()) "complete." else "executing.",
+			if (self$isCancelled()) " (cancelled)" else ""
+		)
+	},
+	
+	finalize = function() {
+		self$cancel()
+	}
 	
 ))

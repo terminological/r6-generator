@@ -39,7 +39,11 @@ public class RLogical implements RPrimitive, JNIPrimitive {
 	
 	static final int NA_VALUE = Integer.MIN_VALUE;
 	/** Constant <code>NA</code> */
+	
 	public static final RLogical NA = new RLogical(NA_VALUE);
+	public static final RLogical TRUE = new RLogical(Boolean.TRUE);
+	public static final RLogical FALSE = new RLogical(Boolean.FALSE);
+	
 	
 	/**
 	 * <p>Constructor for RLogical.</p>

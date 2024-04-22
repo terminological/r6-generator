@@ -239,8 +239,13 @@ public class QDoxParser {
 			out.setReturnType( getOrCreateType(m.getReturns(), model));
 			m.getTags().forEach(dt -> out.mergeAnnotations(dt.getName(),dt.getValue()));		
 			for (JavaParameter jp : m.getParameters()) {
+				
 				String defaultValue = getAnnotation(uk.co.terminological.rjava.RDefault.class, jp).map(a -> a.getNamedParameter("rCode").toString()).orElse(null);
-				out.addParameter(jp.getName(), getOrCreateType(jp.getType(), model), defaultValue);
+				RType tmp = getOrCreateType(jp.getType(), model);
+				if (async && tmp.isJavaPrimitive()) {
+					throw new MojoExecutionException("Use of Java primitive as paramter in async method");
+				}
+				out.addParameter(jp.getName(), tmp, defaultValue);
 			}
 			return out;
 		} catch (MojoExecutionException e) {

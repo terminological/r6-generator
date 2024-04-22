@@ -81,6 +81,9 @@ public class PackageData {
 	private Boolean useCmdCheck;
 	
 	@Parameter
+	private Boolean installLocal;
+	
+	@Parameter
 	private Boolean useJavadoc;
 	
 	@Parameter
@@ -166,6 +169,16 @@ public class PackageData {
 	 */
 	public boolean useRoxygen2() {
 		return useRoxygen2 != null && useRoxygen2.booleanValue(); 
+	}
+	
+	/** {@code <installLocal>true</installLocal>}
+	 * 
+	 * defaults to false, as requires build machine must have R and 
+	 * devtools installed
+	 * @return install local flag
+	 */
+	public boolean installLocal() {
+		return installLocal != null && installLocal.booleanValue(); 
 	}
 	
 	/** {@code <preCompileBinary>true</preCompileBinary>}

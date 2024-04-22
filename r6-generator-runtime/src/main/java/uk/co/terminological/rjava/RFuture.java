@@ -1,5 +1,6 @@
 package uk.co.terminological.rjava;
 
+import java.lang.Thread.State;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -72,7 +73,7 @@ public class RFuture implements Future<Object> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
-		if (thread.isAlive()) {
+		if (!thread.getState().equals(State.TERMINATED)) {
 			log.debug("Java call to `"+method+"(...)` was interrupted");
 			thread.interrupt();
 			cancelled = true;
@@ -89,7 +90,7 @@ public class RFuture implements Future<Object> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean isDone() {
-		return !thread.isAlive();
+		return thread.getState().equals(State.TERMINATED);
 	}
 
 	/** {@inheritDoc} */

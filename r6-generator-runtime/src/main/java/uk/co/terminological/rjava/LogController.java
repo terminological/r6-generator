@@ -42,10 +42,10 @@ public class LogController {
 	 */
 	public static void changeLogLevel(String logLevel) {
 		Configurator
-			.setAllLevels(LogManager.getRootLogger().getName(), 
+		.setAllLevels(LogManager.getRootLogger().getName(), 
 				Level.toLevel(logLevel, Level.INFO));
 	}
-	
+
 	/**
 	 * Dynamically reconfigure java logging using a log4j properties file.
 	 *
@@ -57,9 +57,9 @@ public class LogController {
 		// this will force a reconfiguration
 		context.setConfigLocation(file.toURI());
 	}
-	
+
 	static ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	
+
 	// This is needed as rJava does not interact properly with the console.
 	// If we want console output then this is 
 	// So instead we redirect System.out to a static byte array and 
@@ -67,7 +67,7 @@ public class LogController {
 	// for all sorts of reasons. Multiple concurrent use is one, which will scatter the 
 	// output all over the place. Multiple installations of different java based libraries will probably mess it all up
 	// as well. If this is not needed it can be removed and should fallback gracefully :-) or crash.
-	
+
 	// we also want this to be a per thread console: 
 	// https://stackoverflow.com/questions/10015182/in-a-multithreaded-java-program-does-each-thread-have-its-own-copy-of-system-ou
 	// TODO: the whole lot needs refactoring to another project.
@@ -85,7 +85,7 @@ public class LogController {
 		// RConsoleOutputStream rs = new RConsoleOutputStream(r, 0);
 		// System.setOut(new PrintStream(rs));
 	}
-	
+
 	/**
 	 * Gets the system messages from Java and presents them to R.
 	 *
@@ -96,7 +96,7 @@ public class LogController {
 		baos.reset();
 		return out;
 	}
-		
+
 	/**
 	 * Configure log dynamically. This can be called from R to change the log level
 	 *
@@ -104,7 +104,7 @@ public class LogController {
 	 */
 	public static void configureLog(String logLevel) {
 
-		
+
 		ConfigurationBuilder<BuiltConfiguration> builder = 
 				ConfigurationBuilderFactory.newConfigurationBuilder();
 		Level lev = Level.toLevel(logLevel, Level.INFO);
@@ -115,13 +115,13 @@ public class LogController {
 
 		// create a console appender
 		AppenderComponentBuilder appenderBuilder = builder
-			.newAppender("Console", "CONSOLE")
-		    .addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+				.newAppender("Console", "CONSOLE")
+				.addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
 		// add a layout like pattern, json etc
 		appenderBuilder
-			.add(builder.newLayout("PatternLayout")
-					// .addAttribute("pattern", "%d %p %c [%t] %m%n"));
-					.addAttribute("pattern", "%m%n"));
+		.add(builder.newLayout("PatternLayout")
+				// .addAttribute("pattern", "%d %p %c [%t] %m%n"));
+				.addAttribute("pattern", "%m%n"));
 		RootLoggerComponentBuilder rootLogger = 
 				builder.newRootLogger(lev);
 		rootLogger.add(builder.newAppenderRef("Console"));
@@ -131,41 +131,41 @@ public class LogController {
 		Configurator.initialize(builder.build());
 		Configurator.setAllLevels(LogManager.getRootLogger().getName(),lev);
 	}
-	
+
 	/**
 	 * Handles files, jar entries, and deployed jar entries in a zip file (EAR).
 	 *
 	 * @return The date if it can be determined, or null if not.
 	 */
 	public static String getClassBuildTime() {
-	    LocalDateTime d = null;
-	    Class<?> currentClass = new Object() {}.getClass().getEnclosingClass();
-	    URL resource = currentClass.getResource(currentClass.getSimpleName() + ".class");
-	    if (resource != null) {
-	        if (resource.getProtocol().equals("file")) {
-	            try {
-	                d = Instant.ofEpochMilli(new File(resource.toURI()).lastModified())
-	                		.atZone(ZoneId.systemDefault()).toLocalDateTime();
-	            } catch (URISyntaxException ignored) { }
-	        } else if (resource.getProtocol().equals("jar")) {
-	            String path = resource.getPath();
-	            d = Instant.ofEpochMilli(
-	            		new File(path.substring(5, path.indexOf("!"))).lastModified()
-	            	).atZone(ZoneId.systemDefault()).toLocalDateTime();
-	        } else if (resource.getProtocol().equals("zip")) {
-	            String path = resource.getPath();
-	            File jarFileOnDisk = new File(path.substring(0, path.indexOf("!")));
-	            //long jfodLastModifiedLong = jarFileOnDisk.lastModified ();
-	            //Date jfodLasModifiedDate = new Date(jfodLastModifiedLong);
-	            try(JarFile jf = new JarFile (jarFileOnDisk)) {
-	                ZipEntry ze = jf.getEntry (path.substring(path.indexOf("!") + 2));//Skip the ! and the /
-	                long zeTimeLong = ze.getTime ();
-	                d = Instant.ofEpochMilli(
-		            		zeTimeLong
-	    	            	).atZone(ZoneId.systemDefault()).toLocalDateTime();
-	            } catch (IOException|RuntimeException ignored) { }
-	        }
-	    }
-	    return d == null ? "unknown" : d.format(DateTimeFormatter.ISO_DATE_TIME);
+		LocalDateTime d = null;
+		Class<?> currentClass = new Object() {}.getClass().getEnclosingClass();
+		URL resource = currentClass.getResource(currentClass.getSimpleName() + ".class");
+		if (resource != null) {
+			if (resource.getProtocol().equals("file")) {
+				try {
+					d = Instant.ofEpochMilli(new File(resource.toURI()).lastModified())
+							.atZone(ZoneId.systemDefault()).toLocalDateTime();
+				} catch (URISyntaxException ignored) { }
+			} else if (resource.getProtocol().equals("jar")) {
+				String path = resource.getPath();
+				d = Instant.ofEpochMilli(
+						new File(path.substring(5, path.indexOf("!"))).lastModified()
+						).atZone(ZoneId.systemDefault()).toLocalDateTime();
+			} else if (resource.getProtocol().equals("zip")) {
+				String path = resource.getPath();
+				File jarFileOnDisk = new File(path.substring(0, path.indexOf("!")));
+				//long jfodLastModifiedLong = jarFileOnDisk.lastModified ();
+				//Date jfodLasModifiedDate = new Date(jfodLastModifiedLong);
+				try(JarFile jf = new JarFile (jarFileOnDisk)) {
+					ZipEntry ze = jf.getEntry (path.substring(path.indexOf("!") + 2));//Skip the ! and the /
+					long zeTimeLong = ze.getTime ();
+					d = Instant.ofEpochMilli(
+							zeTimeLong
+							).atZone(ZoneId.systemDefault()).toLocalDateTime();
+				} catch (IOException|RuntimeException ignored) { }
+			}
+		}
+		return d == null ? "unknown" : d.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 }

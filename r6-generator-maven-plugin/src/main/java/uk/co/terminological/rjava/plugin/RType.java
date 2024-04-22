@@ -33,6 +33,7 @@ public class RType {
 	private List<String> inputRCode;
 	private List<String> outputRCode;
 	private String JNIType;
+	private Class<?> type;
 	//List<RType> typeParameters = new ArrayList<>();
 	
 	
@@ -44,6 +45,7 @@ public class RType {
 		this.outputRCode = outputRCode;
 		this.JNIType = JNIType;
 		this.canonicalName = type.getCanonicalName();
+		this.type = RObject.class;
 		// DEAL with empty
 	}
 	
@@ -56,6 +58,7 @@ public class RType {
 		this.outputRCode = outputRCode;
 		this.JNIType = JNIType;
 		this.canonicalName = type.getCanonicalName()==null ? "NULL" : type.getCanonicalName();
+		this.type = type;
 		// DEAL with empty
 	}
 
@@ -226,6 +229,11 @@ public class RType {
 				Arrays.asList("function(jObj) return(as.logical(jObj))"),
 				"Z",
 				boolean.class);
+	}
+
+	public boolean isJavaPrimitive() {
+		// if (RObject.class.isAssignableFrom(this.type)) System.out.println("RObject ->" + this.canonicalName);
+		return !RObject.class.isAssignableFrom(this.type);
 	}
 	
 }

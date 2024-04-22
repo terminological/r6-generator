@@ -267,6 +267,20 @@ public class R6GeneratorPlugin extends PluginBase {
 			}
 		}
 		
+		if (packageData.installLocal()) {
+			
+			String rCMD[] = {"R","-e","devtools::install_local(path = '"+rProjectDir+"', force=TRUE, upgrade='never')"};
+			getLog().info("Installing R package");
+			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
+			// Runtime run = Runtime.getRuntime();
+			try {
+				executeRcommand(rCMD, "R Package could not be installed");
+			} catch (IOException | InterruptedException e) {
+				throw new MojoExecutionException("Failed to execute devtools::install_local", e);
+			}
+			
+		}
+		
 		
 		
 	}
