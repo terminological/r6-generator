@@ -18,7 +18,9 @@ This will become the getting started vignette on a `pkgdown` site.
 
 # Installation instructions
 
-`${rPackageName}` is based on a java library and must have a working version of `Java` and `rJava` installed prior to installation. The following commands can ensure that your `rJava` installation is working.
+`${rPackageName}` is based on a java library and must have a working version 
+of `Java` and `rJava` installed prior to installation. The following commands 
+can ensure that your `rJava` installation is working.
 
 ```R
 install.packages("rJava")
@@ -27,7 +29,7 @@ rJava::J("java.lang.System")$getProperty("java.version")
 ```
 To install `${rPackageName}` in R:
 
-```{r}
+```R
 library(devtools)
 
 # you can install from the local copy:
@@ -35,9 +37,12 @@ load_all("~/Git/${githubRepository}")
 
 # or from your github repository:
 # install_github("${githubOrganisation}/${githubRepository}", args = c("--no-multiarch"))
+```
 
+```{r}}
 library(${rPackageName})
 ```
+
 # Usage
 
 Instructions for your users...

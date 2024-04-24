@@ -65,7 +65,6 @@ jobs:
           java-version: ${r"${{ matrix.config.java }}"}
           distribution: ${r"${{ matrix.config.distribution }}"}
           java-package: jdk
-          architecture: x64
           cache: 'maven'
 
       - name: Info

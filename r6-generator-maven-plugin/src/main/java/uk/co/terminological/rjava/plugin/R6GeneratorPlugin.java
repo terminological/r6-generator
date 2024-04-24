@@ -58,7 +58,7 @@ public class R6GeneratorPlugin extends PluginBase {
 					plugin(
 						groupId("org.apache.maven.plugins"),
 						artifactId("maven-assembly-plugin"),
-						version("3.2.0")),
+						version("3.6.0")),
 					goal("single"),
 					configuration(
 							element(name("descriptorRefs"), 
@@ -120,9 +120,13 @@ public class R6GeneratorPlugin extends PluginBase {
 									),
 									element(name("transformers"),
 											element(name("transformer"), attribute("implementation","org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer")),
-											element(name("transformer"), attribute("implementation","org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer"))
-					              	)
-				                    
+											element(name("transformer"), attribute("implementation","org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer")),
+											element(name("transformer"), attribute("implementation","org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"),
+												element(name("manifestEntries"), 
+														element(name("Multi-Release"),"true")
+												)
+											)
+									)
 //									element(name("relocations"), 
 //										element(name("relocation"),
 //											element(name("pattern"), ""),
@@ -149,11 +153,17 @@ public class R6GeneratorPlugin extends PluginBase {
 							plugin(
 								groupId("org.apache.maven.plugins"),
 								artifactId("maven-assembly-plugin"),
-								version("3.2.0")),
+								version("3.6.0")),
 							goal("single"),
 							configuration(
 									element(name("descriptorRefs"), 
 										element(name("descriptorRef"),"jar-with-dependencies")
+									),
+									// https://stackoverflow.com/questions/53049346/is-log4j2-compatible-with-java-11
+									element(name("archive"), 
+										element(name("manifestEntries"), 
+												element(name("Multi-Release"),"true")
+										)
 									)),
 							executionEnvironment(
 									mavenProject,

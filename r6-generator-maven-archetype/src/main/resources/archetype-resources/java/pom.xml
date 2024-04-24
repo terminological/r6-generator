@@ -36,30 +36,50 @@
 		</dependency>
 		<!-- the r6-generator-runtime includes necessary dependencies on slf4j and log4j -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+    		<version>5.10.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 #if( $archetypeVersion.endsWith("SNAPSHOT") )
-	<!-- Resolve runtime library snapshots on Sonatype OSSRH if using snapshots of the r6-generator -->
+	<!-- Resolve SNAPSHOTS of the runtime library on Github packages
+	not needed if you are using a stable r6.version of the r6-generator-runtime 
+	and r6-generator-maven-plugin from Maven central rather than xx.xx.xx-SNAPSHOT -->
 	<repositories>
 		<repository>
-			<id>Sonatype OSSRH</id>
-			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+			<id>github</id>
+        	<url>https://maven.pkg.github.com/terminological/m2repo</url>
 		</repository>
 	</repositories>
 
-	<!-- Resolve maven plugin snapshots on Sonatype OSSRH if using snapshots of the r6-generator -->
+	<!-- Resolve SNAPSHOTS of the maven plugin on Github packages -->
 	<pluginRepositories>
 		<pluginRepository>
-			<id>Sonatype OSSRH</id>
-			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+			<id>github</id>
+        	<url>https://maven.pkg.github.com/terminological/m2repo</url>
 		</pluginRepository>
 	</pluginRepositories>
-
+	
+	<!-- N.B. for this to work with Github packages you need a personal access token
+	defined in your ~/.m2/settings.xml file as a server with the id of `github`
+	to match the above, e.g.
+	
+	<settings>
+		<servers>
+			<server>
+				<id>github</id>
+				<username>GITHUB_USERNAME</username>
+				<password>GITHUB_TOKEN</password>
+			</server>
+		</servers>
+	</settings>
+	
+	All of which is probably a good reason to only use stable releases from Maven
+	Central.
+	-->
+	
 #end
 	<build>
 		<plugins>
@@ -92,6 +112,9 @@
 						<maintainerFamilyName>${maintainerSurname}</maintainerFamilyName>
 						<maintainerEmail>${maintainerEmail}</maintainerEmail>
 						<maintainerOrganisation>${maintainerOrganisation}</maintainerOrganisation>
+						<!-- <maintainerORCID>FILL IN ORCID HERE</maintainerORCID> -->
+						<githubOrganisation>${githubOrganisation}</githubOrganisation>
+						<githubRepository>${githubRepository}</githubRepository>
 						<!-- Build configuration options: -->
 						<debug>false</debug> <!-- starts the R library with java code in debugging mode -->
 						<rjavaOpts>
@@ -99,7 +122,9 @@
 						</rjavaOpts>
 						<!-- The following 2 options requires a working R version on the system that generates the R package -->
 						<usePkgdown>true</usePkgdown> <!-- Pkgdown will generate a nice looking site and run all the vignettes on build -->
-						<useRoxygen2>false</useRoxygen2> <!-- Roxygen can integrate user supplied and generated R code -->
+						<useCmdCheck>false</useCmdCheck> <!-- Enable this to run RCMD Check as part of maven build-->
+						<installLocal>true</installLocal> <!-- Install the library on the local machine. disable for CI -->
+						<useRoxygen2>false</useRoxygen2> <!-- Roxygen can integrate user supplied and generated R code. This is needed if you add custom R files to the project -->
 						<useJavadoc>false</useJavadoc> <!-- building the javadocs into the documentation is nice but can add a lot to size of the package -->
 #if( $libraryStyle == "compile-source" )
 						<!-- distribute java as source code to be compiled and dependencies linked on first use -->
@@ -110,7 +135,6 @@
 						<!-- minimises R package footprint but requires download on first use -->
 						<preCompileBinary>true</preCompileBinary>
 						<packageAllDependencies>false</packageAllDependencies>
-						
 #else
 						<!-- distribute java as fat jar. all dependencies pre-linked and embedded in distribution -->
 						<!-- packaging all dependencies is the most robust but results in a large package size -->

@@ -59,6 +59,14 @@ public interface RObjectVisitor<X> {
 	 * @return a X object
 	 */
 	public X visit(RDate c);
+	
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param c a {@link uk.co.terminological.rjava.types.RDFile} object
+	 * @return a X object
+	 */
+	public X visit(RFile c);
 	/**
 	 * <p>visit.</p>
 	 *
@@ -189,6 +197,7 @@ public interface RObjectVisitor<X> {
 		public Optional<Y> visit(RDataframe c) {return Optional.empty();}
 		public Optional<Y> visit(RDataframeRow c) {return Optional.empty();}
 		public Optional<Y> visit(RDate c) {return Optional.empty();}
+		public Optional<Y> visit(RFile c) {return Optional.empty();}
 		public Optional<Y> visit(RDateVector c) {return Optional.empty();}
 		public Optional<Y> visit(RFactor c) {return Optional.empty();}
 		public Optional<Y> visit(RFactorVector c) {return Optional.empty();}
@@ -214,6 +223,7 @@ public interface RObjectVisitor<X> {
 		public Void visit(RDataframe c) {return null;}
 		public Void visit(RDataframeRow c) {return null;}
 		public Void visit(RDate c) {return null;}
+		public Void visit(RFile c) {return null;}
 		public Void visit(RDateVector c) {return null;}
 		public Void visit(RFactor c) {return null;}
 		public Void visit(RFactorVector c) {return null;}
@@ -290,6 +300,15 @@ public interface RObjectVisitor<X> {
 			}
 		}
 		public Optional<Y> visit(RDate c) {
+			if (visited.contains(c)) return Optional.empty();
+			else {
+				visited.add(c);
+				Optional<Y> tmp = visitOnce(c);
+				tmp.ifPresent(collection::add);
+				return tmp;
+			}
+		}
+		public Optional<Y> visit(RFile c) {
 			if (visited.contains(c)) return Optional.empty();
 			else {
 				visited.add(c);
@@ -426,6 +445,7 @@ public interface RObjectVisitor<X> {
 		public abstract Optional<Y> visitOnce(RDataframe c);
 		public abstract Optional<Y> visitOnce(RDataframeRow c);
 		public abstract Optional<Y> visitOnce(RDate c);
+		public abstract Optional<Y> visitOnce(RFile c);
 		public abstract Optional<Y> visitOnce(RDateVector c);
 		public abstract Optional<Y> visitOnce(RFactor c);
 		public abstract Optional<Y> visitOnce(RFactorVector c);
@@ -451,6 +471,7 @@ public interface RObjectVisitor<X> {
 		public Optional<Y> visitOnce(RDataframe c) {return Optional.empty();}
 		public Optional<Y> visitOnce(RDataframeRow c) {return Optional.empty();}
 		public Optional<Y> visitOnce(RDate c) {return Optional.empty();}
+		public Optional<Y> visitOnce(RFile c) {return Optional.empty();}
 		public Optional<Y> visitOnce(RDateVector c) {return Optional.empty();}
 		public Optional<Y> visitOnce(RFactor c) {return Optional.empty();}
 		public Optional<Y> visitOnce(RFactorVector c) {return Optional.empty();}
@@ -469,6 +490,8 @@ public interface RObjectVisitor<X> {
 		public Optional<Y> visitOnce(RUntypedNa rna) {return Optional.empty();}
 		public Optional<Y> visitOnce(RUntypedNaVector rna) {return Optional.empty();}
 	}
+
+	
 
 	
 

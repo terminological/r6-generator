@@ -91,6 +91,7 @@ public class RType {
 		aliases.put("~RINTEGER~", jni(RInteger.class));
 		aliases.put("~RINTEGERVECTOR~", jni(RIntegerVector.class));
 		aliases.put("~RDATE~", jni(RDate.class));
+		aliases.put("~RFILE~", jni(RFile.class));
 		aliases.put("~RDATEVECTOR~", jni(RDateVector.class));
 		aliases.put("~RUNTYPEDNA~", jni(RUntypedNa.class));
 		aliases.put("~RUNTYPEDNAVECTOR~", jni(RUntypedNaVector.class));
@@ -117,6 +118,7 @@ public class RType {
 		aliases.put("~TO_RLOGICAL~", conv(RLogical.class));
 		aliases.put("~TO_RINTEGER~", conv(RInteger.class));
 		aliases.put("~TO_RDATE~", conv(RDate.class));
+		aliases.put("~TO_RFILE~", conv(RFile.class));
 		aliases.put("~TO_RUNTYPEDNA~", conv(RUntypedNa.class));
 		
 		aliases.put("~TO_RDATAFRAME~", conv(RDataframe.class));

@@ -37,7 +37,7 @@
         </requiredProperty>
         
         <requiredProperty key="groupId">
-        	<defaultValue>org.github.${githubOrganisation}</defaultValue>
+        	<defaultValue>io.github.${githubOrganisation}</defaultValue>
         </requiredProperty>
         
         <requiredProperty key="version">
