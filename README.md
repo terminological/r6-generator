@@ -6,8 +6,9 @@
 
 This is the main development repository for the r6-generator. 
 
-It is a multi-module Maven project containing a code generation framework 
-allowing Java libraries to be used in R.
+It is a multi-module Maven project containing a Maven plugin code generation 
+framework, runtime library and Maven archetype allowing Java libraries to be 
+used in R.
 
 Beyond this README, the best source of documentation is in the example 
 [documentation project](https://github.com/terminological/r6-generator-docs).
@@ -32,7 +33,7 @@ The focus of this is streamlining the creation and maintenance of R libraries
 by Java developers, rather than allowing access to arbitrary Java code from R. 
 The ultimate aim of this plugin to allow Java developers to provide a simple 
 API for a Java library, package it using Java's standard dependency management 
-system Maven, push it to github, invoke continuous integration frameworks using 
+system Maven, push it to Github, invoke continuous integration frameworks using 
 Github workflows, and for the Java code to become seamlessly available as an 
 R package, with a minimal amount of fuss. We try to generate robust R packages 
 directly from Java code which are ready for deployment to the 'r-universe' or 
@@ -55,14 +56,16 @@ framework with recommended configuration for projects using the Maven plugin.
 r6-generator is in use in a number of in-development R-packages.
 
 * [html2pdfr](https://github.com/terminological/html2pdfr) - generates pdfs and 
-images from html files using the OpenHtml2PDF java library.
-* [roogledocs](https://github.com/terminological/roogledocs) - programatic 
+images from html files using the OpenHtml2PDF Java library.
+* [roogledocs](https://github.com/terminological/roogledocs) - programmatic 
 access to google docs using the Java google docs API client.
 * [jepidemic](https://github.com/terminological/jepidemic) - tools to calculate 
 epidemic growth rates and reproduction numbers.
+* [jplantuml4r](https://github.com/terminological/jplantuml4r) - a simple adaptor to the 
+plantUML Java rendering engine
 
-Please let me know if you are using the project and happy for me to add it to 
-this list.
+(Please let me know if you are using the project and happy for me to add it to 
+this list.)
 
 ## r6-generator-runtime
 
@@ -107,8 +110,9 @@ public class HelloWorld {
 	 * @return this Java method returns a String
 	 */
 	@RMethod(examples = {
-		"An example",
-		"Spans many lines"
+		"# an example is valid R code",
+		"# which can span many lines",
+		"cat('example code')"
 	})
 	public static String greet() {
 		return "Hello R world. Love from Java."
@@ -133,8 +137,8 @@ The runtime component of this project contains tools to enable bidirectional
 lossless transfer of R data structures into Java 
 (`uk.co.terminological.rjava.RConverter`), in a idiom that is relatively 
 comfortable to Java developers, without having to manage the edge cases posed 
-by R's interchangeable use of single values, vectors, and complexities 
-around `NA` values and different flavours of null. This is a big topic and 
+by R's interchangeable use of single values and vectors, or the complexities 
+of `NA` values and different flavours of null. This is a big topic and 
 further documented in the 
 [documentation project](https://github.com/terminological/r6-generator-docs).
 
@@ -155,7 +159,7 @@ annotations, and support for surfacing Java logging on the R console.
 ...
 	<properties>
 		...
-		<r6.version>0.6.0</r6.version>
+		<r6.version>1.0.0</r6.version>
 	</properties>
 ...
 	<dependencies>
@@ -170,7 +174,8 @@ annotations, and support for surfacing Java logging on the R console.
 ```
 The stable versions of the Maven plugin are available on Maven Central. If we 
 are using the development versions `...-SNAPSHOT` we will need to enable the 
-github snapshot repositories: 
+github snapshot repositories (N.B this also requires additional settings in your
+"~/.m2/settings.xml" file to authenticate for Github): 
 
 ```XML
 
@@ -255,8 +260,8 @@ package by adding files to the specified output directory.
 
 ### run it from R:
 
-Once the R package is built it can be committed to github (where it will run a 
-github actions workflow to test it can be installed), and where it can 
+Once the R package is built it can be committed to Github (where it will run a 
+Github actions workflow to test it can be installed), and from where it can 
 be picked up and installed by others. Alternatively it can be used locally on 
 your development machine.
 
@@ -272,10 +277,11 @@ devtools::load_all("~/Git/your-project-id")
 # the JavaApi class is the entry point for R to your Java code.
 J = myRpackage::JavaApi$get()
 
-# all the API classes and static methods are attached to the J Java api object
+# all the API classes and static methods are attached to the JavaApi 
+# object
 J$HelloWorld$greet()
 
-# everything is automatically documented using the javadoc comments,
+# everything is automatically documented from the javadoc comments,
 ?myRpackage::HelloWorld
 ```
 
@@ -289,21 +295,23 @@ The archetype needs the following information, most of which can be entered inte
 
 Necessary:
 
-* githubOrganisation - (or your github user name)
-* githubRepository - the name you are going to use for the github repo for this project.
+* githubOrganisation - (or your github user name - N.b. `terminological` rather 
+  than `io.github.terminological`)
+* githubRepository - the name you are going to use for the github repo for this 
+  project
 
 Optional:
 
-* package - the Java package, optional, defaults to io.github.${githubOrganisation}
-* rPackageName - optional, defaults to ${githubRepository}
-* versionId - optional, defaults to main-SNAPSHOT
-* rPackageVersion - optional, defaults to 0.0.0.9000
-* rPackageLicense - optional, defaults to MIT
-* maintainerName - optional, defaults to an example name
+* package - the Java package, optional, defaults to `io.github.${githubOrganisation}`
+* rPackageName - optional, defaults to `${githubRepository}`
+* versionId - optional, defaults to `main-SNAPSHOT`
+* rPackageVersion - optional, defaults to `0.0.0.9000`
+* rPackageLicense - optional, defaults to `MIT`
+* maintainerName - optional, defaults to an `example name`
 * maintainerSurname - ditto
 * maintainerEmail - ditto
 * maintainerOrganisation - optional, defaults to same as githubOrganisation.
-* libraryStyle - optional, one of fat-jar, thin-jar, compile-source (defaults to fat-jar)
+* libraryStyle - optional, one of `fat-jar`, `thin-jar`, `compile-source` (defaults to `fat-jar`)
 
 Usage:
 
@@ -365,11 +373,11 @@ Here is the reference it uses (although the version will likely be different):
 ```R
 bibentry(bibtype = "Manual",
 		title = "R6 generator maven plugin",
-		author = person(given="Rob", family="Challen",role="aut",email="rc538@exeter.ac.uk",comment = structure("0000-0002-5504-7768", .Names = "ORCID")),
-		note = "Maven plugin artifact: io.github.terminological:r6-generator-maven-plugin:0.6.0",
+		author = person(given="Rob", family="Challen",role="aut",email="rob.challen@bristol.ac.uk",comment = structure("0000-0002-5504-7768", .Names = "ORCID")),
+		note = "Maven plugin artifact: io.github.terminological:r6-generator-maven-plugin:1.0.0",
 		year = 2022,
 		url = "https://github.com/terminological/r6-generator",
-		doi = "10.5281/zenodo.6644970"
+		doi = "10.5281/zenodo.7113300"
 	)
 ```
 

@@ -7,33 +7,35 @@
 	<version>0.6.2-SNAPSHOT</version>
 	<name>R6 generator</name>
 	<description>
-	R can use `rJava` to communicate with java. R also has a class system called
-	R6. If you want to use a java library with native `rJava` in R there is 
-	potentially a lot of glue code needed, and R library specific packaging 
-	configuration required.	However if you don't mind writing an R-centric API 
-	in Java you can generate all of this glue code using a few Java annotations 
-	and normal javadoc comments. This maven plugin provides an annotation 
-	processor that writes that glue code and creates a fairly transparent 
-	connection between Java code and R code, with a minimum of hard work. The 
-	focus of this is streamlining the creation of R packages that wrap Java 
-	libraries by Java developers, rather than allowing access to arbitrary Java 
-	code from R. The ultimate aim of this plugin to allow java developers to 
-	provide simple APIs for their libraries, package their library using Maven, 
-	push it to github and for that to become seamlessly available as an R 
-	package, with a minimal amount of fuss. A focus is on trying to produce 
-	CI ready libraries tested with Github workflows and ready for 
-	`r-universe` submission.
+R can use `rJava` to communicate with java. R also has a class system called
+R6. If you want to use a java library with native `rJava` in R there is 
+potentially a lot of glue code needed, and R library specific packaging 
+configuration required.	However if you don't mind writing an R-centric API 
+in Java you can generate all of this glue code using a few Java annotations 
+and normal javadoc comments. This maven plugin provides an annotation 
+processor that writes that glue code and creates a fairly transparent 
+connection between Java code and R code, with a minimum of hard work. The 
+focus of this is streamlining the creation of R packages that wrap Java 
+libraries by Java developers, rather than allowing access to arbitrary Java 
+code from R. The ultimate aim of this plugin to allow java developers to 
+provide simple APIs for their libraries, package their library using Maven, 
+push it to github and for that to become seamlessly available as an R 
+package, with a minimal amount of fuss. A focus is on trying to produce 
+CI ready libraries tested with Github workflows and ready for 
+`r-universe` submission.
 	</description>
 
 	<parent>
 		<groupId>io.github.terminological</groupId>
 		<artifactId>m2repo</artifactId>
-		<version>0.0.3</version>
+		<version>0.0.4</version>
 	</parent>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<git.repo>terminological/r6-generator</git.repo>
 		<git.m2repo>terminological/m2repo</git.m2repo>
 	</properties>

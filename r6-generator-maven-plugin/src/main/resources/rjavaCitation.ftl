@@ -20,8 +20,8 @@ c(
 		title = "r6-generator: Code Generation Framework for using Java within R",
 		author = person(given="Rob", family="Challen",role="aut",email="rob.challen@bristol.ac.uk",comment = structure("0000-0002-5504-7768", .Names = "ORCID")),
 		note = "Maven plugin artifact: ${model.getPluginVersion()}",
-		year = 2022,
+		year = 2024,
 		url = "https://github.com/terminological/r6-generator",
-		doi = "10.5281/zenodo.6644970"
+		doi = "10.5281/zenodo.7113300"
 	)
 )

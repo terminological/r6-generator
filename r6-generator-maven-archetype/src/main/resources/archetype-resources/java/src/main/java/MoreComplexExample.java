@@ -65,11 +65,11 @@ public class MoreComplexExample {
 	 * @return a greeting 
 	 */
 	@RMethod(examples = {
-		"greet('friend!')"
+		"salutation('friend!')"
 	}, tests = {
-		"expect_equal(greet('friend!'),'Hello, friend!')"
+		"expect_equal(salutation('friend!'),'Hello, friend!')"
 	})
-	public static RCharacter greet(@RDefault(rCode="'Anonymous'")String name) {
+	public static RCharacter salutation(@RDefault(rCode="'Anonymous'")String name) {
 		return RConverter.convert("Hello, "+name);
 	}
 	

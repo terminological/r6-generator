@@ -1,12 +1,59 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+title: >-
+  r6-generator: Code Generation Framework for using Java
+  within R
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
 authors:
-  - family-names: Challen
-    given-names: Rob
-    orcid: https://orcid.org/0000-0002-5504-7768
+  - given-names: Rob
+    family-names: Challen
     email: rob.challen@bristol.ac.uk
-title: "r6-generator: Code Generation Framework for using Java within R"
-version: 0.5.6
-doi: https://doi.org/10.5281/zenodo.6644970
-repository-code: https://github.com/terminological/r6-generator
-date-released: 2022-01-01
+    name-particle: Rob
+    orcid: 'https://orcid.org/0000-0002-5504-7768'
+    affiliation: AI4CI; Engineering Mathematics
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.7113300
+    description: Zenodo latest release
+repository-code: 'https://github.com/terminological/r6-generator'
+url: 'https://terminological.github.io/r6-generator-docs/docs/'
+abstract: >-
+  If you want to use a Java library with native rJava or
+  jsr223 in R there is potentially a lot of glue code and R
+  library specific packaging configuration required.
+
+
+  However if you don't mind writing an R-centric API in Java
+  you can generate all of this glue code using a few Java
+  annotations and the normal javadoc comments. This project
+  provides an annotation processor, and code generator that
+  writes that glue code and creates a fairly transparent
+  connection between Java code and R code with a minimum of
+  hard work. This is supported by a robust R package
+  infrastructure which makes R package creation much
+  simpler.
+
+
+  The focus of this is streamlining the creation and
+  maintenance of R libraries by Java developers, rather than
+  allowing access to arbitrary Java code from R. The
+  ultimate aim of this plugin to allow Java developers to
+  provide a simple API for a Java library, package it using
+  Java's standard dependency management system Maven, push
+  it to Github, invoke continuous integration frameworks
+  using Github workflows, and for the Java code to become
+  seamlessly available as an R package, with a minimal
+  amount of fuss. We try to generate robust R packages
+  directly from Java code which are ready for deployment to
+  the 'r-universe' or CRAN submission.
+keywords:
+  - maven plugin
+  - code generator
+  - java
+  - r package
+license: MIT

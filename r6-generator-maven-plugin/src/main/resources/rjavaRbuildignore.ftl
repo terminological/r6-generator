@@ -8,6 +8,8 @@
 ^data-raw$
 ^cran-comments\.md$
 ^LICENSE\.md$
+# May be a parent pom.xml depending on setup
+^pom\.xml$
 
 # Java maven directory layouts
 <#if rToPomPath == "">
@@ -23,9 +25,8 @@
 # N.B. the src directory ignore in this file is not respected by `Rcmd.exe install` on 
 # windows runners and that causes failure. THe github workflows deal with this edge case by renaming the directory to javasrc,
 ^src$
-^pom.xml$
-^.factorypath$
-^.flattened-pom.xml$
+^\.factorypath$
+^\.flattened-pom\.xml$
 
 <#else>
 
@@ -34,23 +35,23 @@
 # they have been packaged into a XX-sources.jar file and placed in inst/java where they 
 # will be picked up and compiled on first load.
 ^${rToPomPath}/target$
-^${rToPomPath}/.classpath$
-^${rToPomPath}/.settings$
-^${rToPomPath}/.project$
+^${rToPomPath}/\.classpath$
+^${rToPomPath}/\.settings$
+^${rToPomPath}/\.project$
 # plus the original source files are also ignored as even if they are being distributed 
 # they have been packaged into a XX-sources.jar and placed in inst/java
 ^${rToPomPath}/src$
-^${rToPomPath}/pom.xml$
-^${rToPomPath}/.factorypath$
-^${rToPomPath}/.flattened-pom.xml$
+^${rToPomPath}/pom\.xml$
+^${rToPomPath}/\.factorypath$
+^${rToPomPath}/\.flattened-pom\.xml$
 
 </#if>
 index.html
 
 # Github workflow files
 ^javasrc$
-^.github$
-^reconf.sh$
+^\.github$
+^reconf\.sh$
 # reconf.sh is created during rJava setup on github workflow to change java versions.
 # javasrc is what src gets renamed to on windows to prevent Rcmd.exe bug
 # this is specifically to prevent a spurious note NOTE on the github workflow.

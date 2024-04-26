@@ -115,7 +115,7 @@ ${model.getConfig().getPackageName()}::JavaApi$installDependencies()
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
 			\itemize{
-				\item{none}
+				\item none
 			}
 			\if{html}{\out{</div>}}
 		}
@@ -142,7 +142,7 @@ ${model.getConfig().getPackageName()}::JavaApi$rebuildDependencies()
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
 			\itemize{
-				\item{none}
+				\item none
 			}
 			\if{html}{\out{</div>}}
 		}
@@ -168,7 +168,7 @@ ${model.getConfig().getPackageName()}::JavaApi$versionInformation()
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
 			\itemize{
-				\item{none}
+				\item none
 			}
 			\if{html}{\out{</div>}}
 		}
@@ -195,7 +195,7 @@ J = ${model.getConfig().getPackageName()}::JavaApi$get()
 	
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
-			\itemize{
+			\describe{
 				\item{logLevel}{ The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
 			}
 			\if{html}{\out{</div>}}
@@ -222,7 +222,7 @@ J$changeLogLevel("DEBUG")
 	
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
-			\itemize{
+			\describe{
 				\item{logLevel}{ The desired verbosity of the package. One of "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL".}
 			}
 			\if{html}{\out{</div>}}
@@ -253,7 +253,7 @@ if (fs::file_exists(prp)) {
 	
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
-			\itemize{
+			\describe{
 				\item{log4jproperties}{ a full path to a log4jproperies file}
 			}
 			\if{html}{\out{</div>}}
@@ -283,7 +283,7 @@ J$printMessages()
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
 			\itemize{
-				\item{none}
+				\item none
 			}
 			\if{html}{\out{</div>}}
 		}
@@ -320,10 +320,11 @@ ${model.getConfig().getPackageName()}::${method.getSnakeCaseName()}(${method.get
 	
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
-			\itemize{
 	<#if !method.getParameterNames()?has_content>
-				\item{none}
+			\itemize{
+				\item none
 	<#else>
+			\describe{
 		<#list method.getParameterNames() as paramName>
 				\item{${method.getParameterDescription(paramName)}}{ - (java expects a ${method.getParameterType(paramName).getSimpleName()})}
 		</#list>

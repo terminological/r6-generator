@@ -92,7 +92,7 @@ instance$${method.getName()}(${method.getParameterCsv()})
 	\subsection{Class methods}{
 		\itemize{
 <#if !class.getInstanceMethods()?has_content>
-			\item{none}
+			\item none
 <#else>
 	<#list class.getInstanceMethods() as method>
 			\item \href{#method-${method.getName()}}{\code{instance$${method.getName()}(${method.getParameterCsv()})}}
@@ -120,10 +120,11 @@ instance = J$${class.getSimpleName()}$new(${constr.getParameterCsv()});
 	
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
-			\itemize{
 	<#if !constr.getParameterNames()?has_content>
-				\item{none}
+			\itemize{
+				\item none
 	<#else>
+			\describe{
 		<#list constr.getParameterNames() as paramName>
 				\item{${constr.getParameterDescription(paramName)}}{ - (java expects a ${constr.getParameterType(paramName).getSimpleName()})}
 		</#list>
@@ -173,10 +174,11 @@ instance$${method.getName()}(${method.getParameterCsv()})
 	
 		\subsection{Arguments}{
 			\if{html}{\out{<div class="arguments">}}
-			\itemize{
 	<#if !method.getParameterNames()?has_content>
-				\item{none}
+			\itemize{
+				\item none
 	<#else>
+			\describe{
 		<#list method.getParameterNames() as paramName>
 				\item{${method.getParameterDescription(paramName)}}{ - (java expects a ${method.getParameterType(paramName).getSimpleName()})}
 		</#list>
