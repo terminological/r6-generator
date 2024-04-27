@@ -41,7 +41,9 @@ public class RMethod extends RAnnotated {
 	
 	public String getSnakeCaseName() {
 		if (this.getModel().detectMethodCollision(this.simpleName)) {
-			return getSnakeCase(this.definingClass.simpleName)+"_"+getSnakeCase(this.simpleName);
+			// TODO: have switched order to function.class name. Needs testing and vignetted updated.
+			// return getSnakeCase(this.definingClass.simpleName)+"_"+getSnakeCase(this.simpleName);
+			return getSnakeCase(this.simpleName)+"."+getSnakeCase(this.definingClass.simpleName);
 		} else {
 			return getSnakeCase(this.simpleName);
 		}
