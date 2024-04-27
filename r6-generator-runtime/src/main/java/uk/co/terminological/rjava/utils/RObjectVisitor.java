@@ -63,7 +63,7 @@ public interface RObjectVisitor<X> {
 	/**
 	 * <p>visit.</p>
 	 *
-	 * @param c a {@link uk.co.terminological.rjava.types.RDFile} object
+	 * @param c a {@link uk.co.terminological.rjava.types.RFile} object
 	 * @return a X object
 	 */
 	public X visit(RFile c);

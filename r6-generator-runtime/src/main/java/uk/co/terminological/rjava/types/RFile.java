@@ -90,7 +90,7 @@ public class RFile implements RPrimitive, JNIPrimitive  {
 	/**
 	 * <p>Constructor for RFile.</p>
 	 *
-	 * @param boxed a {@link java.nio.Path} object
+	 * @param boxed a {@link java.nio.file.Path} object
 	 */
 	public RFile(Path boxed) {
 		self = boxed;
