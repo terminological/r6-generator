@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class RMethod extends RAnnotated {
@@ -143,7 +144,7 @@ public class RMethod extends RAnnotated {
 	}
 	public String getPrefixedParameterCsv(String pre, int tabs) {
 		if (this.parameters.size() == 0) return "";
-		String sep=",\n"+("\t".repeat(tabs));
+		String sep=",\n"+(StringUtils.repeat("\t", tabs));
 		return sep+getParameterNames().stream().map(s->pre+s).collect(Collectors.joining(sep));
 	}
 	public String getFunctionParameterCsv() {

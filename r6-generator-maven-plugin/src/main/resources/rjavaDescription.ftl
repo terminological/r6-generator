@@ -25,6 +25,7 @@ Imports:
 <#list model.getImports() as import>	${import},${"\n"}</#list>	rJava,
 	R6,
 	fs,
+	cli,
 	rappdirs,
 	utils,
 	magrittr,

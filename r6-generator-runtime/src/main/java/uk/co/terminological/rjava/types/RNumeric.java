@@ -184,7 +184,7 @@ public class RNumeric implements RPrimitive, JNIPrimitive  {
 	 *
 	 * @return a {@link java.lang.String} object
 	 */
-	public String toString() {return self==null?"NA":self.toString();}
+	public String toString() {return self==null?"NA":String.format("%.3g",self);}
 	
 	/**
 	 * <p>rCode.</p>

@@ -384,7 +384,8 @@ public abstract class RVector<X extends RPrimitive> extends ArrayList<X> impleme
 	public String toString() {
 		return "<"+this.getType().getSimpleName().toLowerCase()+"["+this.size()+"]>{"+
 				this.stream().limit(10).map(v-> (v == null? "NULL": v.toString()))
-						.collect(Collectors.joining(", "))+", ...}";
+						.collect(Collectors.joining(", "))+
+						(this.size() > 10 ? ", ...}" : "}");
 	}
 	
 	/**

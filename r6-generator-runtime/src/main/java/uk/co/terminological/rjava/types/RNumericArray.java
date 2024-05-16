@@ -164,7 +164,8 @@ public class RNumericArray extends RArray<RNumeric> implements JNIPrimitive {
 			return this.getVector().toString();
 		} else {
 			try {
-				return "<rnumeric["+majorDimension()+"]>{\n"+this.get().limit(10).map(arr -> arr.toString()).collect(Collectors.joining(",\n"))+",\n...}";
+				return "<rnumeric["+majorDimension()+"]>{\n"+this.get().limit(10).map(arr -> arr.toString()).collect(Collectors.joining(",\n"))+
+						(this.majorDimension() > 10 ? ",\n...}" : "\n}");
 			} catch (ZeroDimensionalArrayException e) {
 				throw new RuntimeException(e);
 			}

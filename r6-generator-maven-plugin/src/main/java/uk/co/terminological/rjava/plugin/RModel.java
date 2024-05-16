@@ -162,5 +162,10 @@ public class RModel {
 				.count() > 1;
 	}
 	
+	public boolean futureSupport() {
+		return this.getClassTypes().stream()
+			.flatMap(c -> c.getMethods().stream())
+			.anyMatch(m -> m.isFuture());
+	}
 
 }

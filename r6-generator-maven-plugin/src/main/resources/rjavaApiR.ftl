@@ -41,7 +41,7 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 	#' @param logLevel A string such as "DEBUG", "INFO", "WARN"
 	#' @return nothing
 	changeLogLevel = function(logLevel) {
-		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "changeLogLevel" , logLevel)
+		.jcall("uk/co/terminological/rjava/RLogController", returnSig = "V", method = "changeLogLevel" , logLevel)
 		invisible(NULL)
 	},
 	
@@ -50,7 +50,7 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 	#' @param log4jproperties An absolute filepath to the log4j propertied file
 	#' @return nothing
 	reconfigureLog = function(log4jproperties) {
-		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "reconfigureLog" , log4jproperties)
+		.jcall("uk/co/terminological/rjava/RLogController", returnSig = "V", method = "reconfigureLog" , log4jproperties)
 		invisible(NULL)
 	},
 	
@@ -59,8 +59,8 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 	#' @return nothing
 	printMessages = function() {
 		# check = FALSE here to stop exceptions being cleared from the stack.
-		msg = .jcall("uk/co/terminological/rjava/LogController", returnSig = "Ljava/lang/String;", method = "getSystemMessages", check=FALSE)
-		if (!is.null(msg) && trimws(msg) != "") message(trimws(msg))
+		msg = .jcall("uk/co/terminological/rjava/RSystemOut", returnSig = "Ljava/lang/String;", method = "getSystemMessages", check=FALSE)
+		.message(msg)
 		invisible(NULL)
 	},
 	
@@ -93,11 +93,11 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 		jars = .checkDependencies(quiet = TRUE)
 		.jaddClassPath(jars)
 		
-		# configure logging
- 		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "setupRConsole")
- 		.jcall("uk/co/terminological/rjava/LogController", returnSig = "V", method = "configureLog" , logLevel)
+		# configure system console and logging
+ 		.jcall("uk/co/terminological/rjava/RSystemOut", returnSig = "V", method = "setup")
+ 		.jcall("uk/co/terminological/rjava/RLogController", returnSig = "V", method = "configureLog" , logLevel)
  		# TODO: this is the library build date code but it requires testing
- 		buildDate = .jcall("uk/co/terminological/rjava/LogController", returnSig = "S", method = "getClassBuildTime")
+ 		buildDate = .jcall("uk/co/terminological/rjava/RLogController", returnSig = "S", method = "getClassBuildTime")
 		self$.log = .jcall("org/slf4j/LoggerFactory", returnSig = "Lorg/slf4j/Logger;", method = "getLogger", "${model.getConfig().getPackageName()}");
 		.jcall(self$.log,returnSig = "V",method = "debug", "Adding to classpath: ")
 		for (jar in jars) {
@@ -185,8 +185,14 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 			</#if>
 			}<#sep>,
 	</#list>
-	)
+		)
 </#list>
+	},
+	
+	#' @description Allow this object to be garbage collected.
+	finalize = function() {
+		# shutdown system console and logging
+		.jcall("uk/co/terminological/rjava/RSystemOut", returnSig = "V", method = "release")
 	}
 ))
 
@@ -232,7 +238,7 @@ JavaApi$versionInformation = function() {
 	)
 	# try and get complilation information if library is loaded
 	try({
-		out$java_library_compiled = .jcall("uk/co/terminological/rjava/LogController", returnSig = "S", method = "getClassBuildTime")
+		out$java_library_compiled = .jcall("uk/co/terminological/rjava/RLogController", returnSig = "S", method = "getClassBuildTime")
 	}, silent=TRUE)
 	return(out)
 }
@@ -290,3 +296,6 @@ JavaApi$versionInformation = function() {
 	.start_jvm(debug=<#if model.getConfig().getDebugMode()>TRUE<#else>FALSE</#if>)
 }
 
+.message = function(msg) {
+	if (!is.null(msg) && trimws(msg) != "") rlang::inform(paste0(trimws(msg),"\n"))
+}

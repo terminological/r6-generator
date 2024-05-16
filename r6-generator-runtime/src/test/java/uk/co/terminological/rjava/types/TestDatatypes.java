@@ -233,8 +233,10 @@ class TestDatatypes {
 	
 	@Test
 	final void testDataframe() {
-		//Use a stream + dataframe collector to generate data frame:
 		
+		
+		//CS05
+		//Use a stream + dataframe collector to generate data frame:
 		Arrays.asList("Hello","World","Stream","Support","in","Java")
 		.stream()
 		.collect(dataframeCollector(
@@ -244,6 +246,8 @@ class TestDatatypes {
 			mapping("subst", s-> s.substring(0,Math.min(3,s.length()))),
 			mapping("length", s-> s.length())
 		));
+		
+		//CE05
 	}
 	
 	static RDataframe getDiamonds() throws IOException {

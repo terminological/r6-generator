@@ -262,6 +262,22 @@ public class R6GeneratorPlugin extends PluginBase {
 			}
 		}
 		
+		
+		
+		if (packageData.installLocal()) {
+			
+			String rCMD[] = {"R","-e","pak::local_install(root = '"+rProjectDir+"',upgrade=FALSE, ask=FALSE)"};
+			getLog().info("Installing R package");
+			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
+			// Runtime run = Runtime.getRuntime();
+			try {
+				executeRcommand(rCMD, "R Package could not be installed");
+			} catch (IOException | InterruptedException e) {
+				throw new MojoExecutionException("Failed to execute pak::local_install", e);
+			}
+			
+		}
+		
 		// STEP 4: (Optional) Run pkgdown in R to build site documentation.  
 		if (packageData.usePkgdown()) {
 			
@@ -276,22 +292,6 @@ public class R6GeneratorPlugin extends PluginBase {
 				throw new MojoExecutionException("Failed to execute pkgdown::build_site", e);
 			}
 		}
-		
-		if (packageData.installLocal()) {
-			
-			String rCMD[] = {"R","-e","devtools::install_local(path = '"+rProjectDir+"', force=TRUE, upgrade='never')"};
-			getLog().info("Installing R package");
-			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
-			// Runtime run = Runtime.getRuntime();
-			try {
-				executeRcommand(rCMD, "R Package could not be installed");
-			} catch (IOException | InterruptedException e) {
-				throw new MojoExecutionException("Failed to execute devtools::install_local", e);
-			}
-			
-		}
-		
-		
 		
 	}
 	

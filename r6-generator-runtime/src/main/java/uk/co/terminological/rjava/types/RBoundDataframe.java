@@ -40,7 +40,7 @@ public class RBoundDataframe<X> extends RDataframe {
 	public RBoundDataframe(Class<X> interfaceType, RDataframe dataframe) throws UnconvertableTypeException {
 		this(interfaceType,dataframe,true);
 	}
-	
+
 	/**
 	 * <p>Constructor for RBoundDataframe.</p>
 	 *
@@ -55,9 +55,9 @@ public class RBoundDataframe<X> extends RDataframe {
 		this.methodMap = this.createMap();
 		this.strict = strict;
 	};
-	
-	
-	
+
+
+
 	@SuppressWarnings("unchecked")
 	private Map<Method,Function<RDataframeRow,RPrimitive>> createMap() throws UnconvertableTypeException {
 		if(!type.isInterface()) throw new UnsupportedOperationException("type must be an interface: "+type.getCanonicalName());
@@ -67,14 +67,14 @@ public class RBoundDataframe<X> extends RDataframe {
 					!m.isDefault() && 
 					RPrimitive.class.isAssignableFrom(m.getReturnType()) &&
 					m.getParameterCount() == 0 					
-				) {
+					) {
 				String colName;
 				if (m.isAnnotationPresent(RName.class)) {
 					colName = m.getAnnotation(RName.class).value();
 				} else {
 					colName = m.getName();
 				}
-				
+
 				// Check the column exists
 				if (!this.containsKey(colName)) {
 					if (strict) {
@@ -82,99 +82,99 @@ public class RBoundDataframe<X> extends RDataframe {
 					} else {
 						if (!RPrimitive.class.isAssignableFrom(m.getReturnType())) throw new UnconvertableTypeException("Interface methods must extend from primitive R types");
 						methodMap.put(m, 
-							o -> RPrimitive.na((Class<? extends RPrimitive>) m.getReturnType())
-						);
+								o -> RPrimitive.na((Class<? extends RPrimitive>) m.getReturnType())
+								);
 					}
-				
+
 				} else {
-					
+
 					// Check its of the right type
 					if (!m.getReturnType().isAssignableFrom(this.getTypeOfColumn(colName))) throw new UnconvertableTypeException(
 							"The type of column: "+colName+" is not compatible. It is a "+
 									this.getTypeOfColumn(colName).getSimpleName()+" and we wanted a "+
 									m.getReturnType().getSimpleName()
-					);
-					
+							);
+
 					methodMap.put(m, 
-						o -> (RPrimitive) m.getReturnType().cast(o.get(colName))
-					);
+							o -> (RPrimitive) m.getReturnType().cast(o.get(colName))
+							);
 				}
 			}
 		}
 		return methodMap;
 	}
-	
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject(); // Calling the default deserialization logic
-        try {
+
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+		ois.defaultReadObject(); // Calling the default deserialization logic
+		try {
 			this.methodMap = this.createMap();
 		} catch (UnconvertableTypeException e) {
 			throw new IOException("This should not have happened",e);
 		}
-    }
-    
-    /**
-     * <p>getCoercedRow.</p>
-     *
-     * @param i a int
-     * @return a X object
-     */
-    public X getCoercedRow(int i) {
-    	return proxyFrom(this.getRow(i));
-    }
-    
-    /** {@inheritDoc} */
-    public RBoundDataframeRow<X> getRow(int i) {
-    	return new RBoundDataframeRow<X>(this, i);
-    }
-    
-    /**
-     * <p>streamCoerce.</p>
-     *
-     * @return a {@link java.util.stream.Stream} object
-     */
-    public Stream<X> streamCoerce() {
-    	return super.stream().map(this::proxyFrom);
-    }
-    
-    /**
-     * <p>proxyFrom.</p>
-     *
-     * @param nl a {@link uk.co.terminological.rjava.types.RDataframeRow} object
-     * @return a X object
-     */
-    @SuppressWarnings("unchecked")
+	}
+
+	/**
+	 * <p>getCoercedRow.</p>
+	 *
+	 * @param i a int
+	 * @return a X object
+	 */
+	public X getCoercedRow(int i) {
+		return proxyFrom(this.getRow(i));
+	}
+
+	/** {@inheritDoc} */
+	public RBoundDataframeRow<X> getRow(int i) {
+		return new RBoundDataframeRow<X>(this, i);
+	}
+
+	/**
+	 * <p>streamCoerce.</p>
+	 *
+	 * @return a {@link java.util.stream.Stream} object
+	 */
+	public Stream<X> streamCoerce() {
+		return super.stream().map(this::proxyFrom);
+	}
+
+	/**
+	 * <p>proxyFrom.</p>
+	 *
+	 * @param nl a {@link uk.co.terminological.rjava.types.RDataframeRow} object
+	 * @return a X object
+	 */
+	@SuppressWarnings("unchecked")
 	protected X proxyFrom(RDataframeRow nl) {
-    	return (X) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, new InvocationHandler() {
+		return (X) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, new InvocationHandler() {
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				if (method.isDefault()) {
 					// https://stackoverflow.com/questions/22614746/how-do-i-invoke-java-8-default-methods-reflectively
 					// https://blog.jooq.org/2018/03/28/correct-reflective-access-to-interface-default-methods-in-java-8-9-10/
 					// maybe good idea to use jOOQ
-					try {
-						//Java 9 onwards
-						return MethodHandles
-							.lookup()
-							.findSpecial(
-								type, 
-								method.getName(),
-								MethodType.methodType(method.getReturnType(), method.getParameterTypes()), 
-								type)
-							.bindTo(proxy)
-							.invokeWithArguments(args);
-					} catch (IllegalAccessException e) {
+					final float version = Float.parseFloat(System.getProperty("java.class.version"));
+					if (version <= 52) {
 						//Java 8
 						Constructor<Lookup> constructor = Lookup.class
-			                    .getDeclaredConstructor(Class.class);
-			                constructor.setAccessible(true);
-			                return constructor.newInstance(type)
-			                    .in(type)
-			                    .unreflectSpecial(method, type)
-			                    .bindTo(proxy)
-			                    .invokeWithArguments();
+								.getDeclaredConstructor(Class.class);
+						constructor.setAccessible(true);
+						return constructor.newInstance(type)
+								.in(type)
+								.unreflectSpecial(method, type)
+								.bindTo(proxy)
+								.invokeWithArguments();
+					} else {
+						//Java 9 onwards
+						return MethodHandles
+								.lookup()
+								.findSpecial(
+										type, 
+										method.getName(),
+										MethodType.methodType(method.getReturnType(), method.getParameterTypes()), 
+										type)
+								.bindTo(proxy)
+								.invokeWithArguments(args);
 					}
-					
 				}
 				if (method.getName().equals("toString")) return "bound "+type.getSimpleName()+": "+nl.asCsv().trim();
 				// don't support any other methods (n.b. hashcode and equals)
@@ -183,5 +183,5 @@ public class RBoundDataframe<X> extends RDataframe {
 				return value;
 			}
 		});
-    }
+	}
 }

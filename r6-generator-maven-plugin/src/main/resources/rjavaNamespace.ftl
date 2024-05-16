@@ -10,6 +10,11 @@ export(${export})
 export(${method.getSnakeCaseName()})
 	</#list>
 </#list>
+export(.background_cancel)
+export(.background_cancel_all)
+export(.background_get_by_id)
+export(.background_status)
+export(.background_tidy_up)
 
 # imports in description but not in namespace. There should be no reason to import these into the namespace.
 # however if you don't CRAN complains that "Namespaces in Imports field not imported from:
@@ -19,6 +24,7 @@ export(${method.getSnakeCaseName()})
 <#list model.getImports() as import>
 import(${import})
 </#list>
+
 importFrom(magrittr,"%>%")
 importFrom(utils,"capture.output")
 import(rJava)

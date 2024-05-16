@@ -23,7 +23,7 @@ import uk.co.terminological.rjava.utils.RObjectVisitor;
 		RtoJava = {
 				"function(rObj) {",
 				"	if (is.null(rObj)) return(rJava::.new('~RDATEVECTOR~'))",
-				"	if (any(na.omit(rObj)<'0001-01-01')) message('dates smaller than 0001-01-01 will be converted to NA')",
+				"	if (any(na.omit(rObj)<'0001-01-01')) cli::cli_inform('dates smaller than 0001-01-01 will be converted to NA')",
 				"	tmp = format(rObj,format='%C%y-%m-%d')",
 				"	return(rJava::.jnew('~RDATEVECTOR~',rJava::.jarray(tmp)))",
 				"}"
