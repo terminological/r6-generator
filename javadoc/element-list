@@ -1,5 +1,6 @@
 uk.co.terminological.rjava
 uk.co.terminological.rjava.functionals
 uk.co.terminological.rjava.plugin
+uk.co.terminological.rjava.threads
 uk.co.terminological.rjava.types
 uk.co.terminological.rjava.utils
