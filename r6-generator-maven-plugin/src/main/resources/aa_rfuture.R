@@ -211,7 +211,7 @@ RFuture = R6::R6Class("RFuture", public=list(
 #' @export
 .background_status = function() {
 	msg = .jcall("uk/co/terminological/rjava/threads/RThreadMonitor", returnSig = "Ljava/lang/String;", method = "status")
-	out = read.delim(
+	out = utils::read.delim(
 		text=msg,
 		col.names = c("id","status"),
 		colClasses = c("integer","character"),
