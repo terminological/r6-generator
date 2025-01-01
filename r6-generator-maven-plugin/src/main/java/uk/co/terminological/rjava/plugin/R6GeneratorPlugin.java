@@ -236,7 +236,7 @@ public class R6GeneratorPlugin extends PluginBase {
 		if (packageData.useRoxygen2()) {
 			
 			// must be an array to stop java tokenising it
-			String rCMD[] = {"R","-e","devtools::document(pkg = '"+rProjectDir+"')"};
+			String rCMD[] = {"R","-e","devtools::document(pkg = '"+rProjectDirStr()+"')"};
 			getLog().info("Generating roxygen configuration.");
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();
@@ -251,7 +251,7 @@ public class R6GeneratorPlugin extends PluginBase {
 		if (packageData.useCmdCheck()) {
 			
 			// must be an array to stop java tokenising it
-			String rCMD[] = {"R","-e","tmp = devtools::check(pkg = '"+rProjectDir+"', args = c('--no-manual', '--no-multiarch')); if(length(tmp$errors) + length(tmp$warnings) > 0) stop('R CMD Check created errors or warnings')"};
+			String rCMD[] = {"R","-e","tmp = devtools::check(pkg = '"+rProjectDirStr()+"', args = c('--no-manual', '--no-multiarch')); if(length(tmp$errors) + length(tmp$warnings) > 0) stop('R CMD Check created errors or warnings')"};
 			getLog().info("Running R CMD Check.");
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();
@@ -266,7 +266,7 @@ public class R6GeneratorPlugin extends PluginBase {
 		
 		if (packageData.installLocal()) {
 			
-			String rCMD[] = {"R","-e","pak::local_install(root = '"+rProjectDir+"',upgrade=FALSE, ask=FALSE)"};
+			String rCMD[] = {"R","-e","pak::local_install(root = '"+rProjectDirStr()+"',upgrade=FALSE, ask=FALSE)"};
 			getLog().info("Installing R package");
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();
@@ -282,7 +282,7 @@ public class R6GeneratorPlugin extends PluginBase {
 		if (packageData.usePkgdown()) {
 			
 			// must be an array to stop java tokenising it
-			String rCMD[] = {"R","-e","pkgdown::build_site(pkg = '"+rProjectDir+"')"};
+			String rCMD[] = {"R","-e","pkgdown::build_site(pkg = '"+rProjectDirStr()+"')"};
 			getLog().info("Generating pkgdown site - please be patient");
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();
@@ -293,6 +293,12 @@ public class R6GeneratorPlugin extends PluginBase {
 			}
 		}
 		
+	}
+	
+	private String rProjectDirStr() {
+		// Properly escape backslash for Windows
+		// See https://stackoverflow.com/questions/44273571
+		return rProjectDir.toString().replace("\\", "\\\\");
 	}
 	
 	void executeRcommand(String rCMD[], String error) throws IOException, InterruptedException, MojoExecutionException {
