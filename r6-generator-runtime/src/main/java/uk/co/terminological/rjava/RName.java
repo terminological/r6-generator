@@ -1,6 +1,7 @@
 package uk.co.terminological.rjava;
 
 import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Inherited;
@@ -15,7 +16,7 @@ import java.lang.annotation.Target;
  * @version $Id: $Id
  */
 @Retention(RUNTIME)
-@Target(METHOD)
+@Target({METHOD,PARAMETER})
 @Inherited
 public @interface RName {
 	String value();

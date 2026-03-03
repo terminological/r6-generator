@@ -27,7 +27,7 @@ public class RBoundDataframeRow<X> extends RDataframeRow {
 	 * @return a X object
 	 */
 	public X coerce() {
-		return this.boundDataframe.proxyFrom(this);
+		return this.boundDataframe.coerce(this);
 	}
 	
 	/**
@@ -36,7 +36,7 @@ public class RBoundDataframeRow<X> extends RDataframeRow {
 	 * @return a X object
 	 */
 	public X lagCoerce() {
-		return this.boundDataframe.proxyFrom(this.lag());
+		return this.boundDataframe.coerce(this.lag());
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class RBoundDataframeRow<X> extends RDataframeRow {
 	 * @return a X object
 	 */
 	public X leadCoerce() {
-		return this.boundDataframe.proxyFrom(this.lead());
+		return this.boundDataframe.coerce(this.lead());
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class RBoundDataframeRow<X> extends RDataframeRow {
 	 * @return a X object
 	 */
 	public X lagCoerce(int i) {
-		return this.boundDataframe.proxyFrom(this.lag(i));
+		return this.boundDataframe.coerce(this.lag(i));
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class RBoundDataframeRow<X> extends RDataframeRow {
 	 * @return a X object
 	 */
 	public X leadCoerce(int i) {
-		return this.boundDataframe.proxyFrom(this.lead(i));
+		return this.boundDataframe.coerce(this.lead(i));
 	}
 	
 	/** {@inheritDoc} */

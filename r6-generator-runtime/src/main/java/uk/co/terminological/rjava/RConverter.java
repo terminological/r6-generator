@@ -787,7 +787,7 @@ public class RConverter {
 	}
 
 	/**
-	 * A stream collector that applies mapping rules and coverts a stream of objects
+	 * A stream collector that applies mapping rules and converts a stream of objects
 	 * into a dataframe.
 	 *
 	 * @param            <X> - the type of the object before the mapping

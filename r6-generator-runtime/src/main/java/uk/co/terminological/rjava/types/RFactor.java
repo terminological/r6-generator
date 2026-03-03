@@ -131,6 +131,7 @@ public class RFactor implements RPrimitive {
 		if(type.isInstance(this)) return (X) this;
 		if(type.equals(String.class)) return (X) this.label;
 		if(type.equals(Integer.class)) return (X) this.self;
+		if(type.equals(Integer.TYPE)) return (X) this.self;
 		throw new ClassCastException("Can't convert to a "+type.getCanonicalName());
 	}
 	

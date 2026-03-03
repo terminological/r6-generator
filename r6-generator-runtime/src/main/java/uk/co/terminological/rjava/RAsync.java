@@ -45,4 +45,14 @@ public @interface RAsync {
 	 * @return
 	 */
 	boolean synchronise() default false;
+
+	/**
+	 * Marks the output of this function as persistent. This means a reference to 
+	 * the result will be kept (in Java) after it has been retrieved in R, allowing 
+	 * it to be referred to later. Persistent objects, that have been processed
+	 * can be cleared by a `RThreadMonitor.tidyUp()`. 
+	 * N.B. @RBlocking methods are never kept. 
+	 * @return
+	 */
+	boolean persist() default false;
 }

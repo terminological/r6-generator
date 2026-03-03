@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.co.terminological.rjava.RSystemOut;
+import uk.co.terminological.rjava.types.RObject;
 
 /**
  * A slightly idiosyncratic implementation of a Java Future API that can be called
@@ -37,9 +38,7 @@ public class RFuture implements Future<Object> {
 	boolean processed = false;
 	String returnSig;
 	String converter;
-	
-	
-	
+	ArrayList<Object> parameters;
 	
 	
 	Logger log = LoggerFactory.getLogger(RFuture.class);
@@ -73,7 +72,8 @@ public class RFuture implements Future<Object> {
 			runner = new MethodRunnable(o,parameters.toArray(),m);
 		}
 		this.method = method;
-		thread = new Thread(runner);
+		this.parameters = parameters;
+		thread = RThreadMonitor.build(runner);
 		thread.start();
 		while(thread.getState().equals(java.lang.Thread.State.NEW)) {}
 		String name = RThreadMonitor.register(this);
@@ -95,6 +95,7 @@ public class RFuture implements Future<Object> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
+		if (thread == null) return false;
 		if (!thread.getState().equals(java.lang.Thread.State.TERMINATED)) {
 			thread.interrupt();
 			cancelled = true;
@@ -106,17 +107,19 @@ public class RFuture implements Future<Object> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean isCancelled() {
-		return cancelled || thread.isInterrupted();
+		return cancelled || runner.interrupted();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean isDone() {
-		return isCancelled() || thread.getState().equals(java.lang.Thread.State.TERMINATED);
+		return isCancelled() || 
+				thread == null ||
+				thread.getState().equals(java.lang.Thread.State.TERMINATED);
 	}
 
 	public boolean isStale() {
-		return processed;
+		return processed || (isDone() && runner.succeeded() && returnSig == "V");
 	}
 	
 	public String getMethod() {
@@ -134,11 +137,18 @@ public class RFuture implements Future<Object> {
 			processed = true;
 			throw new InterruptedException("Background call to `"+method+"(...)` was interrupted");
 		}
+		if (thread == null) return runner.result();
 		thread.join();
-		processed = true;
+		markCompleted();
 		return runner.result();
 	}
 
+	private void markCompleted() {
+		processed = true;
+		thread = null;
+		if (returnSig == "V" || runner.autoTidy()) RThreadMonitor.deregister(id);
+	}
+	
 	/**
 	 * <p>get.</p>
 	 *
@@ -160,12 +170,13 @@ public class RFuture implements Future<Object> {
 			processed = true;
 			throw new InterruptedException("Background call to `"+method+"(...)` was interrupted");
 		}
+		if (thread == null) return runner.result();
 		unit.timedJoin(thread, timeout);
 		if (!this.isDone()) {
 			processed = false;
 			throw new TimeoutException("Background call to `"+method+"(...)` has not yet completed");
 		}
-		processed = true;
+		markCompleted();
 		return runner.result();
 	}
 	
@@ -179,6 +190,7 @@ public class RFuture implements Future<Object> {
 	 */
 	public boolean poll(long ms) {
 		try {
+			if (thread==null) return true;
 			thread.join(ms);
 			return !thread.isAlive();
 		} catch (InterruptedException e) {
@@ -209,8 +221,24 @@ public class RFuture implements Future<Object> {
 		return getProgress().map(p -> p.rCode()).orElse("NULL");
 	}
 	
+	public String methodCall() {
+		String params = this.parameters.stream()
+				.map(p -> 
+					((p instanceof RObject) ?
+							((RObject) p).rCode() :
+								p.toString()
+								)
+				)
+				.collect(Collectors.joining(",")) +")";
+		params = (params.length() > 50) ?
+				params.substring(0, 47)+"..." :
+					params;
+		return method+"("+ params;
+	}
+	
 	public String toString() {
-		return this.method+"(...)"
+		return String.valueOf(this.getId()) + "\t"+ 
+			this.methodCall()
 			+(this.isCancelled() ? " [cancelled]" : 
 				(this.isDone() ? 
 					(this.isStale() ? " [result processed]" : " [result ready]"):

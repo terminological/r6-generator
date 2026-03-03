@@ -10,12 +10,14 @@ public class RProgress {
 		this.target = target;
 	}
 	
-	public void increment() {
-		this.progress += 1;
+	public void increment() throws InterruptedException {
+		increment(1);
 	}
 	
-	public void increment(int i) {
+	public void increment(int i) throws InterruptedException {
+		if (Thread.interrupted()) throw new InterruptedException();
 		progress += i;
+		if (progress > target) target = -1;
 	}
 	
 	public String toString() {
@@ -40,7 +42,8 @@ public class RProgress {
 		this.name = name;
 	}
 
-	public void complete() {
+	public void complete() throws InterruptedException {
+		if (Thread.interrupted()) throw new InterruptedException();
 		progress = (target == -1) ? progress : target;
 		target = progress;
 	}

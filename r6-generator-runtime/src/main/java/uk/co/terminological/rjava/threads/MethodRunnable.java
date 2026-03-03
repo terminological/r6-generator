@@ -3,6 +3,7 @@ package uk.co.terminological.rjava.threads;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.channels.ClosedByInterruptException;
 import java.util.concurrent.ExecutionException;
 
 import uk.co.terminological.rjava.RAsync;
@@ -16,6 +17,7 @@ public class MethodRunnable implements Runnable {
 	Object result = null;
 	Exception exception = null;
 	boolean complete = false;
+	boolean interrupted = false;
 	
 	public MethodRunnable(
 			Object o, //may be null if method is static
@@ -35,6 +37,9 @@ public class MethodRunnable implements Runnable {
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException("The parameters provided are illegal or not appropriate.");
 		} catch (InvocationTargetException e) {
+			if (e.getCause() instanceof InterruptedException || e.getCause() instanceof ClosedByInterruptException) {
+				interrupted = true;
+			}
 			exception = (Exception) e.getCause();
 		}
 		complete = true;
@@ -55,6 +60,19 @@ public class MethodRunnable implements Runnable {
 				doMethod();
 			}
 		}
+		// TODO: Should this method tidy up after itself in the RThreadMonitor?
+		// if this has succeeded and returns void is there
+		// any point retaining the RFuture? The question of system messages maybe 
+		// important but we want to avoid retaining useless threads.
+//		if (m.isAnnotationPresent(RAsync.class)) {
+//			if (!m.getAnnotation(RAsync.class).persist()) {
+//				RThreadMonitor.remove();
+//			}
+//		}
+	}
+	
+	public boolean interrupted() {
+		return interrupted;
 	}
 	
 	public boolean completed() {
@@ -71,6 +89,14 @@ public class MethodRunnable implements Runnable {
 			throw new ExecutionException("Background call to `"+m.getName()+"(...)` resulted in an error: "+exception.getMessage(), exception);
 		}
 		return result;
+	}
+
+	public boolean autoTidy() {
+		return (
+				m.isAnnotationPresent(RBlocking.class) ||
+				m.isAnnotationPresent(RAsync.class) &&
+				!m.getAnnotation(RAsync.class).persist()
+		);
 	}
 
 }

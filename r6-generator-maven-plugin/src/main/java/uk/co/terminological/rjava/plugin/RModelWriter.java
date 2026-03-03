@@ -126,7 +126,7 @@ public class RModelWriter {
 					"RFuture.Rd","pipe.Rd",
 					"dot-background_cancel_all.Rd","dot-background_cancel.Rd",
 					"dot-background_get_by_id.Rd","dot-background_status.Rd",
-					"dot-background_tidy_up.Rd"
+					"dot-background_tidy_up.Rd","dot-background_messages.Rd"
 			).forEach(x -> {
 				try {
 					Files.copy(

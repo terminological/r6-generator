@@ -40,11 +40,11 @@ public class RProgressMonitor {
 		return monitors.get(id);
 	}
 	
-	public static void increment() {
+	public static void increment() throws InterruptedException {
 		prog().increment();
 	}
 	
-	public static void increment(int i) {
+	public static void increment(int i) throws InterruptedException {
 		prog().increment(i);
 	}
 	
@@ -58,7 +58,7 @@ public class RProgressMonitor {
 		monitors.get(fut.getId()).setName(name);
 	}
 
-	public static void complete() {
+	public static void complete() throws InterruptedException {
 		prog().complete();
 	}
 	

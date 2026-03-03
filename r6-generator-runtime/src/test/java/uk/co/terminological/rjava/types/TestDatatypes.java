@@ -266,6 +266,65 @@ class TestDatatypes {
 		}
 	}
 	
+	static class DiamondBean {
+		
+		private RNumeric carats;
+		private RFactor cut;
+		private RInteger price;
+		
+		public DiamondBean() {}
+		
+		public RNumeric getCarats() {
+			return carats;
+		}
+		@RName("carat") public void setCarats(RNumeric carats) {
+			this.carats = carats;
+		}
+		public RFactor getCut() {
+			return cut;
+		}
+		public void setCut(RFactor cut) {
+			this.cut = cut;
+		}
+		public RInteger getPrice() {
+			return price;
+		}
+		public void setPrice(RInteger price) {
+			this.price = price;
+		}
+		
+		public void print() {
+			System.out.println("price: "+this.getPrice()+"; carats: "+this.getCarats() + "; cut: "+this.getCut());
+		}
+	}
+	
+	static class ImmutableDiamond {
+		
+		private RNumeric carats;
+		private RFactor cut;
+		private RInteger price;
+		
+		public ImmutableDiamond(@RName("carat") RNumeric carats, @RName("cut") RFactor cut, @RName("price") RInteger price) {
+			this.carats = carats;
+			this.price = price;
+			this.cut = cut;
+		}
+		
+		public RNumeric getCarats() {
+			return carats;
+		}
+		public RFactor getCut() {
+			return cut;
+		}
+		public RInteger getPrice() {
+			return price;
+		}
+		
+		public void print() {
+			System.out.println("price: "+this.getPrice()+"; carats: "+this.getCarats() + "; cut: "+this.getCut());
+		}
+	}
+	
 	@Test
 	final void testDataframeCoercion() throws IOException, UnconvertableTypeException {
 		RDataframe dia = getDiamonds();
@@ -276,6 +335,20 @@ class TestDatatypes {
 		
 		dia.attach(Diamonds.class).getCoercedRow(100).getCuts().get();
 		dia.attach(Diamonds.class).getRow(100).lag().coerce().getCuts().get();
+	}
+	
+	@Test
+	final void testDataframeBeanCoercion() throws IOException, UnconvertableTypeException {
+		RDataframe dia = getDiamonds();
+		//Test object binding and default interface methods:
+		dia.stream(DiamondBean.class).limit(10).forEach(DiamondBean::print);
+	}
+	
+	@Test
+	final void testDataframeImmutableCoercion() throws IOException, UnconvertableTypeException {
+		RDataframe dia = getDiamonds();
+		//Test object binding and default interface methods:
+		dia.stream(ImmutableDiamond.class).limit(10).forEach(ImmutableDiamond::print);
 	}
 	
 	@Test void testNumericArray() throws ZeroDimensionalArrayException {
@@ -384,4 +457,8 @@ class TestDatatypes {
 		}
 	}
 	
+	@Test
+	final void testFieldName() {
+		Stream.of("getData","data","setData").map(RBoundDataframe::fieldName).forEach(System.out::println);;
+	}
 }
