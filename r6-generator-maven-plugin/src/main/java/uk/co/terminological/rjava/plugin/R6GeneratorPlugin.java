@@ -266,7 +266,8 @@ public class R6GeneratorPlugin extends PluginBase {
 		
 		if (packageData.installLocal()) {
 			
-			String rCMD[] = {"R","-e","pak::local_install(root = '"+rProjectDirStr()+"',upgrade=FALSE, ask=FALSE)"};
+			// String rCMD[] = {"R","-e","pak::local_install(root = '"+rProjectDirStr()+"',upgrade=FALSE, ask=FALSE)"};
+			String rCMD[] = {"R","-e","devtools::install_local('"+rProjectDirStr()+"', upgrade = \"never\", force=TRUE)"};
 			getLog().info("Installing R package");
 			getLog().debug(Arrays.stream(rCMD).collect(Collectors.joining(" ")));
 			// Runtime run = Runtime.getRuntime();

@@ -389,3 +389,11 @@ doi: 10.5281/zenodo.6644970 (URL: https://doi.org/10.5281/zenodo.6644970),
 Maven plugin artifact: io.github.terminological:r6-generator-maven-plugin:0.5.0, 
 <URL: https://github.com/terminological/r6-generator>.
 ```
+
+
+## Build
+
+```
+mvn --batch-mode release:update-versions -DdevelopmentVersion=1.1.2-SNAPSHOT  -DautoVersionSubmodules=true
+mvn install
+```

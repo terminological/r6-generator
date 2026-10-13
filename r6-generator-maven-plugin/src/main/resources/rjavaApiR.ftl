@@ -187,9 +187,10 @@ JavaApi = R6::R6Class("JavaApi", public=list(
 	</#list>
 		)
 </#list>
-	},
+	}
 	
-	#' @description Allow this object to be garbage collected.
+	), private = list(
+	
 	finalize = function() {
 		# shutdown system console and logging
 		.jcall("uk/co/terminological/rjava/RSystemOut", returnSig = "V", method = "release")

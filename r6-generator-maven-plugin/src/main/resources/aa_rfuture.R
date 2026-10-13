@@ -191,10 +191,10 @@ RFuture = R6::R6Class("RFuture", public=list(
 		msg = .jcall(self$.jthread, returnSig = "Ljava/lang/String;", method = "toString", check=FALSE)
 		if (!is.null(msg) && trimws(msg) != "") cat(trimws(msg),sep = "\n")
 		return(invisible(NULL))
-	},
+	}
 	
-	#' @description 
-	#' clean up and cancel this thread 
+	), private = list(
+	
 	finalize = function() {
 		self$cancel()
 	}
@@ -208,6 +208,7 @@ RFuture = R6::R6Class("RFuture", public=list(
 #' thread itself
 #' 
 #' @return a maybe empty dataframe with `id` and `status` columns
+#' @keywords internal
 #' @export
 .background_status = function() {
 	msg = .jcall("uk/co/terminological/rjava/threads/RThreadMonitor", returnSig = "Ljava/lang/String;", method = "status")
@@ -247,6 +248,7 @@ RFuture = R6::R6Class("RFuture", public=list(
 #'
 #' @param id the id from `.background_status()`
 #' @return nothing, called for side effects
+#' @keywords internal
 #' @export
 .background_cancel = function(id) {
 	.jcall("uk/co/terminological/rjava/threads/RThreadMonitor", returnSig = "V", method = "cancel", .jlong(id))
@@ -256,8 +258,8 @@ RFuture = R6::R6Class("RFuture", public=list(
 #' 
 #' Remove all processed and cancelled aync operations from the status list.
 #' This will potentially free up some system resources
-#' 
 #' @return a maybe empty dataframe with `id` and `status` columns
+#' @keywords internal
 #' @export
 .background_tidy_up = function() {
 	.background_messages()
@@ -273,6 +275,7 @@ RFuture = R6::R6Class("RFuture", public=list(
 #' 
 #' @param id the id from `.background_status()` 
 #' @return an RFuture
+#' @keywords internal
 #' @export
 .background_get_by_id = function(id) {
 	.jthread = .jcall("uk/co/terminological/rjava/threads/RThreadMonitor", returnSig = "Luk/co/terminological/rjava/threads/RFuture;", method = "get", .jlong(id))

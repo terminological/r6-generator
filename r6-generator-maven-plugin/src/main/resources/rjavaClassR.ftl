@@ -118,9 +118,10 @@ ${method.doxygen(example)}
 	equals = function(object) {
 		if (is.null(object$.jobj)) return(FALSE);
 		return(self$.jobj$equals(object$.jobj));
-	},
+	}
 	
-	#' @description Allow this object to be garbage collected.
+	), private=list(
+	
 	finalize = function() {
 		<#if class.hasFinalizer()>
 		if(!is.null(self$.jobj)) {

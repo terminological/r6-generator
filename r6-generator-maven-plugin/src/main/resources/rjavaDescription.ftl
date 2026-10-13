@@ -8,7 +8,7 @@ Authors@R: c(
 	person(given = "${author[0]}",
 <#if author[1]??>		family = "${author[1]}",
 </#if><#if author[2]??>		email = "${author[2]}",
-</#if><#if author[3]??>		comment = structure("${author[3]}", .Names = "ORCID"),
+</#if><#if author[3]??>		comment = c(ORCID="${author[3]}"),
 </#if>		role = <#if author?is_first>c("aut", "cre")<#else>"aut"</#if>)<#sep>,
 	</#list>
 )
